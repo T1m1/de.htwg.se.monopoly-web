@@ -17,3 +17,5 @@ dist
 /RUNNING_PID
 /.settings
 /project/*-shim.sbt
+activator-sbt-echo-play-shim.sbt
+htwgMonopoly.log
