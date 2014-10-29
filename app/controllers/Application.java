@@ -11,7 +11,13 @@ public class Application extends Controller {
     static IController controller = Monopoly.getInstance().getController();
 
     public static Result index() {
+        controller.startNewGame(2, new String[]{"Udo", "Maier"});
+        controller.startTurn();
+        return ok(views.html.index.render("Hello Play Framework", controller));
+    }
 
+    public static Result endTurn() {
+        controller.endTurn();
         return ok(views.html.index.render("Hello Play Framework", controller));
     }
     

@@ -2,7 +2,8 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                           controllers.Application.index()
+GET     /go                          controllers.Application.index()
+GET     /end                        controllers.Application.endTurn()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

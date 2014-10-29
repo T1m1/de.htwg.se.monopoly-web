@@ -2,8 +2,99 @@
 
 @main("Welcome to Play Framework") {
 
-    <div class="well">
-        <h1>Hallo </h1>
+
+<div class="btn-group btn-group-justified">
+    <div class="btn-group">
+        <button type="button" onclick="location.href='/go'" class="btn btn-default dice">Würfeln</button>
     </div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-default">Zug beenden</button>
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-default">kaufen</button>
+    </div>
+    <!-- Single button -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            weitere Aktionen.. <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="well">
+    <h1>Hallo Test @controller.getNumberOfPlayer()</h1>
+
+    <div>@controller.getMessage()</div>
+</div>
+
+<div>
+    <table class="table table-bordered">
+        <!-- for loop -> return field object and index of element -->
+        <!--@for((playfield, index) <- controller.getField.getPlayfield().zipWithIndex) {
+        @if(index < 8) {
+        <td>@playfield.toString() at @index</td>
+        }
+        }
+        -->
+
+        @defining(controller.getField.getPlayfield()) { playfields =>
+        <!-- first line -->
+        <tr>
+            @for( index <- 0 to 8){
+            <td>@if(playfields.isDefinedAt(index)) {@playfields.apply(index)}</td>
+            }
+        </tr>
+
+        <!-- TODO Irgendwie mit scala vairablen anlegen und decrementiren / incrementieren -->
+        <tr>
+            <td>@if(playfields.isDefinedAt(27)) {@playfields.apply(27)}</td>
+            <td></td>
+            <td>@if(playfields.isDefinedAt(8)) {@playfields.apply(8)}</td>
+        </tr>
+        <tr>
+            <td>@if(playfields.isDefinedAt(26)) {@playfields.apply(26)}</td>
+            <td></td>
+            <td>@if(playfields.isDefinedAt(9)) {@playfields.apply(9)}</td>
+        </tr>
+        <tr>
+            <td>@if(playfields.isDefinedAt(25)) {@playfields.apply(25)}</td>
+            <td></td>
+            <td>@if(playfields.isDefinedAt(10)) {@playfields.apply(10)}</td>
+        </tr>
+        <tr>
+            <td>@if(playfields.isDefinedAt(24)) {@playfields.apply(24)}</td>
+            <td></td>
+            <td>@if(playfields.isDefinedAt(11)) {@playfields.apply(11)}</td>
+        </tr>
+        <tr>
+            <td>@if(playfields.isDefinedAt(23)) {@playfields.apply(23)}</td>
+            <td></td>
+            <td>@if(playfields.isDefinedAt(12)) {@playfields.apply(12)}</td>
+        </tr>
+        <tr>
+            <td>@if(playfields.isDefinedAt(22)) {@playfields.apply(22)}</td>
+            <td></td>
+            <td>@if(playfields.isDefinedAt(13)) {@playfields.apply(13)}</td>
+        </tr>
+
+        <tr>
+            @for( index <- 21 to 14 by -1){
+            <td>@if(playfields.isDefinedAt(index)) {@playfields.apply(index)}</td>
+            }
+        </tr>
+
+        }
+
+    </table>
+
+
+</div>
 
 }
