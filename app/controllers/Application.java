@@ -4,7 +4,6 @@ import de.htwg.monopoly.controller.IController;
 import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.observer.Event;
 import de.htwg.monopoly.observer.IObserver;
-import de.htwg.monopoly.util.IMonopolyUtil;
 import de.htwg.monopoly.util.MonopolyUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
