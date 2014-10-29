@@ -43,6 +43,14 @@ public class Application extends Controller implements IObserver{
 
 		return ok(views.html.index.render("Hello Play Framework " + number, controller));
 	}
+	
+	public static Result rollDice() {
+		
+		controller.startTurn();
+		
+		
+		return ok(views.html.index.render("", controller));
+	}
 
 	public static Result endGame() {
 
@@ -60,5 +68,7 @@ public class Application extends Controller implements IObserver{
 		// TODO Auto-generated method stub
 		
 	}
+
+    
 
 }
