@@ -7,6 +7,8 @@ GET		/start/:no					controllers.Application.startGame(no:Integer)
 GET		/end						controllers.Application.endGame()
 GET     /go                         controllers.Application.index()
 GET 	/rollDice					controllers.Application.rollDice()
+GET 	/endTurn					controllers.Application.endTurn()
+GET 	/buy						controllers.Application.buy()
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -14,7 +14,7 @@ public class Application extends Controller implements IObserver{
 
 	public static Result index() {
 
-		return ok(views.html.index.render("Hello Play Framework", controller));
+		return ok(views.html.index.render("Index", controller));
 	}
 
 	public static Result startGame(Integer number) {
@@ -36,19 +36,31 @@ public class Application extends Controller implements IObserver{
 			names[i] = "Player " + i;
 		}
 
+		// start the game and begin with first player
 		controller.startNewGame(number, names);
 
-		controller.startTurn();
-
-		return ok(views.html.index.render("Hello Play Framework " + number, controller));
+		return index();
 	}
 	
 	public static Result rollDice() {
 		
 		controller.startTurn();
+		return index();
+	}
+	
+	public static Result endTurn() {
 		
+		controller.endTurn();
+		// TODO "print" events happened
+		return index();
+	}
+	
+	public static Result buy() {
 		
-		return ok(views.html.index.render("", controller));
+		if (!controller.buyStreet()){
+			return ok(views.html.index.render("Kein Geld um die Straße zu kaufen!!!" , controller));
+		}
+		return index();
 	}
 
 	public static Result endGame() {
