@@ -30,3 +30,7 @@
   border-right: solid 12px Orange;
 }
 
+.col-md-1 {
+  min-height: 50px !important;
+}
+

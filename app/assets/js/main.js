@@ -6,8 +6,10 @@ $(document).ready(main);
 
 function main() {
     var $diceButton = $('.dice');
+    var $endTurn = $('.endTurn');
+    var $buy = $('.buy');
     $diceButton.on('click', function() {
-        window.location='/go'
+        window.location='/rollDice'
     });
 
 }
