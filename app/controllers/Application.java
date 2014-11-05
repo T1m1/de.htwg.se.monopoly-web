@@ -2,15 +2,14 @@ package controllers;
 
 import de.htwg.monopoly.controller.IController;
 import de.htwg.monopoly.game.Monopoly;
-import de.htwg.monopoly.observer.Event;
-import de.htwg.monopoly.observer.IObserver;
+import de.htwg.monopoly.util.GameStatus;
 import de.htwg.monopoly.util.MonopolyUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class Application extends Controller implements IObserver{
+public class Application extends Controller {
 
-	static IController controller;
+	static IController controller = Monopoly.getInstance().getController();
 
 	public static Result index() {
 
@@ -18,9 +17,9 @@ public class Application extends Controller implements IObserver{
 	}
 
 	public static Result startGame(Integer number) {
-		
+
 		controller = Monopoly.getInstance().getController();
-		
+
 		// start logger
 		Monopoly.getInstance().getTextUI().printInitialisation();
 
@@ -41,28 +40,35 @@ public class Application extends Controller implements IObserver{
 
 		return index();
 	}
-	
+
 	public static Result rollDice() {
-		
 		controller.startTurn();
 		return index();
 	}
-	
+
 	public static Result endTurn() {
-		
+
 		controller.endTurn();
 		// TODO "print" events happened
 		return index();
 	}
-	
+
 	public static Result buy() {
-		
-		if (!controller.buyStreet()){
-			return ok(views.html.index.render("Kein Geld um die Straße zu kaufen!!!" , controller));
+
+		if (!controller.buyStreet()) {
+			return ok(views.html.index.render(
+					"Kein Geld um die Straße zu kaufen!!!", controller));
 		}
 		return index();
 	}
 
+	public static Result doIt(GameStatus status) {
+		
+		if (status == GameStatus.STOPPED) {
+			return ok("COOOOOOL");
+		}
+		return ok("SCHEIIßßßßße");
+	}
 	public static Result endGame() {
 
 		controller.endTurn();
@@ -71,15 +77,5 @@ public class Application extends Controller implements IObserver{
 		return ok("END GAME");
 	}
 
-	public void update(Event arg0) {
-		// TODO Auto-generated method stub		
-	}
-
-	public void update(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-    
 
 }
