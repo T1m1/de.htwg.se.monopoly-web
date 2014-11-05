@@ -33,79 +33,110 @@
 
     <div>@controller.getMessage()</div>
 </div>
+<div class="game">
+    <div class="playfield">
+        @defining(controller.getField.getPlayfield()) { playfields =>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1 "><p>@if(playfields.isDefinedAt(0)) {@playfields.apply(0)}</p></div>
+            <div class="col-md-1 brownStreet"><p>@if(playfields.isDefinedAt(1)) {@playfields.apply(1)}</p>
+            </div>
+            <div class="col-md-1 test3"><p>@if(playfields.isDefinedAt(2)) {@playfields.apply(2)}</p></div>
+            <div class="col-md-1 brownStreet"><p>@if(playfields.isDefinedAt(3)) {@playfields.apply(3)}</p></div>
+            <div class="col-md-1 "><p>@if(playfields.isDefinedAt(4)) {@playfields.apply(4)}</p></div>
+            <div class="col-md-1 skyBlueStreet"><p>@if(playfields.isDefinedAt(5)) {@playfields.apply(5)}</p></div>
+            <div class="col-md-1 skyBlueStreet"><p>@if(playfields.isDefinedAt(6)) {@playfields.apply(6)}</p></div>
+            <div class="col-md-1 "><p>@if(playfields.isDefinedAt(7)) {@playfields.apply(7)}</p></div>
+            <div class="col-md-2"></div>
 
 
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1 blueStreet"><p>@if(playfields.isDefinedAt(27)) {@playfields.apply(27)}</p></div>
+            <div class="col-md-6"></div>
+            <div class="col-md-1 magentaStreet"><p>@if(playfields.isDefinedAt(8)) {@playfields.apply(8)}</p></div>
+            <div class="col-md-2"></div>
+        </div>
 
-@defining(controller.getField.getPlayfield()) { playfields =>
-<div class="row">
-    <div class="col-md-2"></div>
-    @for( index <- 0 to 7){
-    <div class="col-md-1 ">@if(playfields.isDefinedAt(index)) {@playfields.apply(index)}</div>
-    }
-    <div class="col-md-2"></div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(26)) {@playfields.apply(26)}</p></div>
+            <div class="col-md-6"></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(9)) {@playfields.apply(9)}</p></div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1 blueStreet"><p>@if(playfields.isDefinedAt(25)) {@playfields.apply(25)}</p></div>
+            <div class="col-md-6"></div>
+            <div class="col-md-1 magentaStreet"><p>@if(playfields.isDefinedAt(10)) {@playfields.apply(10)}</p></div>
+            <div class="col-md-2"></div>
+        </div>
 
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1 greenStreet"><p>@if(playfields.isDefinedAt(24)) {@playfields.apply(24)}</p></div>
+            <div class="col-md-2 "></div>
+            <div class="col-md-2 logo">Monopoly</div>
+            <div class="col-md-2 "></div>
+            <div class="col-md-1 orangeStreet"><p>@if(playfields.isDefinedAt(11)) {@playfields.apply(11)}</p></div>
+            <div class="col-md-2"></div>
+        </div>
 
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(23)) {@playfields.apply(23)}</p></div>
+            <div class="col-md-6"></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(12)) {@playfields.apply(12)}</p></div>
+            <div class="col-md-2"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1 greenStreet"><p>@if(playfields.isDefinedAt(22)) {@playfields.apply(22)}</p></div>
+            <div class="col-md-6"></div>
+            <div class="col-md-1 orangeStreet"><p>@if(playfields.isDefinedAt(13)) {@playfields.apply(13)}</p></div>
+            <div class="col-md-2"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(21)) {@playfields.apply(21)}</p></div>
+            <div class="col-md-1 yellowStreet"><p>@if(playfields.isDefinedAt(20)) {@playfields.apply(20)}</p></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(19)) {@playfields.apply(19)}</p></div>
+            <div class="col-md-1 yellowStreet"><p>@if(playfields.isDefinedAt(18)) {@playfields.apply(18)}</p></div>
+            <div class="col-md-1 redStreet"><p>@if(playfields.isDefinedAt(17)) {@playfields.apply(17)}</p></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(16)) {@playfields.apply(16)}</p></div>
+            <div class="col-md-1 redStreet"><p>@if(playfields.isDefinedAt(15)) {@playfields.apply(15)}</p></div>
+            <div class="col-md-1"><p>@if(playfields.isDefinedAt(14)) {@playfields.apply(14)}</p></div>
+            <div class="col-md-2"></div>
+        </div>
+        }
+    </div>
+
+    <div class="infopanel">
+
+        <table class="table table-striped">
+            <th>Spielername</th>
+            <th>Budget</th>
+            <th>Besitz</th>
+
+            @for( playerNumber <- 0 to controller.getNumberOfPlayers-1){
+            @defining(controller.getPlayer(playerNumber)) { player =>
+            <tr class="player">
+
+                <td>@player.getName</td>
+                <td>@player.getBudget</td>
+                <td>@player.getOwnership</td>
+
+            </tr>
+            }
+            }
+        </table>
+
+    </div>
 </div>
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(27)) {@playfields.apply(27)}</div>
-    <div class="col-md-6"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(8)) {@playfields.apply(8)}</div>
-    <div class="col-md-2"></div>
-</div>
-
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(26)) {@playfields.apply(26)}</div>
-    <div class="col-md-6"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(9)) {@playfields.apply(9)}</div>
-    <div class="col-md-2"></div>
-</div>
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(25)) {@playfields.apply(25)}</div>
-    <div class="col-md-6"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(10)) {@playfields.apply(10)}</div>
-    <div class="col-md-2"></div>
-</div>
-
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(24)) {@playfields.apply(24)}</div>
-    <div class="col-md-6"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(11)) {@playfields.apply(11)}</div>
-    <div class="col-md-2"></div>
-</div>
-
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(23)) {@playfields.apply(23)}</div>
-    <div class="col-md-6"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(12)) {@playfields.apply(12)}</div>
-    <div class="col-md-2"></div>
-</div>
-
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(22)) {@playfields.apply(22)}</div>
-    <div class="col-md-6"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(13)) {@playfields.apply(13)}</div>
-    <div class="col-md-2"></div>
-</div>
-
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(21)) {@playfields.apply(21)}</div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(20)) {@playfields.apply(20)}</div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(19)) {@playfields.apply(19)}</div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(18)) {@playfields.apply(18)}</div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(17)) {@playfields.apply(17)}</div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(16)) {@playfields.apply(16)}</div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(15)) {@playfields.apply(15)}</div>
-    <div class="col-md-1">@if(playfields.isDefinedAt(14)) {@playfields.apply(14)}</div>
-    <div class="col-md-2"></div>
-</div>
-}
 
 
 }

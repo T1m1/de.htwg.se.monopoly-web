@@ -8,8 +8,14 @@ function main() {
     var $diceButton = $('.dice');
     var $endTurn = $('.endTurn');
     var $buy = $('.buy');
+
     $diceButton.on('click', function() {
         window.location='/rollDice'
+        updatePlayer(this);
     });
+}
 
+function updatePlayer() {
+    var $playerOne = $('.test2');
+   //alert( $playerOne.find('p'));
 }

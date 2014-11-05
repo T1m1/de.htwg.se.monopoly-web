@@ -8,7 +8,7 @@ import de.htwg.monopoly.util.MonopolyUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class Application extends Controller implements IObserver{
+public class Application extends Controller {
 
 	static IController controller;
 

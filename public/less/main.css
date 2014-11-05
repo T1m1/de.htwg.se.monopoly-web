@@ -1,44 +1,86 @@
 
 .redStreet {
-  border-bottom:solid 12px Red
+    border-bottom: solid 12px Red
 }
 
+.pinkStreet {
+    border-right: solid 12px deeppink;
+}
 
 .yellowStreet {
-  border-bottom: solid 12px Yellow;
+    border-bottom: solid 12px yellow;
 }
 
-.greenStreet{
-  border-left: solid 12px Green;
+.greenStreet {
+    border-left: solid 12px Green;
 }
 
 .blueStreet {
-  border-left: solid 12px Blue;
+    border-left: solid 12px Blue;
 }
 
 .brownStreet {
-  border-top: solid 12px SaddleBrown;
+    border-top: solid 12px SaddleBrown;
 }
 
 .skyBlueStreet {
-  border-top: solid 12px SkyBlue;
+    border-top: solid 12px SkyBlue;
 }
 
 .magentaStreet {
-  border-right: solid 12px magenta;
+    border-right: solid 12px magenta;
 }
 
 .orangeStreet {
-  border-right: solid 12px Orange;
+    border-right: solid 12px Orange;
 }
-
 
 .col-md-1 {
-  min-height: 75px !important;
+    min-height: 75px !important;
     font-size: 10px !important;
     text-align: center;
-    border-style: double;
-    white-space:normal  ;
+    border-style: outset;
+    white-space: normal;
+    vertical-align: inherit;
+}
+
+.infopanel {
+    margin-top: 40px;
+}
+
+.test {
+    background-image: url("/assets/images/Boger.jpg");
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+
+
 
 }
 
+.test3 {
+    background-image: url("/assets/images/Boger.jpg"), url("/assets/images/Bittel.jpg");
+    background-position: center bottom, left top;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+}
+.test2 {
+    background-image: url("/assets/images/Bittel.jpg");
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+    background-position: right bottom;
+
+}
+
+
+p {
+    margin-top: 15px;
+}
+
+.logo {
+    background-color: red;
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 35px !important;
+    text-align: center;
+}
