@@ -16,16 +16,27 @@
     <!-- Single button -->
     <div class="btn-group">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Gefängnis Aktionen.. <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#">"Du kommst aus dem Gefängnis frei" - Karte einlösen</a></li>
+            <li><a href="#">Mit Geld freikaufen</a></li>
+            <li><a href="#">Mit 3 Versuchen ein Pasch würfeln um aus dem Gefängnis frei zu kommen.</a></li>
+        </ul>
+    </div>
+    <!-- Single button -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             weitere Aktionen.. <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
+            <li><a href="#">Aufgeben</a></li>
             <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
+            <li><a href="#">Spiel beenden</a></li>
         </ul>
     </div>
+
+
 </div>
 
 <div class="well">
@@ -39,8 +50,7 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-1 "><p>@if(playfields.isDefinedAt(0)) {@playfields.apply(0)}</p></div>
-            <div class="col-md-1 brownStreet"><p>@if(playfields.isDefinedAt(1)) {@playfields.apply(1)}</p>
-            </div>
+            <div class="col-md-1 brownStreet"><p>@if(playfields.isDefinedAt(1)) {@playfields.apply(1)}</p></div>
             <div class="col-md-1 test3"><p>@if(playfields.isDefinedAt(2)) {@playfields.apply(2)}</p></div>
             <div class="col-md-1 brownStreet"><p>@if(playfields.isDefinedAt(3)) {@playfields.apply(3)}</p></div>
             <div class="col-md-1 "><p>@if(playfields.isDefinedAt(4)) {@playfields.apply(4)}</p></div>
