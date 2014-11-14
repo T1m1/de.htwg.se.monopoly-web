@@ -1,85 +1,105 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.htwg.monopoly.controller.IController;
+import de.htwg.monopoly.controller.IPlayerController;
+import de.htwg.monopoly.entities.IFieldObject;
+import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.observer.Event;
 import de.htwg.monopoly.observer.IObserver;
 import de.htwg.monopoly.util.MonopolyUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class Application extends Controller {
 
-	static IController controller;
+    static IController controller;
 
-	public static Result index() {
+    public static Result index() {
 
-		return ok(views.html.index.render("Index", controller));
-	}
+        return ok(views.html.index.render("Index", controller));
+    }
 
-	public static Result startGame(Integer number) {
-		
-		controller = Monopoly.getInstance().getController();
-		
-		// start logger
-		Monopoly.getInstance().getTextUI().printInitialisation();
+    public static Result startGame(Integer number) {
 
-		// check if a correct number of players is committed
-		if (!MonopolyUtils.verifyPlayerNumber(number)) {
-			return ok(views.html.index.render(
-					"Wrong number of players entered!", controller));
-		}
+        controller = Monopoly.getInstance().getController();
 
-		// fill it for now with predefined strings TODO: change implementation
-		String[] names = new String[number];
-		for (int i = 0; i < names.length; i++) {
-			names[i] = "Player " + i;
-		}
+        // start logger
+        Monopoly.getInstance().getTextUI().printInitialisation();
 
-		// start the game and begin with first player
-		controller.startNewGame(number, names);
+        // check if a correct number of players is committed
+        if (!MonopolyUtils.verifyPlayerNumber(number)) {
+            return ok(views.html.index.render(
+                    "Wrong number of players entered!", controller));
+        }
 
-		return index();
-	}
-	
-	public static Result rollDice() {
-		
-		controller.startTurn();
-		return index();
-	}
-	
-	public static Result endTurn() {
-		
-		controller.endTurn();
-		// TODO "print" events happened
-		return index();
-	}
-	
-	public static Result buy() {
-		
-		if (!controller.buyStreet()){
-			return ok(views.html.index.render("Kein Geld um die Straße zu kaufen!!!" , controller));
-		}
-		return index();
-	}
+        // fill it for now with predefined strings TODO: change implementation
+        String[] names = new String[number];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = "Player " + i;
+        }
 
-	public static Result endGame() {
+        // start the game and begin with first player
+        controller.startNewGame(number, names);
 
-		controller.endTurn();
-		controller.exitGame();
+        return index();
+    }
 
-		return ok("END GAME");
-	}
+    public static Result rollDice() {
+        controller.startTurn();
 
-	public void update(Event arg0) {
-		// TODO Auto-generated method stub		
-	}
+        return ok(getMessage());
+    }
 
-	public void update(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    private static String getMessage() {
+        JSONObject message = new JSONObject();
+        message.put("msg", controller.getMessage());
+        return message.toJSONString();
+    }
 
-    
+    private static String getMessage(String msg) {
+        JSONObject message = new JSONObject();
+        message.put("msg", msg);
+        return message.toJSONString();
+    }
+
+    public static Result endTurn() {
+
+        controller.endTurn();
+        return ok(getMessage());
+    }
+
+    public static Result buy() {
+        if (!controller.buyStreet()) {
+            return ok(getMessage("Kein Geld um die Straße zu kaufen!!!"));
+        }
+        return ok(getMessage());
+    }
+
+    public static Result endGame() {
+
+        controller.endTurn();
+        controller.exitGame();
+
+        return ok("END GAME");
+    }
+
+    public void update(Event arg0) {
+        // TODO Auto-generated method stub
+    }
+
+    public void update(int arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public static Result getPlayersAsJSON() {
+        return ok(controller.getPlayers().getPlayersAsJSON());
+    }
+
 
 }

@@ -2,20 +2,89 @@
  * Created by Timi on 29.10.2014.
  */
 
-$(document).ready(main);
+$(document).ready(function () {
 
-function main() {
-    var $diceButton = $('.dice');
-    var $endTurn = $('.endTurn');
-    var $buy = $('.buy');
+    var options = {
+        '#update':'/update',
+        '#rollDice': '/rollDice',
+        '#endTurn': '/endTurn',
+        '#buy': '/buy',
+        '#start': 'cgi-bin/net-info.sh'
+    };
 
-    $diceButton.on('click', function() {
-        window.location='/rollDice'
-        updatePlayer(this);
+    var updatePlayerAjax = function() {
+        $.ajax({
+            url: options['#update'],
+            dataType: "html",
+            success: updateAllPlayer
+        });
+    };
+
+
+    var updateMessageAjax = function() {
+        $.ajax({
+            url: options['#rollDice'],
+            dataType: "html",
+            success: updateMessage
+        });
+        $.ajax({
+            url: options['#update'],
+            dataType: "html",
+            success: updateAllPlayer
+        });
+    };
+
+
+    $('#update').on('click', updatePlayerAjax);
+
+    $('#rollDice').on('click', updateMessageAjax);
+
+    // TODO in eine Funktion
+    $('#endTurn').on('click', function() {
+        $.ajax({
+            url: options['#endTurn'],
+            dataType: "html",
+            success: updateMessage
+        });
+        $.ajax({
+            url: options['#update'],
+            dataType: "html",
+            success: updateAllPlayer
+        });
+
     });
-}
+    $('#buy').on('click', function() {
+        $.ajax({
+            url: options['#buy'],
+            dataType: "html",
+            success: updateMessage
+        });
+        $.ajax({
+            url: options['#update'],
+            dataType: "html",
+            success: updateAllPlayer
+        });
 
-function updatePlayer() {
-    var $playerOne = $('.test2');
-   //alert( $playerOne.find('p'));
-}
+    });
+
+
+    var updateMessage = function(data) {
+        var obj = $.parseJSON(data);
+        $("#msg").html(obj.msg);
+    };
+
+
+    var updateAllPlayer = function(data) {
+        var obj = $.parseJSON(data);
+        $.each(obj, function(i, item){
+            updateSinglePlayer(i, item);
+        })
+    };
+
+    var updateSinglePlayer = function(index, player) {
+      $('#namePlayer_' + index).html(player.name);
+      $('#budgetPlayer_' + index).html(player.budget+1);
+      $('#ownershiptPlayer_' + index).html(player.ownership);
+    };
+
+});
