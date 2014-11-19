@@ -9,7 +9,7 @@ $(document).ready(function () {
         '#rollDice': '/rollDice',
         '#endTurn': '/endTurn',
         '#buy': '/buy',
-        '#start': 'cgi-bin/net-info.sh'
+        '#start': 'start/2'
     };
 
     var updatePlayerAjax = function() {
