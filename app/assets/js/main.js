@@ -26,7 +26,9 @@ $(document).ready(function () {
             url: options['#rollDice'],
             dataType: "html",
             success: updateMessage
-        }).then($.ajax({
+        }).then(
+
+            $.ajax({
             url: options['#update'],
             dataType: "html",
             success: updateAllPlayer

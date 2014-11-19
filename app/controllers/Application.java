@@ -1,9 +1,12 @@
 package controllers;
 
 import de.htwg.monopoly.controller.IController;
+import de.htwg.monopoly.entities.IFieldObject;
+import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.observer.Event;
 import de.htwg.monopoly.util.MonopolyUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -90,8 +93,33 @@ public class Application extends Controller {
 
     }
 
-    public static Result getPlayersAsJSON() {
-        return ok(controller.getPlayers().getPlayersAsJSON());
+    public static Result update() {
+        return ok(getPlayersAsJSON());
+    }
+
+    public static String getPlayersAsJSON() {
+        int numberOfPlayer= controller.getNumberOfPlayers();
+        JSONObject all[] = new JSONObject[numberOfPlayer];
+
+        for (int i = 0; i < numberOfPlayer; i++) {
+            Player currentPlayer = controller.getPlayer(i);
+            all[i] = new JSONObject();
+            all[i].put("name", currentPlayer.getName());
+            all[i].put("pos", currentPlayer.getPosition());
+            all[i].put("budget", currentPlayer.getBudget());
+            JSONArray ownershipt = new JSONArray();
+            for (IFieldObject field : currentPlayer.getOwnership()) {
+                ownershipt.add(field.toString());
+            }
+            all[i].put("ownership", " " + ownershipt);
+        }
+
+        JSONObject allPlayer = new JSONObject();
+        for (int i = 0; i < all.length; i++) {
+            allPlayer.put(i, all[i]);
+        }
+        return allPlayer.toString();
+
     }
 
 
