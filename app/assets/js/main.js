@@ -26,12 +26,12 @@ $(document).ready(function () {
             url: options['#rollDice'],
             dataType: "html",
             success: updateMessage
-        });
-        $.ajax({
+        }).then($.ajax({
             url: options['#update'],
             dataType: "html",
             success: updateAllPlayer
-        });
+        })  )
+
     };
 
 
@@ -84,7 +84,9 @@ $(document).ready(function () {
     var updateSinglePlayer = function(index, player) {
       $('#namePlayer_' + index).html(player.name);
       $('#budgetPlayer_' + index).html(player.budget+1);
-      $('#ownershiptPlayer_' + index).html(player.ownership);
+      $('#ownershipPlayer_' + index).html(player.ownership);
+      $('#positionPlayer_' + index).html(player.pos);
     };
+
 
 });
