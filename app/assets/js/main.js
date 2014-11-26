@@ -1,109 +1,112 @@
 /**
  * Created by Timi on 29.10.2014.
  */
+var monopoly = angular.module("monopoly", []);
 
-$(document).ready(function () {
+monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
+	$scope.player;
 
-    var options = {
-        '#update':'/update',
-        '#rollDice': '/rollDice',
-        '#endTurn': '/endTurn',
-        '#buy': '/buy',
-        '#start': 'start/2'
-    };
+	$(document).ready(function() {
 
-    var updatePlayerAjax = function() {
-        $.ajax({
-            url: options['#update'],
-            dataType: "html",
-            success: updateAllPlayer
-        });
-    };
+		var options = {
+			'#update' : '/update',
+			'#rollDice' : '/rollDice',
+			'#endTurn' : '/endTurn',
+			'#buy' : '/buy',
+			'#start' : 'start/2'
+		};
 
+		var updatePlayerAjax = function() {
+			$.ajax({
+				url : options['#update'],
+				dataType : "html",
+				success : updateAllPlayer
+			});
+		};
 
-    var updateMessageAjax = function() {
-        $.ajax({
-            url: options['#rollDice'],
-            dataType: "html",
-            success: updateMessage
-        }).then(
+		var updateMessageAjax = function() {
+			$.ajax({
+				url : options['#rollDice'],
+				dataType : "html",
+				success : updateMessage
+			}).then(
 
-           /* $.ajax({
-            url: options['#update'],
-            dataType: "html",
-            success: updateAllPlayer
-        })
-         */
-        )
+			/*
+			 * $.ajax({ url: options['#update'], dataType: "html", success:
+			 * updateAllPlayer })
+			 */
+			)
 
-    };
+		};
 
+		$('#update').on('click', updatePlayerAjax);
 
-    $('#update').on('click', updatePlayerAjax);
+		$('#rollDice').on('click', updateMessageAjax);
 
-    $('#rollDice').on('click', updateMessageAjax);
+		// TODO in eine Funktion
+		$('#endTurn').on('click', function() {
+			$.ajax({
+				url : options['#endTurn'],
+				dataType : "html",
+				success : updateMessage
+			});
+		});
+		$('#buy').on('click', function() {
+			$.ajax({
+				url : options['#buy'],
+				dataType : "html",
+				success : updateMessage
+			});
+		});
 
-    // TODO in eine Funktion
-    $('#endTurn').on('click', function() {
-        $.ajax({
-            url: options['#endTurn'],
-            dataType: "html",
-            success: updateMessage
-        });
-    });
-    $('#buy').on('click', function() {
-        $.ajax({
-            url: options['#buy'],
-            dataType: "html",
-            success: updateMessage
-        });
-    });
+		var updateMessage = function(data) {
+			var obj = $.parseJSON(data);
+			$("#msg").html(obj.msg);
+		};
 
+		var updateAllPlayer = function(data) {
+			var obj = $.parseJSON(data);
+			$.each(obj, function(i, item) {
+				updateSinglePlayer(i, item);
+			})
+		};
 
-    var updateMessage = function(data) {
-        var obj = $.parseJSON(data);
-        $("#msg").html(obj.msg);
-    };
+		var updateSinglePlayer = function(index, player) {
+			$('#namePlayer_' + index).html(player.name);
+			$('#budgetPlayer_' + index).html(player.budget + 1);
+			$('#ownershipPlayer_' + index).html(player.ownership);
+			$('#positionPlayer_' + index).html(player.pos);
+		};
 
+		/** ********************** websockets ******************************* */
+		connect();
 
-    var updateAllPlayer = function(data) {
-        var obj = $.parseJSON(data);
-        $.each(obj, function(i, item){
-            updateSinglePlayer(i, item);
-        })
-    };
+		function connect() {
+			var socket = new WebSocket("ws://localhost:9000/socket");
 
-    var updateSinglePlayer = function(index, player) {
-      $('#namePlayer_' + index).html(player.name);
-      $('#budgetPlayer_' + index).html(player.budget+1);
-      $('#ownershipPlayer_' + index).html(player.ownership);
-      $('#positionPlayer_' + index).html(player.pos);
-    };
+			message('Socket Status: ' + socket.readyState + ' (ready)');
 
+			socket.onopen = function() {
+				message('Socket Status: ' + socket.readyState + ' (open)');
+			};
 
-    /************************ websockets ********************************/
-    connect();
+			socket.onmessage = function(msg) {
+				var msgnew = msg.data;
+				$scope.players = JSON.parse(msgnew);
+				$scope.$apply();
+				console.log(msgnew);
+				updateAllPlayer(msgnew);
+			};
 
-    function connect(){
-        var socket = new WebSocket("ws://localhost:9000/socket");
+			socket.onclose = function() {
+				message('Socket Status: ' + socket.readyState + ' (Closed)');
+			};
 
-        message('Socket Status: '+socket.readyState + ' (ready)');
+			function message(msg) {
+				$('#wsLog').append('<p>' + msg + '</p>');
+			}
 
-        socket.onopen = function(){  message('Socket Status: '+socket.readyState+' (open)');  }  ;
+		}// End connect
+	});
 
-        socket.onmessage = function(msg){
-            var msgnew = $(msg)[0].data;
-            console.log(msgnew);
-            updateAllPlayer(msgnew);
-        } ;
-
-        socket.onclose = function(){ message('Socket Status: '+socket.readyState+' (Closed)');  }  ;
-
-
-        function message(msg){
-            $('#wsLog').append('<p>' + msg +'</p>');
-        }
-
-
-    }//End connect
-});
+} ]);
