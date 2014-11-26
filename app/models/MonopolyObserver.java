@@ -19,13 +19,11 @@ public class MonopolyObserver implements IObserver {
 		this.out = out;
 	}
 
-    @Override
     public void update(GameStatus gameStatus) {
         out.write(Application.getPlayersAsJSON());
         System.out.println("WUI was updated");
     }
 
-    @Override
 	public void update(int i) {
 		out.write(Application.getPlayersAsJSON());
 		System.out.println("WUI was updated");
