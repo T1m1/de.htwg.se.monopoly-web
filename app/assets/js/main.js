@@ -91,4 +91,30 @@ $(document).ready(function () {
     };
 
 
+    /************************ websockets ********************************/
+    connect();
+
+    function connect(){
+        var socket = new WebSocket("ws://localhost:9000/socket");
+
+        message('Socket Status: '+socket.readyState + ' (ready)');
+
+        socket.onopen = function(){  message('Socket Status: '+socket.readyState+' (open)');  }  ;
+
+        socket.onmessage = function(msg){
+            var msgnew = $(msg)[0].data;
+            console.log(msgnew);
+
+            updateAllPlayer(msgnew);
+        } ;
+
+        socket.onclose = function(){ message('Socket Status: '+socket.readyState+' (Closed)');  }  ;
+
+
+        function message(msg){
+            $('#wsLog').append('<p>' + msg +'</p>');
+        }
+
+
+    }//End connect
 });
