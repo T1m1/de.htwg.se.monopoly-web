@@ -28,11 +28,13 @@ $(document).ready(function () {
             success: updateMessage
         }).then(
 
-            $.ajax({
+           /* $.ajax({
             url: options['#update'],
             dataType: "html",
             success: updateAllPlayer
-        })  )
+        })
+         */
+        )
 
     };
 
@@ -48,12 +50,6 @@ $(document).ready(function () {
             dataType: "html",
             success: updateMessage
         });
-        $.ajax({
-            url: options['#update'],
-            dataType: "html",
-            success: updateAllPlayer
-        });
-
     });
     $('#buy').on('click', function() {
         $.ajax({
@@ -61,12 +57,6 @@ $(document).ready(function () {
             dataType: "html",
             success: updateMessage
         });
-        $.ajax({
-            url: options['#update'],
-            dataType: "html",
-            success: updateAllPlayer
-        });
-
     });
 
 
@@ -104,7 +94,6 @@ $(document).ready(function () {
         socket.onmessage = function(msg){
             var msgnew = $(msg)[0].data;
             console.log(msgnew);
-
             updateAllPlayer(msgnew);
         } ;
 
