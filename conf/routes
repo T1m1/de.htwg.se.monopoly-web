@@ -10,6 +10,7 @@ GET 	/rollDice					controllers.Application.rollDice()
 GET 	/endTurn					controllers.Application.endTurn()
 GET 	/buy						controllers.Application.buy()
 GET     /update                     controllers.Application.update()
+GET     /socket                     controllers.Application.connectWebSocket()
 
 
 # Map static resources from the /public folder to the /assets URL path
