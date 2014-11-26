@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.Arrays;
+
 import de.htwg.monopoly.controller.IController;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
@@ -7,8 +9,10 @@ import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.observer.Event;
 import de.htwg.monopoly.util.MonopolyUtils;
 import models.MonopolyObserver;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
@@ -42,7 +46,7 @@ public class Application extends Controller {
 		}
 
 		// start the game and begin with first player
-		controller.startNewGame(names.length, names);
+		controller.startNewGame(Arrays.asList(names));
 
 		return index();
 	}
