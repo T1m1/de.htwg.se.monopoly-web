@@ -1,5 +1,10 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.util.Arrays;
 
 import de.htwg.monopoly.controller.IController;
@@ -9,6 +14,9 @@ import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.observer.Event;
 import de.htwg.monopoly.util.MonopolyUtils;
 import models.MonopolyObserver;
+
+
+import org.apache.commons.io.FileUtils;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,10 +29,27 @@ public class Application extends Controller {
 
 	static IController controller;
 
-	 // return welcome webpage
-//	public static Result welcome() {
-//		return ok(views.html);
-//	}
+	public static Result welcome() {
+		InputStream welcomePage = null;
+		try {
+			
+			File htmlFile = new File("C:\\Users\\Steffen\\git\\hello-play-java\\app\\views\\welcome.html");
+			
+		
+			
+			welcomePage = FileUtils.openInputStream(htmlFile);
+		} catch (IOException e) {
+			System.out.println("Failure to open file");
+			e.printStackTrace();
+		}	
+
+		if (welcomePage == null) {
+			return ok("NO PAGE FOUND");
+		}
+		return ok(welcomePage).as("text/html");
+	}
+
+
 	public static Result index() {
 
 	
@@ -133,16 +158,16 @@ public class Application extends Controller {
 
 	}
 
-    /*********************************** websockets ****************************************/
+	/*********************************** websockets ****************************************/
 
-    public static WebSocket<String> connectWebSocket() {
-        return new WebSocket<String>() {
+	public static WebSocket<String> connectWebSocket() {
+		return new WebSocket<String>() {
 
-            public void onReady(WebSocket.In<String> in, WebSocket.Out<String> out) {
-                new MonopolyObserver(controller,out);
-            }
+			public void onReady(WebSocket.In<String> in,
+					WebSocket.Out<String> out) {
+				new MonopolyObserver(controller, out);
+			}
 
-
-        };
-    }
+		};
+	}
 }
