@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.Arrays;
 
 import de.htwg.monopoly.controller.IController;
@@ -15,9 +14,8 @@ import de.htwg.monopoly.observer.Event;
 import de.htwg.monopoly.util.MonopolyUtils;
 import models.MonopolyObserver;
 
-
 import org.apache.commons.io.FileUtils;
-
+import org.hibernate.validator.internal.util.privilegedactions.GetClassLoader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -30,29 +28,23 @@ public class Application extends Controller {
 	static IController controller;
 
 	public static Result welcome() {
-		InputStream welcomePage = null;
+		InputStream welcomePage;
 		try {
-			
-			File htmlFile = new File("C:\\Users\\Steffen\\git\\hello-play-java\\app\\views\\welcome.html");
-			
-		
-			
-			welcomePage = FileUtils.openInputStream(htmlFile);
+			welcomePage = FileUtils.openInputStream(new File(
+					"app/views/welcome.html"));
 		} catch (IOException e) {
-			System.out.println("Failure to open file");
-			e.printStackTrace();
-		}	
+			return ok("FAILURE");
+		}
 
 		if (welcomePage == null) {
 			return ok("NO PAGE FOUND");
 		}
+		
 		return ok(welcomePage).as("text/html");
 	}
 
-
 	public static Result index() {
 
-	
 		return ok(views.html.index.render("Index", controller));
 	}
 
