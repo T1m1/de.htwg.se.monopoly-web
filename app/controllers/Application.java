@@ -96,7 +96,13 @@ public class Application extends Controller {
         return ok("Nicht genug Geld zum Freikaufen");
     }
 
-
+    public static Result prisionCard() {
+        if (controller.getCurrentPlayer().hasPrisonFreeCard()) {
+            controller.getCurrentPlayer().usePrisonFreeCard();
+            return ok("Freikarte eingesetzt");
+        }
+        return ok("Keine Freikarte vorhanden..");
+    }
 
 
     public static Result update() {
