@@ -9,6 +9,8 @@ $(document).ready(function () {
         '#rollDice': '/rollDice',
         '#endTurn': '/endTurn',
         '#buy': '/buy',
+        '#prisonCard': '/prisonCard',
+        '#prisonBuy': '/prisonBuy',
         '#start': 'start/2'
     };
 
@@ -44,7 +46,7 @@ $(document).ready(function () {
 
     $('#rollDice').on('click', updateMessageAjax);
 
-    // TODO in eine Funktion
+    /****************** TODO in eine Funktion *************************/
     $('#endTurn').on('click', function () {
         $.ajax({
             url: options['#endTurn'],
@@ -59,6 +61,27 @@ $(document).ready(function () {
             success: updateMessage
         });
     });
+
+    $('#prisonCard').on('click', function () {
+        $.ajax({
+            url: options['#prisonCard'],
+            dataType: "html",
+            success: updateMessage
+        });
+    });
+
+    $('#prisonBuy').on('click', function () {
+        $.ajax({
+            url: options['#prisonBuy'],
+            dataType: "html",
+            success: updateMessage
+        }).then(
+            updatePlayerAjax()
+        )
+    });
+
+/****************************************************************/
+
 
 
     var updateMessage = function (data) {
@@ -77,7 +100,7 @@ $(document).ready(function () {
 
     var updateSinglePlayer = function (index, player) {
         $('#namePlayer_' + index).html(player.name);
-        $('#budgetPlayer_' + index).html(player.budget + 1);
+        $('#budgetPlayer_' + index).html(player.budget);
         $('#ownershipPlayer_' + index).html(player.ownership);
         $('#positionPlayer_' + index).html(player.pos);
     };

@@ -88,20 +88,20 @@ public class Application extends Controller {
         return ok("END GAME");
     }
 
-    public static Result prisionBuy() {
+    public static Result prisonBuy() {
         if (controller.getCurrentPlayer().getBudget() >= IMonopolyUtil.FREIKAUFEN) {
             controller.getCurrentPlayer().decrementMoney(IMonopolyUtil.FREIKAUFEN);
-            return ok("Freigekauft");
+            return ok(getMessage("Freigekauft"));
         }
-        return ok("Nicht genug Geld zum Freikaufen");
+        return ok(getMessage("Nicht genug Geld zum Freikaufen"));
     }
 
-    public static Result prisionCard() {
+    public static Result prisonCard() {
         if (controller.getCurrentPlayer().hasPrisonFreeCard()) {
             controller.getCurrentPlayer().usePrisonFreeCard();
-            return ok("Freikarte eingesetzt");
+            return ok(getMessage("Freikarte eingesetzt"));
         }
-        return ok("Keine Freikarte vorhanden..");
+        return ok(getMessage("Keine Freikarte vorhanden.."));
     }
 
 
