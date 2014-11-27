@@ -88,6 +88,14 @@ public class Application extends Controller {
         return ok("END GAME");
     }
 
+    public static Result prisionBuy() {
+        if (controller.getCurrentPlayer().getBudget() >= IMonopolyUtil.FREIKAUFEN) {
+            controller.getCurrentPlayer().decrementMoney(IMonopolyUtil.FREIKAUFEN);
+            return ok("Freigekauft");
+        }
+        return ok("Nicht genug Geld zum Freikaufen");
+    }
+
 
 
 

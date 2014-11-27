@@ -23,7 +23,7 @@
         </button>
         <ul class="dropdown-menu" role="menu">
             <li><a href="#">"Du kommst aus dem Gefängnis frei" - Karte einlösen</a></li>
-            <li><a href="#">Mit Geld freikaufen</a></li>
+            <li><a href="#">Mit Geld freikaufen - 200</a></li>
             <li><a href="#">Mit 3 Versuchen ein Pasch würfeln um aus dem Gefängnis frei zu kommen.</a></li>
         </ul>
     </div>
@@ -52,7 +52,7 @@
         @defining(controller.getField.getPlayfield()) { playfields =>
         <div class="row">
             <div class="col-md-2"></div>
-            <div class="col-md-1 pos-0"><div class="playerpicture" id="player-maechtel"><img src="/assets/images/Mächtel.png"></div><div class="playerpicture" id="player-schoppa"><img src="/assets/images/Schoppa.png"></div><p>@if(playfields.isDefinedAt(0)) {@playfields.apply(0)}</p></div>
+            <div class="col-md-1 pos-0"><div class="playerpicture" id="player-neuschwander"><img src="/assets/images/Neuschwander.png"></div><div class="playerpicture" id="player-eck"><img src="/assets/images/eck.png"></div><div class="playerpicture" id="player-boger"><img src="/assets/images/boger.png"></div><div class="playerpicture" id="player-bittel"><img src="/assets/images/bittel.png"></div><div class="playerpicture" id="player-maechtel"><img src="/assets/images/maechtel.png"></div><div class="playerpicture" id="player-schoppa"><img src="/assets/images/Schoppa.png"></div><p>@if(playfields.isDefinedAt(0)) {@playfields.apply(0)}</p></div>
             <div class="col-md-1 pos-1 brownStreet"><p>@if(playfields.isDefinedAt(1)) {@playfields.apply(1)}</p></div>
             <div class="col-md-1 pos-2"><p>@if(playfields.isDefinedAt(2)) {@playfields.apply(2)}</p></div>
             <div class="col-md-1 pos-3 brownStreet"><p>@if(playfields.isDefinedAt(3)) {@playfields.apply(3)}</p></div>
