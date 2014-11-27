@@ -1,5 +1,10 @@
 package controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+
 import de.htwg.monopoly.controller.IController;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
@@ -7,8 +12,11 @@ import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.observer.Event;
 import de.htwg.monopoly.util.MonopolyUtils;
 import models.MonopolyObserver;
+
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
@@ -16,6 +24,19 @@ import play.mvc.WebSocket;
 public class Application extends Controller {
 
 	static IController controller;
+
+	public static Result welcome() {
+		InputStream welcomePage = null;
+		try {
+			welcomePage = FileUtils.openInputStream(new File(
+					"/app/views/welcome.html"));
+		} catch (IOException e) {
+			System.out.println("Failure to open file");
+			e.printStackTrace();
+		}
+
+		return ok(welcomePage);
+	}
 
 	public static Result index() {
 
@@ -42,7 +63,7 @@ public class Application extends Controller {
 		}
 
 		// start the game and begin with first player
-		controller.startNewGame(names.length, names);
+		controller.startNewGame(Arrays.asList(names));
 
 		return index();
 	}
@@ -124,16 +145,16 @@ public class Application extends Controller {
 
 	}
 
-    /*********************************** websockets ****************************************/
+	/*********************************** websockets ****************************************/
 
-    public static WebSocket<String> connectWebSocket() {
-        return new WebSocket<String>() {
+	public static WebSocket<String> connectWebSocket() {
+		return new WebSocket<String>() {
 
-            public void onReady(WebSocket.In<String> in, WebSocket.Out<String> out) {
-                new MonopolyObserver(controller,out);
-            }
+			public void onReady(WebSocket.In<String> in,
+					WebSocket.Out<String> out) {
+				new MonopolyObserver(controller, out);
+			}
 
-
-        };
-    }
+		};
+	}
 }
