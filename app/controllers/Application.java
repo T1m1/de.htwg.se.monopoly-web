@@ -21,8 +21,13 @@ public class Application extends Controller {
 
 	static IController controller;
 
+	 // return welcome webpage
+//	public static Result welcome() {
+//		return ok(views.html);
+//	}
 	public static Result index() {
 
+	
 		return ok(views.html.index.render("Index", controller));
 	}
 
