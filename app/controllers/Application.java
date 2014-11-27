@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -28,14 +29,21 @@ public class Application extends Controller {
 	public static Result welcome() {
 		InputStream welcomePage = null;
 		try {
-			welcomePage = FileUtils.openInputStream(new File(
-					"/app/views/welcome.html"));
+			
+			File htmlFile = new File("C:\\Users\\Steffen\\git\\hello-play-java\\app\\views\\welcome.html");
+			
+		
+			
+			welcomePage = FileUtils.openInputStream(htmlFile);
 		} catch (IOException e) {
 			System.out.println("Failure to open file");
 			e.printStackTrace();
-		}
+		}	
 
-		return ok(welcomePage);
+		if (welcomePage == null) {
+			return ok("NO PAGE FOUND");
+		}
+		return ok(welcomePage).as("text/html");
 	}
 
 	public static Result index() {
