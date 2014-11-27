@@ -1,36 +1,39 @@
+.street {
+	border-bottom: solid 12px;
+}
 
 .redStreet {
-  border-bottom:solid 12px Red
-}
-.yellowStreet {
-  border-bottom: solid 12px Yellow;
+	border-color: Red;
 }
 
-.greenStreet{
-  border-left: solid 12px Green;
+.yellowStreet {
+	border-color: Yellow;
+}
+
+.greenStreet {
+	border-color: Green;
 }
 
 .blueStreet {
-  border-left: solid 12px Blue;
+	border-color: Blue;
 }
 
 .brownStreet {
-  border-top: solid 12px SaddleBrown;
+	border-color: SaddleBrown;
 }
 
 .skyBlueStreet {
-  border-top: solid 12px SkyBlue;
+	border-color: SkyBlue;
 }
 
 .darkOrchidStreet {
-  border-right: solid 12px DarkOrchid;
+	border-color: DarkOrchid;
 }
 
 .orangeStreet {
-  border-right: solid 12px Orange;
+	border-color: Orange;
 }
 
 .col-md-1 {
-  min-height: 50px !important;
+	min-height: 50px !important;
 }
-
