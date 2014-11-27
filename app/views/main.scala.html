@@ -1,38 +1,49 @@
 @(title: String)(content: Html)
 
 <!DOCTYPE html>
-<html>
+<html ng-app="monopoly">
 <head>
-    <title>@title</title>
-    <link rel='shortcut icon' type='image/png' href='@routes.Assets.at("images/favicon.png")'>
-    <!-- Latest compiled and minified CSS -->
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type='text/javascript' src='@routes.Assets.at("js/main.js")'></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<title>@title</title>
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href='@routes.Assets.at("less/main.css")'/>
-    <style>
-    body {
-        margin-top: 50px;
-    }
-    </style>
+<!----- ANGULARRRRR -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.js"></script>
+
+<link rel='shortcut icon' type='image/png'
+	href='@routes.Assets.at("images/favicon.png")'>
+<!-- Latest compiled and minified CSS -->
+
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href='@routes.Assets.at("less/main.css")' />
+
+
+<style>
+body {
+	margin-top: 50px;
+}
+</style>
 </head>
-<body>
+<body >
 
-    <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container-fluid">
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        @content
-    </div>
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid"></div>
+		</div>
+	</div>
+	<div class="container">@content</div>
+	<script type='text/javascript' src='@routes.Assets.at("js/main.js")'></script>
 </body>
 </html>

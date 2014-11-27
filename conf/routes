@@ -2,7 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                           controllers.Application.index()
+GET     /                           controllers.Application.welcome()
 GET		/start/:no					controllers.Application.startGame(no:Integer)
 GET		/end						controllers.Application.endGame()
 GET     /go                         controllers.Application.index()
