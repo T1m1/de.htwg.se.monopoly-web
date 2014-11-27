@@ -7,16 +7,37 @@ import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.util.IMonopolyUtil;
 import de.htwg.monopoly.util.MonopolyUtils;
 import models.MonopolyObserver;
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class Application extends Controller {
 
-    static IController controller;
+	static IController controller;
 
+    public static Result welcome() {
+        InputStream welcomePage;
+        try {
+            welcomePage = FileUtils.openInputStream(new File(
+                    "app/views/welcome.html"));
+        } catch (IOException e) {
+            return ok("FAILURE");
+        }
+
+        if (welcomePage == null) {
+            return ok("NO PAGE FOUND");
+        }
+
+        return ok(welcomePage).as("text/html");
+    }
+    
     public static Result index() {
 
         return ok(views.html.index.render("Index", controller));
@@ -42,13 +63,14 @@ public class Application extends Controller {
         }
 
         // start the game and begin with first player
+		//controller.startNewGame(Arrays.asList(names));
         controller.startNewGame(names.length, names);
 
-        return index();
-    }
+		return index();
+	}
 
-    public static Result rollDice() {
-        if (controller.getCurrentPlayer().isInPrison()) {
+	public static Result rollDice() {
+        if (controller != null && controller.getCurrentPlayer() != null && controller.getCurrentPlayer().isInPrison()) {
             return ok("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus...");
         }
         controller.startTurn();
@@ -68,7 +90,6 @@ public class Application extends Controller {
     }
 
     public static Result endTurn() {
-
         controller.endTurn();
         return ok(getMessage());
     }
@@ -89,11 +110,11 @@ public class Application extends Controller {
     }
 
     public static Result prisonBuy() {
-        if (controller.getCurrentPlayer().getBudget() >= IMonopolyUtil.FREIKAUFEN) {
+        if (controller.getCurrentPlayer().isInPrison() && controller.getCurrentPlayer().getBudget() >= IMonopolyUtil.FREIKAUFEN) {
             controller.getCurrentPlayer().decrementMoney(IMonopolyUtil.FREIKAUFEN);
             return ok(getMessage("Freigekauft"));
         }
-        return ok(getMessage("Nicht genug Geld zum Freikaufen"));
+        return ok(getMessage("Option nicht möglich"));
     }
 
     public static Result prisonCard() {
