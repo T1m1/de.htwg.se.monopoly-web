@@ -15,6 +15,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
         '#prisonCard': '/prisonCard',
         '#prisonBuy': '/prisonBuy',
         '#start': '/start/2',
+        '#diceResult': '/diceResult',
         '#currentPlayer': '/currentPlayer'
     };
 
@@ -42,7 +43,11 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             dataType: "html",
             success: updateMessage
         }).then(
-            updateNameOfPlayer
+            function() {
+                updateNameOfPlayer();
+                updateDice();
+            }
+
         );
 
     };
@@ -99,6 +104,19 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
 
     /****************************************************************/
 
+
+    var updateDice = function() {
+        $.ajax({
+            url: options['#diceResult'],
+            dataType: "html",
+            success: function(data) {
+                debugger;
+                var obj = $.parseJSON(data);
+                $('#dice1').html(obj.dice1);
+                $('#dice2').html(obj.dice2);
+            }
+        });
+    };
 
     var updateMessage = function (data) {
         var obj = $.parseJSON(data);

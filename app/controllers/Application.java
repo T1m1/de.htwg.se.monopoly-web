@@ -76,6 +76,12 @@ public class Application extends Controller {
         controller.startTurn();
         return ok(getMessage());
     }
+    public static Result getDiceResult() {
+        JSONObject dice  = new JSONObject();
+        dice.put("dice1", ""+controller.getDice().getDice1());
+        dice.put("dice2", ""+controller.getDice().getDice2());
+        return ok(dice.toJSONString());
+    }
 
     private static String getMessage() {
         JSONObject message = new JSONObject();
@@ -108,10 +114,8 @@ public class Application extends Controller {
     }
 
     public static Result endGame() {
-
         controller.endTurn();
         controller.exitGame();
-
         return ok("END GAME");
     }
 
@@ -130,6 +134,7 @@ public class Application extends Controller {
         }
         return ok(getMessage("Keine Freikarte vorhanden.."));
     }
+
 
 
     public static Result update() {
@@ -158,7 +163,6 @@ public class Application extends Controller {
             allPlayer.put(i, all[i]);
         }
         return allPlayer.toString();
-
     }
 
     /**
@@ -171,8 +175,6 @@ public class Application extends Controller {
             public void onReady(WebSocket.In<String> in, WebSocket.Out<String> out) {
                 new MonopolyObserver(controller, out);
             }
-
-
         };
     }
 }
