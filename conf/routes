@@ -10,8 +10,9 @@ GET 	/rollDice					controllers.Application.rollDice()
 GET 	/endTurn					controllers.Application.endTurn()
 GET 	/buy						controllers.Application.buy()
 GET     /update                     controllers.Application.update()
-GET     /prisonBuy                controllers.Application.prisonBuy()
+GET     /prisonBuy                  controllers.Application.prisonBuy()
 GET     /prisonCard                 controllers.Application.prisonCard()
+GET     /currentPlayer              controllers.Application.getCurrentPlayerAsJSON()
 
 
 GET     /socket                     controllers.Application.connectWebSocket()

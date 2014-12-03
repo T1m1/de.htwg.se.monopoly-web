@@ -89,6 +89,12 @@ public class Application extends Controller {
         return message.toJSONString();
     }
 
+    public static Result getCurrentPlayerAsJSON() {
+        JSONObject message = new JSONObject();
+        message.put("name", controller.getCurrentPlayer().getName());
+        return ok(message.toJSONString());
+    }
+
     public static Result endTurn() {
         controller.endTurn();
         return ok(getMessage());
