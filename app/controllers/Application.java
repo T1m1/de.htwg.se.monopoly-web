@@ -4,8 +4,8 @@ import de.htwg.monopoly.controller.IController;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
-import de.htwg.monopoly.util.IMonopolyUtil;
 import de.htwg.monopoly.util.MonopolyUtils;
+import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
@@ -71,7 +71,7 @@ public class Application extends Controller {
 
 	public static Result rollDice() {
         if (controller != null && controller.getCurrentPlayer() != null && controller.getCurrentPlayer().isInPrison()) {
-            return ok("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus...");
+            return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
         }
         controller.startTurn();
         return ok(getMessage());
@@ -116,16 +116,16 @@ public class Application extends Controller {
     }
 
     public static Result prisonBuy() {
-        if (controller.getCurrentPlayer().isInPrison() && controller.getCurrentPlayer().getBudget() >= IMonopolyUtil.FREIKAUFEN) {
-            controller.getCurrentPlayer().decrementMoney(IMonopolyUtil.FREIKAUFEN);
+        if (controller.getOptions().contains(UserAction.REDEEM_WITH_MONEY)) {
+            controller.redeemWithMoney();
             return ok(getMessage("Freigekauft"));
         }
         return ok(getMessage("Option nicht möglich"));
     }
 
     public static Result prisonCard() {
-        if (controller.getCurrentPlayer().hasPrisonFreeCard()) {
-            controller.getCurrentPlayer().usePrisonFreeCard();
+        if (controller.getOptions().contains(UserAction.REDEEM_WITH_CARD)) {
+            controller.redeemWithCard();
             return ok(getMessage("Freikarte eingesetzt"));
         }
         return ok(getMessage("Keine Freikarte vorhanden.."));
