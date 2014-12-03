@@ -5,6 +5,7 @@ var monopoly = angular.module("monopoly", []);
 
 monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
     $scope.player;
+    $scope.lala;
 
     var options = {
         '#update': '/update',
@@ -115,7 +116,9 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
 
     var updateName = function (data) {
         var obj = $.parseJSON(data);
-        $('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
+        $scope.lala = obj;
+        $scope.$apply();
+        //$('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
     };
 
     var updateSinglePlayer = function (index, player) {
@@ -128,7 +131,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
     /************************ player position ********************************/
 
 
-    function initPlayerPicture() {
+    function init() {
         $.each(player, function (key, value) {
             $(value).hide()
         });
@@ -137,7 +140,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             dataType: "html",
             success: function (data) {
                 var playeinfor = JSON.parse(data);
-                $scope.players = playeinfor
+                $scope.players = playeinfor;
                 $scope.$apply();
                 for (i = 0; i < Object.keys(playeinfor).length; i++) {
                     $(player[i]).show();
@@ -147,7 +150,9 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
         });
     }
 
-    initPlayerPicture();
+    angular.element(document).ready(function () {
+        init();
+    });
 
     var updatePlayerPosition = function (i, position) {
         var currentPlayer = $(player[i]);
