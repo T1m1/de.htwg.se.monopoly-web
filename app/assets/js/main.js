@@ -108,11 +108,34 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 
         /************************ player position ********************************/
 
+
+        function initPlayerPicture() {
+            $.each( player, function( key, value ) {
+                $(value).hide()
+            });
+            $.ajax({
+                url: options['#update'],
+                dataType: "html",
+                success: function(data) {
+                    var playeinfor = JSON.parse(data);
+                    $scope.players = playeinfor
+                    $scope.$apply();
+                    for (i = 0; i < Object.keys(playeinfor).length; i++) {
+                       $(player[i]).show();
+                    }
+
+                }
+            });
+        }
+
+        initPlayerPicture();
+
         var updatePlayerPosition = function (i, position) {
             var currentPlayer = $(player[i]);
             currentPlayer.remove()
             $('.pos-' + position).append(currentPlayer);
         }
+
 
 
         /************************ websockets ********************************/
