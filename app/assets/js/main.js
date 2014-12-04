@@ -110,7 +110,6 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             url: options['#diceResult'],
             dataType: "html",
             success: function(data) {
-                debugger;
                 var obj = $.parseJSON(data);
                 $('#dice1').html(obj.dice1);
                 $('#dice2').html(obj.dice2);
@@ -183,7 +182,9 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
     connect();
 
     function connect() {
-        var socket = new WebSocket("ws://localhost:9000/socket");
+        var host = location.origin.replace(/^http/, 'ws');
+        host = host + "/socket";
+        var socket = new WebSocket(host);
 
         message('Socket Status: ' + socket.readyState + ' (ready)');
 
