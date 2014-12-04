@@ -190,28 +190,30 @@
         }
     </div>
 
-	<div ng-controller="MainCtrl">
-		<div class="infoboard">
-			<h2>{{lala.name}}: Sie sind dran!</h2>
-			<table class="table table-striped">
-				<tr>
-					<th>Spielername</th>
-					<th>Budget</th>
-					<th>Besitz</th>
-					<th>Position</th>
-					<th>Gefaengniskarte</th>
-				</tr>
-				<tr ng-repeat="player in players">
-					<td>{{player.name}}</td>
-					<td>{{player.budget}}</td>
-					<td>{{player.ownership}}</td>
-					<td>{{player.pos}}</td>
-					<td>{{player.prisoncard}}</td>
-				</tr>
-			</table>
-		</div>
-	</div>
+    <div ng-controller="MainCtrl">
+        <div class="infoboard">
+            <h2>{{lala.name}}: Sie sind dran!</h2>
+            <table class="table table-striped">
+                <tr>
+                    <th>Spielername</th>
+                    <th>Budget</th>
+                    <th>Besitz</th>
+                    <th>Position</th>
+                    <th>Gefaengniskarte</th>
+                </tr>
+                <tr ng-repeat="player in players">
+                    <td>{{player.name}}</td>
+                    <td>{{player.budget}}</td>
+                    <td>{{player.ownership}}</td>
+                    <td>{{player.pos}}</td>
+                    <td>{{player.prisoncard}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
-
-
+<div class="row span12 text-center">
+    <div class="fb-like" data-href="https://www.facebook.com/htwgmonopoly" data-layout="button_count" data-action="like"
+         data-show-faces="true" data-share="false"></div>
+</div>
 }
