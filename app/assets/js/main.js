@@ -1,9 +1,9 @@
 /**
  * Created by Timi on 29.10.2014.
  */
-var monopoly = angular.module("monopoly", []);
+ var monopoly = angular.module("monopoly", []);
 
-monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
+ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
     $scope.player;
 
     var options = {
@@ -41,7 +41,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             dataType: "html",
             success: updateMessage
         }).then(
-            updateNameOfPlayer
+        updateNameOfPlayer
         );
 
     };
@@ -65,7 +65,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             dataType: "html",
             success: updateMessage
         }).then(
-            updateNameOfPlayer
+        updateNameOfPlayer
         );
     });
 
@@ -92,7 +92,17 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             dataType: "html",
             success: updateMessage
         }).then(
-            updatePlayerAjax()
+        updatePlayerAjax()
+        )
+    });
+
+    $('#prisonRoll').on('click', function () {
+        $.ajax({
+            url: options['#prisonRolly'],
+            dataType: "html",
+            success: updateMessage
+        }).then(
+        updatePlayerAjax()
         )
     });
 

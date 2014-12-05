@@ -13,6 +13,7 @@ GET     /update                     controllers.Application.update()
 GET     /prisonBuy                  controllers.Application.prisonBuy()
 GET     /prisonCard                 controllers.Application.prisonCard()
 GET     /currentPlayer              controllers.Application.getCurrentPlayerAsJSON()
+GET		/prisonRoll					controllers.Application.prisonRoll()
 
 
 GET     /socket                     controllers.Application.connectWebSocket()
