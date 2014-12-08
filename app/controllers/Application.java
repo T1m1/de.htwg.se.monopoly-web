@@ -205,6 +205,16 @@ public class Application extends Controller {
         return ok(getPlayersAsJSON());
     }
 
+    public static Result getPossibleOptions() {
+        JSONObject options = new JSONObject();
+        int i = 0;
+        for(UserAction action : controller.getOptions()) {
+            options.put("" + i, "" + action);
+            i++;
+        }
+        return ok(options.toJSONString());
+    }
+
     public static String getPlayersAsJSON() {
         int numberOfPlayer = controller.getNumberOfPlayers();
         JSONObject all[] = new JSONObject[numberOfPlayer];
