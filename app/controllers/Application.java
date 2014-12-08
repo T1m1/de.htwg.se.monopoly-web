@@ -79,7 +79,7 @@ public class Application extends Controller {
 		}
 		
         if (controller.getCurrentPlayer().isInPrison()) {
-            return ok("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus...");
+            return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
         }
         
 		if (!controller.isCorrectOption(UserAction.START_TURN)) {
