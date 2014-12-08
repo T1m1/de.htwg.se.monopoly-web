@@ -30,18 +30,20 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             '5': '#player-bittel'
         };
 
-        var dice = {
-            '1': '/assets/images/1.gif',
-            '2': '/assets/images/2.gif',
-            '3': '/assets/images/3.gif',
-            '4': '/assets/images/4.gif',
-            '5': '/assets/images/5.gif',
-            '6': '/assets/images/6.gif'
-        };
+    var dice = {
+        '1': '/assets/images/1.gif',
+        '2': '/assets/images/2.gif',
+        '3': '/assets/images/3.gif',
+        '4': '/assets/images/4.gif',
+        '5': '/assets/images/5.gif',
+        '6': '/assets/images/6.gif'
+    };
+
 
         var bilder=new Array();
+   
 
-        var updatePlayerAjax = function () {
+            var updatePlayerAjax = function () {
             $.ajax({
                 url: options['#update'],
                 dataType: "html",
@@ -70,7 +72,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
                 dataType: "html",
                 success: updateName
             })
-        }
+        };
 
         $('#update').on('click', updatePlayerAjax);
 
@@ -103,6 +105,25 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
                 success: updateMessage
             });
         });
+    $('#prisonBuy').on('click', function () {
+        $.ajax({
+            url: options['#prisonBuy'],
+            dataType: "html",
+            success: updateMessage
+        }).then(
+        updatePlayerAjax()
+        )
+    });
+
+    $('#prisonRoll').on('click', function () {
+        $.ajax({
+            url: options['#prisonRolly'],
+            dataType: "html",
+            success: updateMessage
+        }).then(
+        updatePlayerAjax()
+        )
+    });
 
         $('#prisonBuy').on('click', function () {
             $.ajax({
@@ -179,7 +200,6 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             });
 
             // Test
-            debugger;
             var i;
             for (i = 1; i <= 6; i++) {
                 bilder[i] = new Image();

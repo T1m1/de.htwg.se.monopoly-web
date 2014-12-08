@@ -14,6 +14,7 @@ GET     /prisonBuy                  controllers.Application.prisonBuy()
 GET     /prisonCard                 controllers.Application.prisonCard()
 GET     /currentPlayer              controllers.Application.getCurrentPlayerAsJSON()
 GET     /diceResult                 controllers.Application.getDiceResult()
+GET		/prisonRoll					controllers.Application.prisonRoll()
 
 
 GET     /socket                     controllers.Application.connectWebSocket()

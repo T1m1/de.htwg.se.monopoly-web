@@ -7,9 +7,11 @@ import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
+
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
@@ -21,6 +23,7 @@ import java.io.InputStream;
 public class Application extends Controller {
 
 	static IController controller;
+	private static boolean prisonRollFlag;
 
     public static Result welcome() {
         InputStream welcomePage;
@@ -70,9 +73,20 @@ public class Application extends Controller {
 	}
 
 	public static Result rollDice() {
-        if (controller != null && controller.getCurrentPlayer() != null && controller.getCurrentPlayer().isInPrison()) {
-            return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
+		
+		if (prisonRollFlag) {
+			return handlePrisonRoll();
+		}
+		
+        if (controller.getCurrentPlayer().isInPrison()) {
+            return ok("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus...");
         }
+        
+		if (!controller.isCorrectOption(UserAction.START_TURN)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		
         controller.startTurn();
         return ok(getMessage());
     }
@@ -83,7 +97,22 @@ public class Application extends Controller {
         return ok(dice.toJSONString());
     }
 
-    private static String getMessage() {
+    private static Result handlePrisonRoll() {
+		if (!controller.isCorrectOption(UserAction.ROLL_DICE)) {
+			prisonRollFlag = false;
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		
+		controller.rollDiceToRedeem();
+		
+		if (!controller.getCurrentPlayer().isInPrison()) {
+			prisonRollFlag = false;
+		}
+		
+		return ok(getMessage());
+	}
+
+	private static String getMessage() {
         JSONObject message = new JSONObject();
         message.put("msg", controller.getMessage());
         return message.toJSONString();
@@ -102,39 +131,74 @@ public class Application extends Controller {
     }
 
     public static Result endTurn() {
+		if (!controller.isCorrectOption(UserAction.END_TURN)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
         controller.endTurn();
         return ok(getMessage());
     }
 
     public static Result buy() {
-        if (!controller.buyStreet()) {
-            return ok(getMessage("Kein Geld um die Straße zu kaufen!!!"));
+		if (!controller.isCorrectOption(UserAction.BUY_STREET)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		
+        if (controller.buyStreet()) {
+        	return ok(getMessage());
         }
-        return ok(getMessage());
+        return ok(getMessage("Kein Geld um die Straße zu kaufen!!!"));
+        
     }
 
     public static Result endGame() {
+
         controller.endTurn();
         controller.exitGame();
+
         return ok("END GAME");
     }
 
     public static Result prisonBuy() {
-        if (controller.getOptions().contains(UserAction.REDEEM_WITH_MONEY)) {
-            controller.redeemWithMoney();
-            return ok(getMessage("Freigekauft"));
-        }
-        return ok(getMessage("Option nicht möglich"));
+		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		
+		if (controller.redeemWithMoney()){
+			return ok(getMessage("Freigekauft"));
+		} else {
+			return ok(getMessage("Nicht genug Geld!"));
+		}
     }
 
     public static Result prisonCard() {
-        if (controller.getOptions().contains(UserAction.REDEEM_WITH_CARD)) {
-            controller.redeemWithCard();
-            return ok(getMessage("Freikarte eingesetzt"));
-        }
-        return ok(getMessage("Keine Freikarte vorhanden.."));
+		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		if (controller.redeemWithCard()) {
+			return ok(getMessage("Freikarte eingesetzt"));
+		} else {
+			return ok(getMessage("Keine Freikarte vorhanden.."));
+		}
     }
-
+    
+    public static Result prisonRoll() {
+		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		prisonRollFlag = true;
+		
+		if (controller.redeemWithDice()) {
+			return ok(getMessage());
+		} else {
+			return ok(getMessage("Irgendwas ist gehörig schief gelaufen..."));
+		}
+		
+    }
 
 
     public static Result update() {
@@ -163,6 +227,7 @@ public class Application extends Controller {
             allPlayer.put(i, all[i]);
         }
         return allPlayer.toString();
+
     }
 
     /**
@@ -175,6 +240,8 @@ public class Application extends Controller {
             public void onReady(WebSocket.In<String> in, WebSocket.Out<String> out) {
                 new MonopolyObserver(controller, out);
             }
+
+
         };
     }
 }
