@@ -16,6 +16,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             '#buy': '/buy',
             '#prisonCard': '/prisonCard',
             '#prisonBuy': '/prisonBuy',
+            '#prisonRoll': '/prisonRoll',
             '#start': '/start/2',
             '#diceResult': '/diceResult',
             '#currentPlayer': '/currentPlayer'
@@ -117,7 +118,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
 
     $('#prisonRoll').on('click', function () {
         $.ajax({
-            url: options['#prisonRolly'],
+            url: options['#prisonRoll'],
             dataType: "html",
             success: updateMessage
         }).then(
