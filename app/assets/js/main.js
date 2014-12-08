@@ -52,12 +52,8 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             'REDEEM_WITH_CARD': '#prison',
             'REDEEM_WITH_DICE': '#prison'
         };
-        //$('#endTurn').attr('disabled', false)
-        //$('#endTurn').attr('disabled', true)
 
-
-        var bilder = new Array();
-
+        var pictures = new Array();
 
         var updatePlayerAjax = function () {
             $.ajax({
@@ -67,10 +63,9 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             });
         };
 
-
-        var updateMessageAjax = function () {
+        var update = function(data) {
             $.ajax({
-                url: options['#rollDice'],
+                url: options[data],
                 dataType: "html",
                 success: updateMessage
             }).then(
@@ -80,7 +75,10 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
                     updateButtons();
                 }
             );
+        };
 
+        var updateMessageAjax = function () {
+            update('#rollDice');
         };
 
         var updateNameOfPlayer = function () {
@@ -114,78 +112,28 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
 
         /****************** TODO in eine Funktion *************************/
         $('#endTurn').on('click', function () {
-            $.ajax({
-                url: options['#endTurn'],
-                dataType: "html",
-                success: updateMessage
-            }).then(
-                function () {
-                    updateNameOfPlayer();
-                    updateButtons();
-                }
-            );
+            update('#endTurn');
         });
 
 
         $('#buy').on('click', function () {
-            $.ajax({
-                url: options['#buy'],
-                dataType: "html",
-                success: updateMessage
-            }).then(
-                updateButtons()
-            );
+            update('#buy');
         });
 
         $('#prisonCard').on('click', function () {
-            $.ajax({
-                url: options['#prisonCard'],
-                dataType: "html",
-                success: updateMessage
-            }).then(
-                function() {
-                    updateButtons();
-                }
-            )
+            update('#prisonCard');
         });
 
         $('#prisonBuy').on('click', function () {
-            $.ajax({
-                url: options['#prisonBuy'],
-                dataType: "html",
-                success: updateMessage
-            }).then(
-                function() {
-                    updateButtons();
-                    updatePlayerAjax();
-                }
-            )
+            update('#prisonBuy');
         });
 
         $('#prisonRoll').on('click', function () {
-            $.ajax({
-                url: options['#prisonRoll'],
-                dataType: "html",
-                success: updateMessage
-            }).then(
-                function() {
-                    updateButtons();
-                    updatePlayerAjax();
-                }
-            )
+            update('#prisonRoll');
         });
 
         $('#prisonBuy').on('click', function () {
-            $.ajax({
-                url: options['#prisonBuy'],
-                dataType: "html",
-                success: updateMessage
-            }).then(
-                function() {
-                    updateButtons();
-                    updatePlayerAjax();
-                }
-            )
+            update('#prisonBuy');
         });
 
         /****************************************************************/
@@ -197,8 +145,8 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
                 dataType: "html",
                 success: function (data) {
                     var obj = $.parseJSON(data);
-                    $('#dice1').attr('src', bilder[obj.dice1].src);
-                    $('#dice2').attr('src', bilder[obj.dice2].src);
+                    $('#dice1').attr('src', pictures[obj.dice1].src);
+                    $('#dice2').attr('src', pictures[obj.dice2].src);
                 }
             });
         };
@@ -255,8 +203,8 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             // Test
             var i;
             for (i = 1; i <= 6; i++) {
-                bilder[i] = new Image();
-                bilder[i].src = dice[i];
+                pictures[i] = new Image();
+                pictures[i].src = dice[i];
             }
         }
 
