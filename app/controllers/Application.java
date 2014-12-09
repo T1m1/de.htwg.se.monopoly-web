@@ -7,11 +7,9 @@ import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
-
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
@@ -19,6 +17,7 @@ import play.mvc.WebSocket;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class Application extends Controller {
 
@@ -66,8 +65,7 @@ public class Application extends Controller {
         }
 
         // start the game and begin with first player
-		//controller.startNewGame(Arrays.asList(names));
-        controller.startNewGame(names.length, names);
+		controller.startNewGame(Arrays.asList(names));
 
 		return index();
 	}
