@@ -4,8 +4,15 @@
 var monopoly = angular.module("monopoly", []);
 
 monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
-    $scope.player;
+    $scope.players;
     $scope.lala;
+    $scope.pic = {  0:"/assets/images/boger.jpg",
+                    1:"/assets/images/maechtel.jpg",
+                    2:"/assets/images/schoppa.jpg",
+                    3:"/assets/images/eck.jpg",
+                    4:"/assets/images/neuschwander.jpg",
+                    5:"/assets/images/bittel.jpg"
+    };
 
     angular.element(document).ready(function () {
 
@@ -55,13 +62,6 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
 
         var pictures = new Array();
 
-        var updatePlayerAjax = function () {
-            $.ajax({
-                url: options['#update'],
-                dataType: "html",
-                success: updateAllPlayer
-            });
-        };
 
         var update = function(data) {
             $.ajax({
