@@ -76,7 +76,7 @@ public class Application extends Controller {
                     group1: spieler 1
                     group2: Boger
              */
-            Pattern datePatt = Pattern.compile("\"\\w+\":\"(\\w+)+\",\"\\w+\":\"(\\w+)+\"");
+            Pattern datePatt = Pattern.compile("\\w+:\"(\\w+)+\",\\w+:\"(\\w+)+\"");
             Matcher m = datePatt.matcher(json.toString());
 
             Map<String, PlayerIcon> player = new HashMap<String, PlayerIcon>();

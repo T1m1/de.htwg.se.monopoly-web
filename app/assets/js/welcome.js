@@ -1,7 +1,7 @@
 var startPage = angular.module('monopolyStartPage', [ 'ngAnimate' ]);
 
 startPage.controller('Controller',
-		function($scope, $timeout) {
+		function($scope, $timeout, $http) {
 
 			$scope.showAddButton = true;
 			$scope.showMinusButton = false;
@@ -16,7 +16,7 @@ startPage.controller('Controller',
 				figure : ""
 			} ];
 
-			$scope.icons = [ 'Maechtel', 'Neuschwander', 'Schoppa', 'Garloff',
+			$scope.icons = [ 'maechtel', 'Neuschwander', 'Schoppa', 'Garloff',
 					'Bittel', 'Eck' ];
 
 			$scope.addPlayer = function() {

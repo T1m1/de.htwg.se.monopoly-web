@@ -11,72 +11,76 @@
     text-align: center;
 }
 
-.monopoly-header {
-    margin-top: 15%
-}
+ .monopoly-header {
+ 	margin-top: 15%
+ }
 
-.monopoly-sub-header {
-    margin-top: 3%
-}
+ .monopoly-sub-header {
+ 	margin-top: 3%
+ }
 
-.monopoly-submit-box {
-    margin: 0 auto;
-    text-align: left;
-}
+ .monopoly-submit-box {
+ 	margin: 0 auto;
+ 	text-align: left;
+ }
 
-.btn-monopoly-start {
-    text-align: left;
-    margin-top: 3%
-}
+ .btn-monopoly-start {
+ 	text-align: left;
+ 	margin-top: 3%
+ }
 
-.monopoly_remove {
-    padding: 10px;
-}
+ .monopoly_remove {
+ 	padding: 10px;
+ }
 
-.monopoly-alert {
-    margin-top: 10%
-}
+ .monopoly-alert {
+ 	margin-top: 10%
+ }
 
-.mon-fade.ng-hide-add,
-.mon-fade.ng-hide-remove {
-    -webkit-transition:0.3s linear all;
-    transition:0.3s linear all;
+ .monopoly-icon {
+ 	width: 25px;
+ }
 
-    /* remember to add this */
-    display:block!important;
-    opacity:1;
-}
-.mon-fade.ng-hide {
-    opacity:0;
-}
 
-.mon-fade-repeat.ng-enter,
-.mon-fade-repeat.ng-leave,
-.mon-fade-repeat.ng-move {
-    -webkit-transition: 0.2s linear all;
-    transition: 0.2s linear all;
-    position:relative;
-}
+/* fade animations */
+ .mon-fade.ng-hide-add,
+ .mon-fade.ng-hide-remove {
+ 	-webkit-transition:0.3s linear all;
+ 	transition:0.3s linear all;
+ 	display:block!important;
+ 	opacity:1;
+ }
+ .mon-fade.ng-hide {
+ 	opacity:0;
+ }
 
-.mon-fade-repeat.ng-enter {
-    opacity:0;
-}
-.mon-fade-repeat.ng-enter.ng-enter-active {
-    left:0;
-    opacity:1;
-}
+ .mon-fade-repeat.ng-enter, 
+ .mon-fade-repeat.ng-leave, 
+ .mon-fade-repeat.ng-move {
+ 	-webkit-transition: 0.2s linear all;
+ 	transition: 0.2s linear all;
+ 	position:relative;
+ }
 
-.mon-fade-repeat.ng-leave {
-    left:0;
-    opacity:1;
-}
-.mon-fade-repeat.ng-leave.ng-leave-active {
-    opacity:0;
-}
+ .mon-fade-repeat.ng-enter {
+ 	opacity:0;
+ }
+ .mon-fade-repeat.ng-enter.ng-enter-active {
+ 	left:0;
+ 	opacity:1;
+ }
 
-.mon-fade-repeat.ng-move {
-    opacity:0.5;
-}
-.mon-fade-repeat.ng-move.ng-move-active {
-    opacity:1;
-}
+ .mon-fade-repeat.ng-leave {
+ 	left:0;
+ 	opacity:1;
+ }
+ .mon-fade-repeat.ng-leave.ng-leave-active {
+ 	opacity:0;
+ }
+
+ .mon-fade-repeat.ng-move {
+ 	opacity:0.5;
+ }
+ .mon-fade-repeat.ng-move.ng-move-active {
+ 	opacity:1;
+ }
