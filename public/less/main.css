@@ -35,7 +35,7 @@
     border-right: solid 12px Orange;
 }
 
-.col-md-1 {
+.field {
     min-height: 75px !important;
     font-size: 10px !important;
     text-align: center;
@@ -54,6 +54,11 @@
     position: absolute;
     left: 0;
     top: 0;
+}
+
+.pic {
+    width: 30px;
+    height:30px;
 }
 
 .playerpicture img {

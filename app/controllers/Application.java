@@ -5,12 +5,15 @@ import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.util.MonopolyUtils;
+import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
 
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -19,18 +22,21 @@ import play.mvc.WebSocket;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class Application extends Controller {
 
-	static IController controller;
-	private static boolean prisonRollFlag;
+    static IController controller;
+    private static boolean prisonRollFlag;
 
-    public static Result welcome() {
+    public static Result welcometest() {
         InputStream welcomePage;
         try {
             welcomePage = FileUtils.openInputStream(new File(
-                    "app/views/welcome.html"));
+                    "app/views/welcome.scala.html"));
         } catch (IOException e) {
             return ok("FAILURE");
         }
@@ -41,10 +47,61 @@ public class Application extends Controller {
 
         return ok(welcomePage).as("text/html");
     }
-    
-    public static Result index() {
 
+    public static Result welcome() {
+        return ok( views.html.welcome.render("Test"));
+    }
+
+    public static Result index() {
         return ok(views.html.index.render("Index", controller));
+    }
+
+    public static Result start() {
+        JsonNode json = request().body().asJson();
+
+        if (json == null) {
+            return badRequest("Expecting Json data");
+        } else {
+            /*
+                RegEx patter:
+                                "\w+":"(\w+)+","\w+":"(\w+)+"
+
+                 for JSON:
+
+                {   "name":"spieler1",
+                    "icon":"boger"
+                }
+
+                groups:
+                    group1: spieler 1
+                    group2: Boger
+             */
+            Pattern datePatt = Pattern.compile("\"\\w+\":\"(\\w+)+\",\"\\w+\":\"(\\w+)+\"");
+            Matcher m = datePatt.matcher(json.toString());
+
+            Map<String, PlayerIcon> player = new HashMap<String, PlayerIcon>();
+            while (m.find()) {
+                player.put(m.group(1), PlayerIcon.valueOf(m.group(2)));
+            }
+
+            if(!startNewGame(player)) {
+                return badRequest("Some error during initialization!");
+            }
+
+            return redirect(routes.Application.index());
+        }
+    }
+
+    private static boolean startNewGame(Map<String, PlayerIcon> player) {
+        controller = Monopoly.getInstance().getController();
+        // start logger
+        Monopoly.getInstance().getTextUI().printInitialisation();
+
+        // start the game and begin with first player
+        controller.startNewGame(player);
+
+        return true;
+
     }
 
     public static Result startGame(Integer number) {
@@ -70,50 +127,52 @@ public class Application extends Controller {
         // start the game and begin with first player
 		controller.startNewGame(Arrays.asList(names));
 
-		return index();
-	}
 
-	public static Result rollDice() {
-		
-		if (prisonRollFlag) {
-			return handlePrisonRoll();
-		}
-		
+        return index();
+    }
+
+    public static Result rollDice() {
+
+        if (prisonRollFlag) {
+            return handlePrisonRoll();
+        }
+
         if (controller.getCurrentPlayer().isInPrison()) {
             return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
         }
-        
-		if (!controller.isCorrectOption(UserAction.START_TURN)) {
-			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
-		}
-		
+
+        if (!controller.isCorrectOption(UserAction.START_TURN)) {
+            // wrong input, option not available
+            return ok(getMessage("Aktion nicht verfügbar"));
+        }
+
         controller.startTurn();
         return ok(getMessage());
     }
+
     public static Result getDiceResult() {
-        JSONObject dice  = new JSONObject();
-        dice.put("dice1", ""+controller.getDice().getDice1());
-        dice.put("dice2", ""+controller.getDice().getDice2());
+        JSONObject dice = new JSONObject();
+        dice.put("dice1", "" + controller.getDice().getDice1());
+        dice.put("dice2", "" + controller.getDice().getDice2());
         return ok(dice.toJSONString());
     }
 
     private static Result handlePrisonRoll() {
-		if (!controller.isCorrectOption(UserAction.ROLL_DICE)) {
-			prisonRollFlag = false;
-			return ok(getMessage("Aktion nicht verfügbar"));
-		}
-		
-		controller.rollDiceToRedeem();
-		
-		if (!controller.getCurrentPlayer().isInPrison()) {
-			prisonRollFlag = false;
-		}
-		
-		return ok(getMessage());
-	}
+        if (!controller.isCorrectOption(UserAction.ROLL_DICE)) {
+            prisonRollFlag = false;
+            return ok(getMessage("Aktion nicht verfügbar"));
+        }
 
-	private static String getMessage() {
+        controller.rollDiceToRedeem();
+
+        if (!controller.getCurrentPlayer().isInPrison()) {
+            prisonRollFlag = false;
+        }
+
+        return ok(getMessage());
+    }
+
+    private static String getMessage() {
         JSONObject message = new JSONObject();
         message.put("msg", controller.getMessage());
         return message.toJSONString();
@@ -132,25 +191,25 @@ public class Application extends Controller {
     }
 
     public static Result endTurn() {
-		if (!controller.isCorrectOption(UserAction.END_TURN)) {
-			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
-		}
+        if (!controller.isCorrectOption(UserAction.END_TURN)) {
+            // wrong input, option not available
+            return ok(getMessage("Aktion nicht verfügbar"));
+        }
         controller.endTurn();
         return ok(getMessage());
     }
 
     public static Result buy() {
-		if (!controller.isCorrectOption(UserAction.BUY_STREET)) {
-			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
-		}
-		
+        if (!controller.isCorrectOption(UserAction.BUY_STREET)) {
+            // wrong input, option not available
+            return ok(getMessage("Aktion nicht verfügbar"));
+        }
+
         if (controller.buyStreet()) {
-        	return ok(getMessage());
+            return ok(getMessage());
         }
         return ok(getMessage("Kein Geld um die Straße zu kaufen!!!"));
-        
+
     }
 
     public static Result endGame() {
@@ -162,43 +221,43 @@ public class Application extends Controller {
     }
 
     public static Result prisonBuy() {
-		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
-			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
-		}
-		
-		if (controller.redeemWithMoney()){
-			return ok(getMessage("Freigekauft"));
-		} else {
-			return ok(getMessage("Nicht genug Geld!"));
-		}
+        if (!controller.isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
+            // wrong input, option not available
+            return ok(getMessage("Aktion nicht verfügbar"));
+        }
+
+        if (controller.redeemWithMoney()) {
+            return ok(getMessage("Freigekauft"));
+        } else {
+            return ok(getMessage("Nicht genug Geld!"));
+        }
     }
 
     public static Result prisonCard() {
-		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
-			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
-		}
-		if (controller.redeemWithCard()) {
-			return ok(getMessage("Freikarte eingesetzt"));
-		} else {
-			return ok(getMessage("Keine Freikarte vorhanden.."));
-		}
+        if (!controller.isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
+            // wrong input, option not available
+            return ok(getMessage("Aktion nicht verfügbar"));
+        }
+        if (controller.redeemWithCard()) {
+            return ok(getMessage("Freikarte eingesetzt"));
+        } else {
+            return ok(getMessage("Keine Freikarte vorhanden.."));
+        }
     }
-    
+
     public static Result prisonRoll() {
-		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
-			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
-		}
-		prisonRollFlag = true;
-		
-		if (controller.redeemWithDice()) {
-			return ok(getMessage());
-		} else {
-			return ok(getMessage("Irgendwas ist gehörig schief gelaufen..."));
-		}
-		
+        if (!controller.isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
+            // wrong input, option not available
+            return ok(getMessage("Aktion nicht verfügbar"));
+        }
+        prisonRollFlag = true;
+
+        if (controller.redeemWithDice()) {
+            return ok(getMessage());
+        } else {
+            return ok(getMessage("Irgendwas ist gehörig schief gelaufen..."));
+        }
+
     }
 
 
@@ -209,7 +268,7 @@ public class Application extends Controller {
     public static Result getPossibleOptions() {
         JSONObject options = new JSONObject();
         int i = 0;
-        for(UserAction action : controller.getOptions()) {
+        for (UserAction action : controller.getOptions()) {
             options.put("" + i, "" + action);
             i++;
         }
@@ -226,6 +285,7 @@ public class Application extends Controller {
             all[i].put("name", currentPlayer.getName());
             all[i].put("pos", currentPlayer.getPosition());
             all[i].put("budget", currentPlayer.getBudget());
+            all[i].put("pic", currentPlayer.getFigure());
             JSONArray ownershipt = new JSONArray();
             for (IFieldObject field : currentPlayer.getOwnership()) {
                 ownershipt.add(field.toString());

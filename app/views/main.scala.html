@@ -1,50 +1,54 @@
 @(title: String)(content: Html)
 
 <!DOCTYPE html>
-<html ng-app="monopoly">
+<html >
 <head>
-<title>@title</title>
+    <title>@title</title>
 
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
-<!----- ANGULARRRRR -->
-<script
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.js"></script>
-
-<link rel='shortcut icon' type='image/png'
-	href='@routes.Assets.at("images/favicon.png")'>
-<!-- Latest compiled and minified CSS -->
+    <!----- ANGULARRRRR -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-animate.js"></script>
 
 
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-
-<!-- Optional theme -->
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
-
-<!-- Latest compiled and minified JavaScript -->
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href='@routes.Assets.at("less/main.css")' />
+    <link rel='shortcut icon' type='image/png'
+          href='@routes.Assets.at("images/favicon.png")'>
+    <!-- Latest compiled and minified CSS -->
 
 
-<style>
-body {
-	margin-top: 50px;
-}
-</style>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href='@routes.Assets.at("less/main.css")'/>
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href='@routes.Assets.at("less/welcome.css")'/>
+
+
+    <style>
+        body {
+            margin-top: 50px;
+        }
+    </style>
 </head>
-<body >
+<body>
 
-	<div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container-fluid"></div>
-		</div>
-	</div>
-	<div class="container">@content</div>
-	<script type='text/javascript' src='@routes.Assets.at("js/main.js")'></script>
-	<script type='text/javascript' src='@routes.Assets.at("js/fb.js")'></script>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid"></div>
+    </div>
+</div>
+<div class="container">@content</div>
+<script type='text/javascript' src='@routes.Assets.at("js/main.js")'></script>
+<script type='text/javascript' src='@routes.Assets.at("js/fb.js")'></script>
+<script type='text/javascript' src='@routes.Assets.at("js/welcome.js")'></script>
 </body>
 </html>
