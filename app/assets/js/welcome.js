@@ -1,6 +1,6 @@
 var startPage = angular.module('monopolyStartPage', ['ngAnimate']);
 
-startPage.controller('Controller',  function($scope, $timeout, $http) {
+startPage.controller('Controller',  function($scope, $timeout, $http, $location ) {
 
 	$scope.showAddButton = true;
 	$scope.showMinusButton = false;
@@ -54,26 +54,7 @@ startPage.controller('Controller',  function($scope, $timeout, $http) {
             figure : "ECK"
         } ];
 
-      /*  $http({
-            method: 'POST',
-            url: '/start',
-            data: exampleCall,
-            headers: {'Content-Type': 'application/json'}
-        });
-*/
-        /*
-            $http.post('/start', exampleCall).
-
-            success(function(data) {
-                console.log(data);
-            }).
-            error(function(data) {
-                console.log(data);
-            });
-        */
-
-        $http.get('/go').
-            success(function(data) {
+            $http.post('/start', exampleCall).success(function(data) {
                 console.log(data);
             }).
             error(function(data) {

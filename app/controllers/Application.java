@@ -84,7 +84,7 @@ public class Application extends Controller {
                 return badRequest("Some error during initialization!");
             }
 
-            return index();
+            return redirect(routes.Application.index());
         }
     }
 
