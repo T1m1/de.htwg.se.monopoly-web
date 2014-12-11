@@ -1,17 +1,17 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import de.htwg.monopoly.controller.IController;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
 import de.htwg.monopoly.util.MonopolyUtils;
-import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
+
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
