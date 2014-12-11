@@ -1,10 +1,59 @@
 /**
  * Created by Timi on 29.10.2014.
  */
- var monopoly = angular.module("monopoly", []);
+var monopoly = angular.module("monopoly", []);
 
- monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
+monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
     $scope.player;
+    $scope.lala;
+
+    angular.element(document).ready(function () {
+
+        var options = {
+            '#update': '/update',
+            '#rollDice': '/rollDice',
+            '#endTurn': '/endTurn',
+            '#buy': '/buy',
+            '#prisonCard': '/prisonCard',
+            '#prisonBuy': '/prisonBuy',
+            '#prisonRoll': '/prisonRoll',
+            '#start': '/start/2',
+            '#diceResult': '/diceResult',
+            '#currentPlayer': '/currentPlayer',
+            '#end': '/end',
+            '#possibleOptions': '/possibleOptions'
+        };
+
+        var player = {
+            '0': '#player-boger',
+            '1': '#player-maechtel',
+            '2': '#player-schoppa',
+            '3': '#player-eck',
+            '4': '#player-neuschwander',
+            '5': '#player-bittel'
+        };
+
+        var dice = {
+            '1': '/assets/images/1.gif',
+            '2': '/assets/images/2.gif',
+            '3': '/assets/images/3.gif',
+            '4': '/assets/images/4.gif',
+            '5': '/assets/images/5.gif',
+            '6': '/assets/images/6.gif'
+        };
+
+        var actions = {
+            'END_TURN': '#endTurn',
+            'ROLL_DICE': '#rollDice',
+            'BUY_STREET': '#buy ',
+            'START_TURN': '#rollDice',
+            'SURRENDER': '#end',
+            'REDEEM_WITH_MONEY': '#prison',
+            'REDEEM_WITH_CARD': '#prison',
+            'REDEEM_WITH_DICE': '#prison'
+        };
+
+        var pictures = new Array();
 
     var options = {
         '#update': '/update',
@@ -14,91 +63,70 @@
         '#prisonCard': '/prisonCard',
         '#prisonBuy': '/prisonBuy',
         '#start': '/start/2',
-        '#currentPlayer': '/currentPlayer'
+        '#currentPlayer': '/currentPlayer',
+        '#prisonRoll' : '/prisonRoll'
     };
 
-    var player = {
-        '0': '#player-boger',
-        '1': '#player-maechtel',
-        '2': '#player-schoppa',
-        '3': '#player-eck',
-        '4': '#player-neuschwander',
-        '5': '#player-bittel'
-    };
+        var updateNameOfPlayer = function () {
+            $.ajax({
+                url: options['#currentPlayer'],
+                dataType: "html",
+                success: updateName
+            })
+        };
 
-    var updatePlayerAjax = function () {
-        $.ajax({
-            url: options['#update'],
-            dataType: "html",
-            success: updateAllPlayer
+        $('#rollDice').on('click', updateMessageAjax);
+
+        var updateButtons = function () {
+            $.ajax({
+                url: options['#possibleOptions'],
+                dataType: "html",
+                success: updateAllButtons
+            })
+        };
+
+        var updateAllButtons = function (data) {
+            var obj = $.parseJSON(data);
+            $.each(actions, function (key, value) {
+                $(value).attr('disabled', true);
+            });
+
+            $.each(obj, function (key, value) {
+                $(actions[value]).attr('disabled', false);
+            });
+        };
+
+        /****************** TODO in eine Funktion *************************/
+        $('#endTurn').on('click', function () {
+            update('#endTurn');
         });
-    };
 
 
-    var updateMessageAjax = function () {
-        $.ajax({
-            url: options['#rollDice'],
-            dataType: "html",
-            success: updateMessage
-        }).then(
-        updateNameOfPlayer
-        );
-
-    };
-
-    var updateNameOfPlayer = function () {
-        $.ajax({
-            url: options['#currentPlayer'],
-            dataType: "html",
-            success: updateName
-        })
-    }
-
-    $('#update').on('click', updatePlayerAjax);
-
-    $('#rollDice').on('click', updateMessageAjax);
-
-    /****************** TODO in eine Funktion *************************/
-    $('#endTurn').on('click', function () {
-        $.ajax({
-            url: options['#endTurn'],
-            dataType: "html",
-            success: updateMessage
-        }).then(
-        updateNameOfPlayer
-        );
-    });
-
-
-    $('#buy').on('click', function () {
-        $.ajax({
-            url: options['#buy'],
-            dataType: "html",
-            success: updateMessage
+        $('#buy').on('click', function () {
+            update('#buy');
         });
-    });
 
-    $('#prisonCard').on('click', function () {
-        $.ajax({
-            url: options['#prisonCard'],
-            dataType: "html",
-            success: updateMessage
+        $('#prisonCard').on('click', function () {
+            update('#prisonCard');
         });
-    });
 
-    $('#prisonBuy').on('click', function () {
-        $.ajax({
-            url: options['#prisonBuy'],
-            dataType: "html",
-            success: updateMessage
-        }).then(
-        updatePlayerAjax()
-        )
-    });
+        $('#prisonBuy').on('click', function () {
+            update('#prisonBuy');
+        });
+
+        $('#prisonRoll').on('click', function () {
+            update('#prisonRoll');
+        });
+
+        $('#prisonBuy').on('click', function () {
+            update('#prisonBuy');
+        });
+
+        /****************************************************************/
 
     $('#prisonRoll').on('click', function () {
         $.ajax({
-            url: options['#prisonRolly'],
+            url: options['#prisonRoll'],
             dataType: "html",
             success: updateMessage
         }).then(
@@ -106,97 +134,119 @@
         )
     });
 
-    /****************************************************************/
-
-
-    var updateMessage = function (data) {
-        var obj = $.parseJSON(data);
-        $("#msg").html(obj.msg);
-    };
-
-
-    var updateAllPlayer = function (data) {
-        var obj = $.parseJSON(data);
-        $.each(obj, function (i, item) {
-            updateSinglePlayer(i, item);
-            updatePlayerPosition(i, item.pos);
-        })
-    };
-
-    var updateName = function (data) {
-        var obj = $.parseJSON(data);
-        $('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
-    };
-
-    var updateSinglePlayer = function (index, player) {
-        $('#namePlayer_' + index).html(player.name);
-        $('#budgetPlayer_' + index).html(player.budget);
-        $('#ownershipPlayer_' + index).html(player.ownership);
-        $('#positionPlayer_' + index).html(player.pos);
-    };
-
-    /************************ player position ********************************/
-
-
-    function initPlayerPicture() {
-        $.each(player, function (key, value) {
-            $(value).hide()
-        });
-        $.ajax({
-            url: options['#update'],
-            dataType: "html",
-            success: function (data) {
-                var playeinfor = JSON.parse(data);
-                $scope.players = playeinfor
-                $scope.$apply();
-                for (i = 0; i < Object.keys(playeinfor).length; i++) {
-                    $(player[i]).show();
+        var updateDice = function () {
+            $.ajax({
+                url: options['#diceResult'],
+                dataType: "html",
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    $('#dice1').attr('src', pictures[obj.dice1].src);
+                    $('#dice2').attr('src', pictures[obj.dice2].src);
                 }
+            });
+        };
 
-            }
-        });
-    }
-
-    initPlayerPicture();
-
-    var updatePlayerPosition = function (i, position) {
-        var currentPlayer = $(player[i]);
-        currentPlayer.remove()
-        $('.pos-' + position).append(currentPlayer);
-    }
-
-
-    /************************ websockets ********************************/
-    connect();
-
-    function connect() {
-        var socket = new WebSocket("ws://localhost:9000/socket");
-
-        message('Socket Status: ' + socket.readyState + ' (ready)');
-
-        socket.onopen = function () {
-            message('Socket Status: ' + socket.readyState + ' (open)');
+        var updateMessage = function (data) {
+            var obj = $.parseJSON(data);
+            $("#msg").html(obj.msg);
         };
 
 
-        socket.onmessage = function (msg) {
-            var msgnew = msg.data;
-            $scope.players = JSON.parse(msgnew);
+        var updateAllPlayer = function (data) {
+            var obj = $.parseJSON(data);
+            $.each(obj, function (i, item) {
+                updateSinglePlayer(i, item);
+                updatePlayerPosition(i, item.pos);
+            })
+        };
+
+        var updateName = function (data) {
+            var obj = $.parseJSON(data);
+            $scope.lala = obj;
             $scope.$apply();
-            console.log(msgnew);
-            updateAllPlayer(msgnew);
+            //$('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
         };
 
-        socket.onclose = function () {
-            message('Socket Status: ' + socket.readyState + ' (Closed)');
+        var updateSinglePlayer = function (index, player) {
+            $('#namePlayer_' + index).html(player.name);
+            $('#budgetPlayer_' + index).html(player.budget);
+            $('#ownershipPlayer_' + index).html(player.ownership);
+            $('#positionPlayer_' + index).html(player.pos);
         };
 
+        /************************ player position ********************************/
 
-        function message(msg) {
-            $('#wsLog').append('<p>' + msg + '</p>');
+
+        function init() {
+            $.each(player, function (key, value) {
+                $(value).hide()
+            });
+            $.ajax({
+                url: options['#update'],
+                dataType: "html",
+                success: function (data) {
+                    var playeinfor = JSON.parse(data);
+                    $scope.players = playeinfor;
+                    $scope.$apply();
+                    for (i = 0; i < Object.keys(playeinfor).length; i++) {
+                        $(player[i]).show();
+                    }
+
+                }
+            });
+
+            // Test
+            var i;
+            for (i = 1; i <= 6; i++) {
+                pictures[i] = new Image();
+                pictures[i].src = dice[i];
+            }
         }
 
 
-    }//End connect
+        var updatePlayerPosition = function (i, position) {
+            var currentPlayer = $(player[i]);
+            currentPlayer.remove()
+            $('.pos-' + position).append(currentPlayer);
+        }
+
+
+        /************************ websockets ********************************/
+        connect();
+
+        function connect() {
+            var host = location.origin.replace(/^http/, 'ws');
+            host = host + "/socket";
+            var socket = new WebSocket(host);
+
+            message('Socket Status: ' + socket.readyState + ' (ready)');
+
+            socket.onopen = function () {
+                message('Socket Status: ' + socket.readyState + ' (open)');
+            };
+
+
+            socket.onmessage = function (msg) {
+                var msgnew = msg.data;
+                $scope.players = JSON.parse(msgnew);
+                $scope.$apply();
+                console.log(msgnew);
+                updateAllPlayer(msgnew);
+            };
+
+            socket.onclose = function () {
+                message('Socket Status: ' + socket.readyState + ' (Closed)');
+            };
+
+
+            function message(msg) {
+                $('#wsLog').append('<p>' + msg + '</p>');
+            }
+
+
+        }//End connect
+
+        init();
+    });
 
 } ]);

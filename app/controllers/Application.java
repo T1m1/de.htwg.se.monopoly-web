@@ -4,7 +4,6 @@ import de.htwg.monopoly.controller.IController;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
-import de.htwg.monopoly.util.IMonopolyUtil;
 import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
@@ -80,7 +79,7 @@ public class Application extends Controller {
 		}
 		
         if (controller.getCurrentPlayer().isInPrison()) {
-            return ok("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus...");
+            return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
         }
         
 		if (!controller.isCorrectOption(UserAction.START_TURN)) {
@@ -91,11 +90,17 @@ public class Application extends Controller {
         controller.startTurn();
         return ok(getMessage());
     }
+    public static Result getDiceResult() {
+        JSONObject dice  = new JSONObject();
+        dice.put("dice1", ""+controller.getDice().getDice1());
+        dice.put("dice2", ""+controller.getDice().getDice2());
+        return ok(dice.toJSONString());
+    }
 
     private static Result handlePrisonRoll() {
 		if (!controller.isCorrectOption(UserAction.ROLL_DICE)) {
 			prisonRollFlag = false;
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage("Aktion nicht verfügbar!"));
 		}
 		
 		controller.rollDiceToRedeem();
@@ -198,6 +203,16 @@ public class Application extends Controller {
 
     public static Result update() {
         return ok(getPlayersAsJSON());
+    }
+
+    public static Result getPossibleOptions() {
+        JSONObject options = new JSONObject();
+        int i = 0;
+        for(UserAction action : controller.getOptions()) {
+            options.put("" + i, "" + action);
+            i++;
+        }
+        return ok(options.toJSONString());
     }
 
     public static String getPlayersAsJSON() {

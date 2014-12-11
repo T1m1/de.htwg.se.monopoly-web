@@ -15,13 +15,13 @@
     </div>
     <!-- Single button -->
     <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <button type="button" id="prison" class="btn btn-default dropdown-toggle prison" data-toggle="dropdown">
             Gefängnis Aktionen.. <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li><a id="prisonCard" class="prisonCard">"Du kommst aus dem Gefängnis frei" - Karte einlösen</a></li>
             <li><a id="prisonBuy" class="prisonBuy">Mit Geld freikaufen - 200</a></li>
-            <li><a href="prisonRoll">Mit 3 Versuchen ein Pasch würfeln um aus dem Gefängnis frei zu kommen.</a></li>
+            <li><a id="prisonRoll" class="prisonRoll">Mit 3 Versuchen ein Pasch würfeln um aus dem Gefängnis frei zu kommen.</a></li>
         </ul>
     </div>
     <!-- Single button -->
@@ -31,9 +31,9 @@
         </button>
         <ul class="dropdown-menu" role="menu">
             <li><a href="#">Aufgeben</a></li>
-            <li><a href="#">Boger gewinnt</a></li>
+            <li><a href="#boger">Boger gewinnt</a></li>
             <li class="divider"></li>
-            <li><a href="#">Spiel beenden</a></li>
+            <li><a href="#end">Spiel beenden</a></li>
         </ul>
     </div>
 
@@ -101,7 +101,8 @@
                 <p>@if(playfields.isDefinedAt(26)) {@playfields.apply(26)}</p>
             </div>
             <div class="col-md-2"></div>
-            <div class="col-md-2 whois"></div>
+            <div class="col-md-1 dice"><img id="dice1" src="/assets/images/6.gif"></div>
+            <div class="col-md-1 dice"><img id="dice2"src="/assets/images/6.gif"></div>
             <div class="col-md-2"></div>
             <div class="col-md-1 pos-9">
                 <p>@if(playfields.isDefinedAt(9)) {@playfields.apply(9)}</p>
@@ -189,28 +190,30 @@
         }
     </div>
 
-	<div ng-controller="MainCtrl">
-		<div class="infoboard">
-			<h2>Game stats</h2>
-			<table class="table table-striped">
-				<tr>
-					<th>Spielername</th>
-					<th>Budget</th>
-					<th>Besitz</th>
-					<th>Position</th>
-					<th>Gefaengniskarte</th>
-				</tr>
-				<tr ng-repeat="player in players">
-					<td>{{player.name}}</td>
-					<td>{{player.budget}}</td>
-					<td>{{player.ownership}}</td>
-					<td>{{player.pos}}</td>
-					<td>{{player.prisoncard}}</td>
-				</tr>
-			</table>
-		</div>
-	</div>
+    <div ng-controller="MainCtrl">
+        <div class="infoboard">
+            <h2>{{lala.name}}: Sie sind dran!</h2>
+            <table class="table table-striped">
+                <tr>
+                    <th>Spielername</th>
+                    <th>Budget</th>
+                    <th>Besitz</th>
+                    <th>Position</th>
+                    <th>Gefaengniskarte</th>
+                </tr>
+                <tr ng-repeat="player in players">
+                    <td>{{player.name}}</td>
+                    <td>{{player.budget}}</td>
+                    <td>{{player.ownership}}</td>
+                    <td>{{player.pos}}</td>
+                    <td>{{player.prisoncard}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
-
-
+<div class="row span12 text-center">
+    <div class="fb-like" data-href="https://www.facebook.com/htwgmonopoly" data-layout="button_count" data-action="like"
+         data-show-faces="true" data-share="false"></div>
+</div>
 }
