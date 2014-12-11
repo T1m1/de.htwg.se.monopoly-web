@@ -19,6 +19,7 @@ import play.mvc.WebSocket;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class Application extends Controller {
 
@@ -48,6 +49,7 @@ public class Application extends Controller {
 
     public static Result startGame(Integer number) {
 
+    	// is a singleton, needs to be handled
         controller = Monopoly.getInstance().getController();
 
         // start logger
@@ -66,8 +68,7 @@ public class Application extends Controller {
         }
 
         // start the game and begin with first player
-		//controller.startNewGame(Arrays.asList(names));
-        controller.startNewGame(names.length, names);
+		controller.startNewGame(Arrays.asList(names));
 
 		return index();
 	}

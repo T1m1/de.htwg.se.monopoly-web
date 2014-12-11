@@ -18,3 +18,4 @@ dist
 /project/*-shim.sbt
 activator-sbt-echo-play-shim.sbt
 htwgMonopoly.log
+/init.bat

@@ -21,12 +21,12 @@ public class MonopolyObserver implements IObserver {
 
     public void update(GameStatus gameStatus) {
         out.write(Application.getPlayersAsJSON());
-        System.out.println("WUI was updated");
+        //System.out.println("WUI was updated");
     }
 
 	public void update(int i) {
 		out.write(Application.getPlayersAsJSON());
-		System.out.println("WUI was updated");
+		//System.out.println("WUI was updated");
 	}
 
 }
