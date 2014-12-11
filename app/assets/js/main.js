@@ -55,17 +55,33 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
 
         var pictures = new Array();
 
-    var options = {
-        '#update': '/update',
-        '#rollDice': '/rollDice',
-        '#endTurn': '/endTurn',
-        '#buy': '/buy',
-        '#prisonCard': '/prisonCard',
-        '#prisonBuy': '/prisonBuy',
-        '#start': '/start/2',
-        '#currentPlayer': '/currentPlayer',
-        '#prisonRoll' : '/prisonRoll'
-    };
+        var pictures = new Array();
+
+        var updatePlayerAjax = function () {
+            $.ajax({
+                url: options['#update'],
+                dataType: "html",
+                success: updateAllPlayer
+            });
+        };
+
+        var update = function(data) {
+            $.ajax({
+                url: options[data],
+                dataType: "html",
+                success: updateMessage
+            }).then(
+                function () {
+                    updateNameOfPlayer();
+                    updateDice();
+                    updateButtons();
+                }
+            );
+        };
+
+        var updateMessageAjax = function () {
+            update('#rollDice');
+        };
 
         var updateNameOfPlayer = function () {
             $.ajax({
@@ -123,16 +139,6 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
         });
 
         /****************************************************************/
-
-    $('#prisonRoll').on('click', function () {
-        $.ajax({
-            url: options['#prisonRoll'],
-            dataType: "html",
-            success: updateMessage
-        }).then(
-        updatePlayerAjax()
-        )
-    });
 
         var updateDice = function () {
             $.ajax({

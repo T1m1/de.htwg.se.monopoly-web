@@ -100,7 +100,7 @@ public class Application extends Controller {
     private static Result handlePrisonRoll() {
 		if (!controller.isCorrectOption(UserAction.ROLL_DICE)) {
 			prisonRollFlag = false;
-			return ok(getMessage("Aktion nicht verfügbar!"));
+			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 		
 		controller.rollDiceToRedeem();
