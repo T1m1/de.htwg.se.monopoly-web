@@ -9,12 +9,9 @@ import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,13 +20,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Application extends Controller {
 
@@ -64,7 +55,7 @@ public class Application extends Controller {
 					PlayerIcon.valueOf(playerIcon.toUpperCase()));
 		}
 
-		if ((players == null) && (!startNewGame(players))) {
+		if ((players == null) || (!startNewGame(players))) {
 			return badRequest("Some error during initialization!");
 		}
 
@@ -275,7 +266,7 @@ public class Application extends Controller {
 	}
 
 	/**
-	 * ************************ websockets  ********************************
+	 * ************************ websockets ********************************
 	 */
 
 	public static WebSocket<String> connectWebSocket() {

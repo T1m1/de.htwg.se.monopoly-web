@@ -1,15 +1,15 @@
 /*
  * Base structure
  */
-.bodyblue{
-    background-color: #36a7ea;
-    height: 888px;
-}
+ html, body {
+ 	height: 100%;
+ 	background-color: #36a7ea;
+ }
 
-.bodywhite {
-    color: #FFFFFF;
-    text-align: center;
-}
+ body {
+ 	color: #FFFFFF;
+ 	text-align: center;
+ }
 
  .monopoly-header {
  	margin-top: 15%
