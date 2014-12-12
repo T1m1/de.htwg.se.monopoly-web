@@ -36,22 +36,6 @@ public class Application extends Controller {
 	static IController controller;
 	private static boolean prisonRollFlag;
 
-	public static Result welcometest() {
-		InputStream welcomePage;
-		try {
-			welcomePage = FileUtils.openInputStream(new File(
-					"app/views/welcome.scala.html"));
-		} catch (IOException e) {
-			return ok("FAILURE");
-		}
-
-		if (welcomePage == null) {
-			return ok("NO PAGE FOUND");
-		}
-
-		return ok(welcomePage).as("text/html");
-	}
-
 	public static Result welcome() {
 		return ok(views.html.welcome.render("Test"));
 	}
@@ -61,7 +45,6 @@ public class Application extends Controller {
 	}
 
 	public static Result start() {
-
 		ArrayNode json = (ArrayNode) request().body().asJson();
 
 		if (json == null) {
@@ -81,7 +64,7 @@ public class Application extends Controller {
 					PlayerIcon.valueOf(playerIcon.toUpperCase()));
 		}
 
-		if (!startNewGame(players)) {
+		if ((players == null) && (!startNewGame(players))) {
 			return badRequest("Some error during initialization!");
 		}
 
@@ -93,22 +76,17 @@ public class Application extends Controller {
 		controller = Monopoly.getInstance().getController();
 		// start logger
 		Monopoly.getInstance().getTextUI().printInitialisation();
-
 		// start the game and begin with first player
 		controller.startNewGame(player);
-
 		return true;
 
 	}
 
 	public static Result startGame(Integer number) {
-
 		// is a singleton, needs to be handled
 		controller = Monopoly.getInstance().getController();
-
 		// start logger
 		Monopoly.getInstance().getTextUI().printInitialisation();
-
 		// check if a correct number of players is committed
 		if (!MonopolyUtils.verifyPlayerNumber(number)) {
 			return ok(views.html.index.render(
@@ -297,8 +275,7 @@ public class Application extends Controller {
 	}
 
 	/**
-	 * ******************************** websockets
-	 * ***************************************
+	 * ************************ websockets  ********************************
 	 */
 
 	public static WebSocket<String> connectWebSocket() {

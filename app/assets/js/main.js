@@ -169,7 +169,6 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
             var obj = $.parseJSON(data);
             $scope.lala = obj;
             $scope.$apply();
-            //$('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
         };
 
         var updateSinglePlayer = function (index, player) {
@@ -200,7 +199,7 @@ monopoly.controller('MainCtrl', [ '$scope', function ($scope, $http) {
                 }
             });
 
-            // Test
+            /* init dice pictures */
             var i;
             for (i = 1; i <= 6; i++) {
                 pictures[i] = new Image();
