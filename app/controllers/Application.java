@@ -85,7 +85,7 @@ public class Application extends Controller {
 			return badRequest("Some error during initialization!");
 		}
 
-		return redirect(routes.Application.index());
+		return ok(views.html.index.render("Index", controller));
 
 	}
 
