@@ -15,8 +15,10 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 		5 : "/assets/images/bittel.jpg"
 	};
 
+	
 	angular.element(document).ready(function() {
 
+		// function for checking the right answer
 		$scope.checkAnswer = function(select) {
 
 			$.ajax({
@@ -181,12 +183,20 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 			// $('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
 		};
 
+
 		var updateSinglePlayer = function(index, player) {
 			$('#namePlayer_' + index).html(player.name);
 			$('#budgetPlayer_' + index).html(player.budget);
 			$('#ownershipPlayer_' + index).html(player.ownership);
 			$('#positionPlayer_' + index).html(player.pos);
 		};
+
+        var updateName = function (data) {
+            var obj = $.parseJSON(data);
+            $scope.lala = obj;
+            $scope.$apply();
+        };
+
 
 		/**
 		 * ********************** player position
@@ -225,8 +235,17 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 			$('.pos-' + position).append(currentPlayer);
 		}
 
+
 		/** ********************** websockets ******************************* */
 		connect();
+            /* init dice pictures */
+            var i;
+            for (i = 1; i <= 6; i++) {
+                pictures[i] = new Image();
+                pictures[i].src = dice[i];
+            }
+        }
+
 
 		function connect() {
 			var host = location.origin.replace(/^http/, 'ws');

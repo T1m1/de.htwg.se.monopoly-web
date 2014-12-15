@@ -9,12 +9,9 @@ import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,34 +20,12 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Application extends Controller {
 
 	static IController controller;
 	private static boolean prisonRollFlag;
-
-	public static Result welcometest() {
-		InputStream welcomePage;
-		try {
-			welcomePage = FileUtils.openInputStream(new File(
-					"app/views/welcome.scala.html"));
-		} catch (IOException e) {
-			return ok("FAILURE");
-		}
-
-		if (welcomePage == null) {
-			return ok("NO PAGE FOUND");
-		}
-
-		return ok(welcomePage).as("text/html");
-	}
 
 	public static Result welcome() {
 		return ok(views.html.welcome.render("Test"));
@@ -61,7 +36,6 @@ public class Application extends Controller {
 	}
 
 	public static Result start() {
-
 		ArrayNode json = (ArrayNode) request().body().asJson();
 
 		if (json == null) {
@@ -81,11 +55,11 @@ public class Application extends Controller {
 					PlayerIcon.valueOf(playerIcon.toUpperCase()));
 		}
 
-		if (!startNewGame(players)) {
+		if ((players == null) || (!startNewGame(players))) {
 			return badRequest("Some error during initialization!");
 		}
 
-		return redirect(routes.Application.index());
+		return ok(views.html.index.render("Index", controller));
 
 	}
 
@@ -93,22 +67,17 @@ public class Application extends Controller {
 		controller = Monopoly.getInstance().getController();
 		// start logger
 		Monopoly.getInstance().getTextUI().printInitialisation();
-
 		// start the game and begin with first player
 		controller.startNewGame(player);
-
 		return true;
 
 	}
 
 	public static Result startGame(Integer number) {
-
 		// is a singleton, needs to be handled
 		controller = Monopoly.getInstance().getController();
-
 		// start logger
 		Monopoly.getInstance().getTextUI().printInitialisation();
-
 		// check if a correct number of players is committed
 		if (!MonopolyUtils.verifyPlayerNumber(number)) {
 			return ok(views.html.index.render(
@@ -309,8 +278,7 @@ public class Application extends Controller {
 	}
 
 	/**
-	 * ******************************** websockets
-	 * ***************************************
+	 * ************************ websockets ********************************
 	 */
 
 	public static WebSocket<String> connectWebSocket() {
