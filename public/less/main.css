@@ -76,3 +76,7 @@ p {
     font-size: 35px !important;
     text-align: center;
 }
+
+.prisonQuestion {
+	padding: 3px 20px;
+}

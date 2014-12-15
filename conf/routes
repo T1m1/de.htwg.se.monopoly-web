@@ -17,6 +17,7 @@ GET     /currentPlayer              controllers.Application.getCurrentPlayerAsJS
 GET     /diceResult                 controllers.Application.getDiceResult()
 GET		/prisonRoll					controllers.Application.prisonRoll()
 GET		/possibleOptions			controllers.Application.getPossibleOptions()
+GET 	/answer/:bo					controllers.Application.checkAnswer(bo:Boolean)
 
 
 GET     /socket                     controllers.Application.connectWebSocket()

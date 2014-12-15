@@ -259,6 +259,18 @@ public class Application extends Controller {
 	public static Result update() {
 		return ok(getPlayersAsJSON());
 	}
+	
+	public static Result checkAnswer(Boolean bo ) {
+		
+		if (bo) {
+			System.out.println(bo);
+		} else {
+			System.out.println(bo);
+		}
+		
+		return ok(getMessage("Du hast folgende Antwort gewählt: " + bo.toString()));
+		
+	}
 
 	public static Result getPossibleOptions() {
 		JSONObject options = new JSONObject();
