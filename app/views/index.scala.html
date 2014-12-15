@@ -2,235 +2,237 @@
 
 @main("Welcome to Monopoly") {
 
-    <link rel="stylesheet" href='@routes.Assets.at("less/main.css")'/>
+<link rel="stylesheet" href='@routes.Assets.at("less/main.css")' />
 
 <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container-fluid"></div>
-    </div>
+	<div class="navbar-inner">
+		<div class="container-fluid"></div>
+	</div>
 </div>
 
 <div ng-app="monopoly">
+	<div ng-controller="MainCtrl">
 
-	<div class="btn-group btn-group-justified">
-		<div class="btn-group ">
-			<button type="button" id="rollDice"
-				class="btn btn-default btn-success dice">Würfeln</button>
-		</div>
-		<div class="btn-group">
-			<button type="button" id="endTurn" class="btn btn-default endTurn">Zug
-				beenden</button>
-		</div>
-		<div class="btn-group">
-			<button type="button" id="buy" class="btn btn-default buy">kaufen</button>
-		</div>
-		<!-- Single button -->
-		<div class="btn-group">
-			<button type="button" id="prison"
-				class="btn btn-default dropdown-toggle prison"
-				data-toggle="dropdown">
-				Gefängnis Aktionen.. <span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><a id="prisonCard" class="prisonCard">"Du kommst aus
-						dem Gefängnis frei" - Karte einlösen</a></li>
-				<li><a id="prisonBuy" class="prisonBuy">Mit Geld freikaufen
-						- 200</a></li>
-				<li><a id="prisonRoll" class="prisonRoll">Mit 3 Versuchen
-						ein Pasch würfeln um aus dem Gefängnis frei zu kommen.</a></li>
-				<li><a class="prisonQuestion" data-toggle="modal"
-					data-target="#myModal">Testatfrage beantorten um frei zu
-						kommen.</a></li>
-			</ul>
-		</div>
-
-
-
-		<!-- Single button -->
-		<div class="btn-group">
-			<button type="button" class="btn btn-default dropdown-toggle"
-				data-toggle="dropdown">
-				weitere Aktionen.. <span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><a href="#">Aufgeben</a></li>
-				<li><a href="#boger">Boger gewinnt</a></li>
-				<li class="divider"></li>
-				<li><a href="#end">Spiel beenden</a></li>
-			</ul>
-		</div>
-
-
-	</div>
-
-	<div class="well">
-		<h1></h1>
-
-		<div id="msg">@controller.getMessage()</div>
-	</div>
-	<div class="game">
-		<div class="playfield">
-			@defining(controller.getField.getPlayfield()) { playfields =>
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-0">
-					<div class="playerpicture" id="player-neuschwander">
-						<img src="/assets/images/Neuschwander.png">
-					</div>
-					<div class="playerpicture" id="player-eck">
-						<img src="/assets/images/eck.png">
-					</div>
-					<div class="playerpicture" id="player-boger">
-						<img src="/assets/images/boger.png">
-					</div>
-					<div class="playerpicture" id="player-bittel">
-						<img src="/assets/images/bittel.png">
-					</div>
-					<div class="playerpicture" id="player-maechtel">
-						<img src="/assets/images/maechtel.png">
-					</div>
-					<div class="playerpicture" id="player-schoppa">
-						<img src="/assets/images/Schoppa.png">
-					</div>
-					<p>@if(playfields.isDefinedAt(0)) {@playfields.apply(0)}</p>
-				</div>
-				<div class="col-md-1 field pos-1 brownStreet">
-					<p>@if(playfields.isDefinedAt(1)) {@playfields.apply(1)}</p>
-				</div>
-				<div class="col-md-1 field pos-2">
-					<p>@if(playfields.isDefinedAt(2)) {@playfields.apply(2)}</p>
-				</div>
-				<div class="col-md-1 field pos-3 brownStreet">
-					<p>@if(playfields.isDefinedAt(3)) {@playfields.apply(3)}</p>
-				</div>
-				<div class="col-md-1 field pos-4">
-					<p>@if(playfields.isDefinedAt(4)) {@playfields.apply(4)}</p>
-				</div>
-				<div class="col-md-1 field pos-5 skyBlueStreet">
-					<p>@if(playfields.isDefinedAt(5)) {@playfields.apply(5)}</p>
-				</div>
-				<div class="col-md-1  field pos-6 skyBlueStreet">
-					<p>@if(playfields.isDefinedAt(6)) {@playfields.apply(6)}</p>
-				</div>
-				<div class="col-md-1 field pos-7 ">
-					<p>@if(playfields.isDefinedAt(7)) {@playfields.apply(7)}</p>
-				</div>
-				<div class="col-md-2"></div>
-
-
+		<div class="btn-group btn-group-justified">
+			<div class="btn-group ">
+				<button type="button" id="rollDice"
+					class="btn btn-default btn-success dice">Würfeln</button>
 			</div>
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-27 blueStreet">
-					<p>@if(playfields.isDefinedAt(27)) {@playfields.apply(27)}</p>
-				</div>
-				<div class="col-md-6"></div>
-				<div class="col-md-1 field pos-8 magentaStreet">
-					<p>@if(playfields.isDefinedAt(8)) {@playfields.apply(8)}</p>
-				</div>
-				<div class="col-md-2"></div>
+			<div class="btn-group">
+				<button type="button" id="endTurn" class="btn btn-default endTurn">Zug
+					beenden</button>
+			</div>
+			<div class="btn-group">
+				<button type="button" id="buy" class="btn btn-default buy">kaufen</button>
+			</div>
+			<!-- Single button -->
+			<div class="btn-group">
+				<button type="button" id="prison"
+					class="btn btn-default dropdown-toggle prison"
+					data-toggle="dropdown">
+					Gefängnis Aktionen.. <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a id="prisonCard" class="prisonCard">"Du kommst aus
+							dem Gefängnis frei" - Karte einlösen</a></li>
+					<li><a id="prisonBuy" class="prisonBuy">Mit Geld
+							freikaufen - 200</a></li>
+					<li><a id="prisonRoll" class="prisonRoll">Mit 3 Versuchen
+							ein Pasch würfeln um aus dem Gefängnis frei zu kommen.</a></li>
+					<li ng-click="updateQuestion()"><a class="prisonQuestion">Testatfrage
+							beantorten um frei zu kommen.</a></li>
+				</ul>
 			</div>
 
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-26">
-					<p>@if(playfields.isDefinedAt(26)) {@playfields.apply(26)}</p>
-				</div>
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field dice">
-					<img id="dice1" src="/assets/images/6.gif">
-				</div>
-				<div class="col-md-1 field dice">
-					<img id="dice2" src="/assets/images/6.gif">
-				</div>
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-9">
-					<p>@if(playfields.isDefinedAt(9)) {@playfields.apply(9)}</p>
-				</div>
-				<div class="col-md-2"></div>
-			</div>
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-25 blueStreet">
-					<p>@if(playfields.isDefinedAt(25)) {@playfields.apply(25)}</p>
-				</div>
-				<div class="col-md-6"></div>
-				<div class="col-md-1 field pos-10 magentaStreet">
-					<p>@if(playfields.isDefinedAt(10)){@playfields.apply(10)}</p>
-				</div>
-				<div class="col-md-2"></div>
+
+
+			<!-- Single button -->
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle"
+					data-toggle="dropdown">
+					weitere Aktionen.. <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">Aufgeben</a></li>
+					<li><a href="#boger">Boger gewinnt</a></li>
+					<li class="divider"></li>
+					<li><a href="#end">Spiel beenden</a></li>
+				</ul>
 			</div>
 
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-24 greenStreet">
-					<p>@if(playfields.isDefinedAt(24)) {@playfields.apply(24)}</p>
-				</div>
-				<div class="col-md-2 "></div>
-				<div class="col-md-2 logo">Monopoly</div>
-				<div class="col-md-2 "></div>
-				<div class="col-md-1 field pos-11 orangeStreet">
-					<p>@if(playfields.isDefinedAt(11)) {@playfields.apply(11)}</p>
-				</div>
-				<div class="col-md-2"></div>
-			</div>
 
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-23">
-					<p>@if(playfields.isDefinedAt(23)) {@playfields.apply(23)}</p>
-				</div>
-				<div class="col-md-6"></div>
-				<div class="col-md-1 field pos-12">
-					<p>@if(playfields.isDefinedAt(12)) {@playfields.apply(12)}</p>
-				</div>
-				<div class="col-md-2"></div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-22 greenStreet">
-					<p>@if(playfields.isDefinedAt(22)) {@playfields.apply(22)}</p>
-				</div>
-				<div class="col-md-6"></div>
-				<div class="col-md-1 field pos-13 orangeStreet">
-					<p>@if(playfields.isDefinedAt(13)) {@playfields.apply(13)}</p>
-				</div>
-				<div class="col-md-2"></div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-1 field pos-21">
-					<p>@if(playfields.isDefinedAt(21)) {@playfields.apply(21)}</p>
-				</div>
-				<div class="col-md-1 field pos-20 yellowStreet">
-					<p>@if(playfields.isDefinedAt(20)) {@playfields.apply(20)}</p>
-				</div>
-				<div class="col-md-1 field pos-19">
-					<p>@if(playfields.isDefinedAt(19)) {@playfields.apply(19)}</p>
-				</div>
-				<div class="col-md-1 field pos-18 yellowStreet">
-					<p>@if(playfields.isDefinedAt(18)) {@playfields.apply(18)}</p>
-				</div>
-				<div class="col-md-1 field pos-17 redStreet">
-					<p>@if(playfields.isDefinedAt(17)) {@playfields.apply(17)}</p>
-				</div>
-				<div class="col-md-1 field pos-16">
-					<p>@if(playfields.isDefinedAt(16)) {@playfields.apply(16)}</p>
-				</div>
-				<div class="col-md-1 field pos-15 redStreet">
-					<p>@if(playfields.isDefinedAt(15)) {@playfields.apply(15)}</p>
-				</div>
-				<div class="col-md-1 field pos-14">
-					<p>@if(playfields.isDefinedAt(14)) {@playfields.apply(14)}</p>
-				</div>
-				<div class="col-md-2"></div>
-			</div>
-			}
 		</div>
 
-		<div ng-controller="MainCtrl">
+		<div class="well message-panel">
+			<h1></h1>
+
+			<div id="msg">@controller.getMessage()</div>
+		</div>
+		<div class="game">
+			<div class="playfield">
+				@defining(controller.getField.getPlayfield()) { playfields =>
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-0">
+						<div class="playerpicture" id="player-neuschwander">
+							<img src="/assets/images/Neuschwander.png">
+						</div>
+						<div class="playerpicture" id="player-eck">
+							<img src="/assets/images/eck.png">
+						</div>
+						<div class="playerpicture" id="player-boger">
+							<img src="/assets/images/boger.png">
+						</div>
+						<div class="playerpicture" id="player-bittel">
+							<img src="/assets/images/bittel.png">
+						</div>
+						<div class="playerpicture" id="player-maechtel">
+							<img src="/assets/images/maechtel.png">
+						</div>
+						<div class="playerpicture" id="player-schoppa">
+							<img src="/assets/images/Schoppa.png">
+						</div>
+						<p>@if(playfields.isDefinedAt(0)) {@playfields.apply(0)}</p>
+					</div>
+					<div class="col-xs-1 field pos-1 brownStreet">
+						<p>@if(playfields.isDefinedAt(1)) {@playfields.apply(1)}</p>
+					</div>
+					<div class="col-xs-1 field pos-2">
+						<p>@if(playfields.isDefinedAt(2)) {@playfields.apply(2)}</p>
+					</div>
+					<div class="col-xs-1 field pos-3 brownStreet">
+						<p>@if(playfields.isDefinedAt(3)) {@playfields.apply(3)}</p>
+					</div>
+					<div class="col-xs-1 field pos-4">
+						<p>@if(playfields.isDefinedAt(4)) {@playfields.apply(4)}</p>
+					</div>
+					<div class="col-xs-1 field pos-5 skyBlueStreet">
+						<p>@if(playfields.isDefinedAt(5)) {@playfields.apply(5)}</p>
+					</div>
+					<div class="col-xs-1  field pos-6 skyBlueStreet">
+						<p>@if(playfields.isDefinedAt(6)) {@playfields.apply(6)}</p>
+					</div>
+					<div class="col-xs-1 field pos-7 ">
+						<p>@if(playfields.isDefinedAt(7)) {@playfields.apply(7)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+
+
+				</div>
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-27 blueStreet">
+						<p>@if(playfields.isDefinedAt(27)) {@playfields.apply(27)}</p>
+					</div>
+					<div class="col-xs-6"></div>
+					<div class="col-xs-1 field pos-8 magentaStreet">
+						<p>@if(playfields.isDefinedAt(8)) {@playfields.apply(8)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-26">
+						<p>@if(playfields.isDefinedAt(26)) {@playfields.apply(26)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1  dice">
+						<img id="dice1" class="img-responsive img-rounded"
+							src="/assets/images/6.gif">
+					</div>
+					<div class="col-xs-1  dice">
+						<img id="dice2" class="img-responsive img-rounded"
+							src="/assets/images/6.gif">
+					</div>
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-9">
+						<p>@if(playfields.isDefinedAt(9)) {@playfields.apply(9)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-25 blueStreet">
+						<p>@if(playfields.isDefinedAt(25)) {@playfields.apply(25)}</p>
+					</div>
+					<div class="col-xs-6"></div>
+					<div class="col-xs-1 field pos-10 magentaStreet">
+						<p>@if(playfields.isDefinedAt(10)){@playfields.apply(10)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-24 greenStreet">
+						<p>@if(playfields.isDefinedAt(24)) {@playfields.apply(24)}</p>
+					</div>
+					<div class="col-xs-1 "></div>
+					<div class="col-xs-4 logo">Monopoly</div>
+					<div class="col-xs-1 "></div>
+					<div class="col-xs-1 field pos-11 orangeStreet">
+						<p>@if(playfields.isDefinedAt(11)) {@playfields.apply(11)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-23">
+						<p>@if(playfields.isDefinedAt(23)) {@playfields.apply(23)}</p>
+					</div>
+					<div class="col-xs-6"></div>
+					<div class="col-xs-1 field pos-12">
+						<p>@if(playfields.isDefinedAt(12)) {@playfields.apply(12)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-22 greenStreet">
+						<p>@if(playfields.isDefinedAt(22)) {@playfields.apply(22)}</p>
+					</div>
+					<div class="col-xs-6"></div>
+					<div class="col-xs-1 field pos-13 orangeStreet">
+						<p>@if(playfields.isDefinedAt(13)) {@playfields.apply(13)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-1 field pos-21">
+						<p>@if(playfields.isDefinedAt(21)) {@playfields.apply(21)}</p>
+					</div>
+					<div class="col-xs-1 field pos-20 yellowStreet">
+						<p>@if(playfields.isDefinedAt(20)) {@playfields.apply(20)}</p>
+					</div>
+					<div class="col-xs-1 field pos-19">
+						<p>@if(playfields.isDefinedAt(19)) {@playfields.apply(19)}</p>
+					</div>
+					<div class="col-xs-1 field pos-18 yellowStreet">
+						<p>@if(playfields.isDefinedAt(18)) {@playfields.apply(18)}</p>
+					</div>
+					<div class="col-xs-1 field pos-17 redStreet">
+						<p>@if(playfields.isDefinedAt(17)) {@playfields.apply(17)}</p>
+					</div>
+					<div class="col-xs-1 field pos-16">
+						<p>@if(playfields.isDefinedAt(16)) {@playfields.apply(16)}</p>
+					</div>
+					<div class="col-xs-1 field pos-15 redStreet">
+						<p>@if(playfields.isDefinedAt(15)) {@playfields.apply(15)}</p>
+					</div>
+					<div class="col-xs-1 field pos-14">
+						<p>@if(playfields.isDefinedAt(14)) {@playfields.apply(14)}</p>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+				}
+			</div>
+
+
 
 			<!-- PrisonQuestion Modal -->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -239,9 +241,9 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h4 class="modal-title" id="myModalLabel">Beantworte
-								folgende Frage</h4>
+								folgende Frage:</h4>
 						</div>
-						<div class="modal-body">...</div>
+						<div class="modal-body">{{prisonQuestion.question}}</div>
 						<div class="modal-footer">
 							<button ng-click="checkAnswer(true)" type="button"
 								class="btn btn-success" data-dismiss="modal">Ja</button>

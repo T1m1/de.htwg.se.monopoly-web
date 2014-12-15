@@ -2,6 +2,10 @@
  body {
             margin-top: 50px;
   }
+  
+.message-panel {
+	height: 100px;
+}
 
 .redStreet {
     border-bottom: solid 12px Red

@@ -3,9 +3,10 @@
  */
 var monopoly = angular.module("monopoly", []);
 
-monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
+monopoly.controller('MainCtrl', function($scope, $http) {
 	$scope.players;
 	$scope.lala;
+	$scope.prisonQuestion;
 	$scope.pic = {
 		0 : "/assets/images/boger.jpg",
 		1 : "/assets/images/maechtel.jpg",
@@ -15,7 +16,13 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 		5 : "/assets/images/bittel.jpg"
 	};
 
-	
+	$scope.updateQuestion = function() {
+		$http.get('/question').then(function(res) {
+			$scope.prisonQuestion = res.data;
+			$('#myModal').modal('show');
+		});
+	}
+
 	angular.element(document).ready(function() {
 
 		// function for checking the right answer
@@ -26,11 +33,8 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 				dataType : "html",
 				success : updateMessage
 			}).then(function() {
-				updateNameOfPlayer();
-				updateDice();
 				updateButtons();
 			});
-
 		}
 
 		var options = {
@@ -183,7 +187,6 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 			// $('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
 		};
 
-
 		var updateSinglePlayer = function(index, player) {
 			$('#namePlayer_' + index).html(player.name);
 			$('#budgetPlayer_' + index).html(player.budget);
@@ -191,12 +194,11 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 			$('#positionPlayer_' + index).html(player.pos);
 		};
 
-        var updateName = function (data) {
-            var obj = $.parseJSON(data);
-            $scope.lala = obj;
-            $scope.$apply();
-        };
-
+		var updateName = function(data) {
+			var obj = $.parseJSON(data);
+			$scope.lala = obj;
+			$scope.$apply();
+		};
 
 		/**
 		 * ********************** player position
@@ -233,19 +235,16 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 			var currentPlayer = $(player[i]);
 			currentPlayer.remove()
 			$('.pos-' + position).append(currentPlayer);
+			/* init dice pictures */
+			var i;
+			for (i = 1; i <= 6; i++) {
+				pictures[i] = new Image();
+				pictures[i].src = dice[i];
+			}
 		}
-
 
 		/** ********************** websockets ******************************* */
 		connect();
-            /* init dice pictures */
-            var i;
-            for (i = 1; i <= 6; i++) {
-                pictures[i] = new Image();
-                pictures[i].src = dice[i];
-            }
-        }
-
 
 		function connect() {
 			var host = location.origin.replace(/^http/, 'ws');
@@ -279,4 +278,4 @@ monopoly.controller('MainCtrl', [ '$scope', function($scope, $http) {
 		init();
 	});
 
-} ]);
+});

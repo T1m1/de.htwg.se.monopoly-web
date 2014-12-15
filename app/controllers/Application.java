@@ -225,20 +225,32 @@ public class Application extends Controller {
 
 	}
 
+	public static Result checkAnswer(Boolean answer) {
+		
+		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		if (controller.checkPlayerAnswer(answer)) {
+			return ok(getMessage("Korrekte Antwort. Sie sind frei gekommen"));
+		} else {
+			return ok(getMessage("Leider falsche Antwort, der nächste Spieler ist dran."));
+		}
+	
+	
+	}
+
+	public static Result getQuestion() {
+	
+		JSONObject message = new JSONObject();
+		message.put("question", controller.getPrisonQuestion());
+	
+		return ok(message.toJSONString());
+	
+	}
+
 	public static Result update() {
 		return ok(getPlayersAsJSON());
-	}
-	
-	public static Result checkAnswer(Boolean bo ) {
-		
-		if (bo) {
-			System.out.println(bo);
-		} else {
-			System.out.println(bo);
-		}
-		
-		return ok(getMessage("Du hast folgende Antwort gewählt: " + bo.toString()));
-		
 	}
 
 	public static Result getPossibleOptions() {
