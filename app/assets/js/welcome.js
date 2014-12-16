@@ -82,7 +82,7 @@ startPage.controller('Controller',
 				}
 
 				$http.post('/start', $scope.players).success(function(data) {
-					console.log(data);
+					//$('html').html(data);
 				}).error(function(data) {
 					console.log(data);
 				});
