@@ -3,7 +3,6 @@
 # ~~~~
 
 GET     /                           controllers.Application.welcome()
-GET		/start/:no					controllers.Application.startGame(no:Integer)
 POST	/start					    controllers.Application.start()
 GET		/end						controllers.Application.endGame()
 GET     /go                         controllers.Application.index()
@@ -17,6 +16,8 @@ GET     /currentPlayer              controllers.Application.getCurrentPlayerAsJS
 GET     /diceResult                 controllers.Application.getDiceResult()
 GET		/prisonRoll					controllers.Application.prisonRoll()
 GET		/possibleOptions			controllers.Application.getPossibleOptions()
+GET		/answer/:bo					controllers.Application.checkAnswer(bo:Boolean)
+GET		/question					controllers.Application.getQuestion()
 
 
 GET     /socket                     controllers.Application.connectWebSocket()

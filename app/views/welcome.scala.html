@@ -1,108 +1,105 @@
 @(message: String) @main("Welcome to Monopoly") {
-<link rel="stylesheet" href='@routes.Assets.at("less/welcome.css")'/>
+<link rel="stylesheet" href='@routes.Assets.at("less/welcome.css")' />
 <div ng-app="monopolyStartPage" class="bodyblue bodywhite">
 	<div ng-controller="Controller">
-		<div class="container">
 
-			<h1 class="text-center monopoly-header">HTWG Monopoly</h1>
-			<h4 class="monopoly-sub-header">Herzlich willkommen bla bla</h4>
-			<div class="row">
-				<!-- empty col on the far left-->
-				<div class="col-md-3"></div>
+		<h1 class="text-center monopoly-header">HTWG Monopoly</h1>
+		<h4 class="monopoly-sub-header">Herzlich willkommen bla bla</h4>
+		<div class="row">
+			<!-- empty col on the far left-->
+			<div class="col-xs-3"></div>
 
-				<!-- Middle col with forms -->
-				<div class="col-md-6">
-					<div class="monopoly-submit-box row-elements">
+			<!-- Middle col with forms -->
+			<div class="col-xs-6">
+				<div class="monopoly-submit-box row-elements">
 
-						<!--  First row with text -->
-						<div class="row">
-							<div class="col-md-1">
-								<p>&nbsp;</p>
-							</div>
-							<div class="col-md-8">
-								<p>Bitte Spielernamen eingeben</p>
-							</div>
-							<div class="col-md-3">
-								<p>Figur</p>
-							</div>
+					<!--  First row with text -->
+					<div class="row">
+						<div class="col-xs-1">
+							<p>&nbsp;</p>
+						</div>
+						<div class="col-xs-8">
+							<p>Bitte Spielernamen eingeben</p>
+						</div>
+						<div class="col-xs-3">
+							<p>Figur</p>
+						</div>
+					</div>
+
+					<!-- repeat forms -->
+					<div class="row mon-fade-repeat" ng-repeat="player in players"
+						ng-mouseenter="showMinusButton = true"
+						ng-mouseleave="showMinusButton = false">
+
+						<!-- col for the minus button -->
+						<div class="col-xs-1 ">
+							<span class="glyphicon glyphicon-remove monopoly_remove mon-fade"
+								aria-hidden="true" ng-click="rmPlayer($index)"
+								ng-show="showMinusButton"></span>
 						</div>
 
-						<!-- repeat forms -->
-						<div class="row mon-fade-repeat" ng-repeat="player in players"
-							ng-mouseenter="showMinusButton = true"
-							ng-mouseleave="showMinusButton = false">
-
-							<!-- col for the minus button -->
-							<div class="col-md-1 ">
-								<span
-									class="glyphicon glyphicon-remove monopoly_remove mon-fade"
-									aria-hidden="true" ng-click="rmPlayer($index)"
-									ng-show="showMinusButton"></span>
-							</div>
-
-							<!-- col for forms -->
-							<div class="col-md-8 player-form">
-								<form novalidate role="form">
-									<div class="form-group">
-										<input class="form-control"
-											placeholder="Enter Player {{$index + 1}}"
-											ng-model="player.name">
-									</div>
-								</form>
-							</div>
-
-							<!-- Dropdown col -->
-							<div class="col-md-3">
-								<div ng-hide="player.figure">
-									<select class="form-control" ng-model="select"
-										ng-options="icon for icon in icons"
-										ng-change="updatePlayerIcon($index,select)"
-										ng-disabled="player.figure">
-									</select>
+						<!-- col for forms -->
+						<div class="col-xs-8 player-form">
+							<form novalidate role="form">
+								<div class="form-group">
+									<input class="form-control"
+										placeholder="Enter Player {{$index + 1}}"
+										ng-model="player.name">
 								</div>
-								<img ng-src="assets/images/{{player.figure}}.jpg" class="monopoly-icon"
-									ng-show="player.figure" />
-							</div>
-
+							</form>
 						</div>
 
-						<!--  second last row with plus button -->
-						<div class="row">
-							<div class="col-md-1"></div>
-							<!-- col for forms -->
-							<div class="col-md-8">
-								<span class="glyphicon glyphicon-plus" aria-hidden="true"
-									ng-click="addPlayer()" ng-show="showAddButton"></span>
+						<!-- Dropdown col -->
+						<div class="col-xs-3">
+							<div ng-hide="player.figure">
+								<select class="form-control" ng-model="select"
+									ng-options="icon for icon in icons"
+									ng-change="updatePlayerIcon($index,select)"
+									ng-disabled="player.figure">
+								</select>
 							</div>
-							<div class="col-md-3"></div>
+							<img ng-src="assets/images/{{player.figure}}.jpg"
+								class="monopoly-icon" ng-show="player.figure" />
 						</div>
 
-						<!--  last row with submit button -->
-						<div class="row">
-							<div class="col-md-1"></div>
-							<div class="col-md-8">
-								<button type="button" class="btn btn-default btn-monopoly-start"
-									ng-click="startGame()">Start Game</button>
-							</div>
-							<div class="col-md-3"></div>
-						</div>
+					</div>
 
-						<div class="row">
-							<div class="col-md-1"></div>
-							<div class="col-md-8">
-								<div ng-show="showAlert"
-									class="alert alert-warning monopoly-alert mon-fade"
-									role="alert">{{alertMessage}}</div>
-							</div>
+					<!--  second last row with plus button -->
+					<div class="row">
+						<div class="col-xs-1"></div>
+						<!-- col for forms -->
+						<div class="col-xs-8">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true"
+								ng-click="addPlayer()" ng-show="showAddButton"></span>
+						</div>
+						<div class="col-xs-3"></div>
+					</div>
+
+					<!--  last row with submit button -->
+					<div class="row">
+						<div class="col-xs-1"></div>
+						<div class="col-xs-8">
+							<button type="button" class="btn btn-default btn-monopoly-start"
+								ng-click="startGame()">Start Game</button>
+						</div>
+						<div class="col-xs-3"></div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-1"></div>
+						<div class="col-xs-8">
+							<div ng-show="showAlert"
+								class="alert alert-warning monopoly-alert mon-fade" role="alert">{{alertMessage}}</div>
 						</div>
 					</div>
 				</div>
-
-				<!-- empty col on the far right-->
-				<div class="col-md-3"></div>
-
 			</div>
+
+			<!-- empty col on the far right-->
+			<div class="col-xs-3"></div>
+
 		</div>
 	</div>
 </div>
+
 }

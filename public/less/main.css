@@ -2,6 +2,10 @@
  body {
             margin-top: 50px;
   }
+  
+.message-panel {
+	height: 100px;
+}
 
 .redStreet {
     border-bottom: solid 12px Red
@@ -79,4 +83,8 @@ p {
     color: #ffffff;
     font-size: 35px !important;
     text-align: center;
+}
+
+.prisonQuestion {
+	padding: 3px 20px;
 }

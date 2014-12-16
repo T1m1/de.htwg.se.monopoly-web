@@ -1,6 +1,8 @@
 package controllers;
 
 import de.htwg.monopoly.controller.IController;
+import play.Logger;
+import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
@@ -24,14 +26,17 @@ import java.util.*;
 
 public class Application extends Controller {
 
+	private static final ALogger logger = Logger.of(Application.class);
 	static IController controller;
 	private static boolean prisonRollFlag;
 
 	public static Result welcome() {
-		return ok(views.html.welcome.render("Test"));
+		logger.debug("Welcome page loading");
+		return ok(views.html.welcome.render(""));
 	}
 
 	public static Result index() {
+		logger.debug("index site loading");
 		return ok(views.html.index.render("Index", controller));
 	}
 
@@ -39,6 +44,7 @@ public class Application extends Controller {
 		ArrayNode json = (ArrayNode) request().body().asJson();
 
 		if (json == null) {
+			logger.error("No Json data in start()");
 			return badRequest("Expecting Json data");
 		}
 
@@ -55,62 +61,52 @@ public class Application extends Controller {
 					PlayerIcon.valueOf(playerIcon.toUpperCase()));
 		}
 
-		if ((players == null) || (!startNewGame(players))) {
+		if (players.isEmpty()) {
+			logger.error("could not start game... players: " + players);
 			return badRequest("Some error during initialization!");
 		}
 
+		startNewGame(players);
+		
 		return ok(views.html.index.render("Index", controller));
 
 	}
 
 	private static boolean startNewGame(Map<String, PlayerIcon> player) {
 		controller = Monopoly.getInstance().getController();
-		// start logger
+		
+		// start tui
 		Monopoly.getInstance().getTextUI().printInitialisation();
+		
+		logger.info("New Game started");
 		// start the game and begin with first player
 		controller.startNewGame(player);
+		
 		return true;
 
 	}
 
-	public static Result startGame(Integer number) {
-		// is a singleton, needs to be handled
-		controller = Monopoly.getInstance().getController();
-		// start logger
-		Monopoly.getInstance().getTextUI().printInitialisation();
-		// check if a correct number of players is committed
-		if (!MonopolyUtils.verifyPlayerNumber(number)) {
-			return ok(views.html.index.render(
-					"Wrong number of players entered!", controller));
-		}
-
-		// fill it for now with predefined strings TODO: change implementation
-		String[] names = new String[number];
-		for (int i = 0; i < names.length; i++) {
-			names[i] = "Player " + i;
-		}
-
-		// start the game and begin with first player
-		controller.startNewGame(Arrays.asList(names));
-
-		return index();
-	}
 
 	public static Result rollDice() {
+		
+		logger.debug("User started turn: ");
 
 		if (prisonRollFlag) {
+			logger.debug("tries to roll dice to redeem");
 			return handlePrisonRoll();
 		}
 
 		if (controller.getCurrentPlayer().isInPrison()) {
+			logger.debug("is in prison and needs to select a option");
 			return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
 		}
 
 		if (!controller.isCorrectOption(UserAction.START_TURN)) {
-			// wrong input, option not available
+			logger.debug("user choose wrong action");
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
+		logger.debug("user starts his turn by throwing the dice and moving");
 		controller.startTurn();
 		return ok(getMessage());
 	}
@@ -186,14 +182,19 @@ public class Application extends Controller {
 	}
 
 	public static Result prisonBuy() {
+		logger.debug("tries to redeem with money");
 		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
+		logger.debug("redeem with money action available ");
+		
 		if (controller.redeemWithMoney()) {
+			logger.debug("enough money --> sets free");
 			return ok(getMessage("Freigekauft"));
 		} else {
+			logger.debug("not enough money --> still in prison");
 			return ok(getMessage("Nicht genug Geld!"));
 		}
 	}
@@ -222,6 +223,29 @@ public class Application extends Controller {
 		} else {
 			return ok(getMessage("Irgendwas ist gehörig schief gelaufen..."));
 		}
+
+	}
+
+	public static Result checkAnswer(Boolean answer) {
+
+		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		if (controller.checkPlayerAnswer(answer)) {
+			return ok(getMessage("Korrekte Antwort. Sie sind frei gekommen"));
+		} else {
+			return ok(getMessage("Leider falsche Antwort, der nächste Spieler ist dran."));
+		}
+
+	}
+
+	public static Result getQuestion() {
+
+		JSONObject message = new JSONObject();
+		message.put("question", controller.getPrisonQuestion());
+
+		return ok(message.toJSONString());
 
 	}
 
@@ -255,6 +279,13 @@ public class Application extends Controller {
 				ownershipt.add(field.toString());
 			}
 			all[i].put("ownership", " " + ownershipt);
+			
+			if (currentPlayer.hasPrisonFreeCard()){
+				all[i].put("prisoncard", "ja");
+			} else {
+				all[i].put("prisoncard", "nein");
+			}
+			
 		}
 
 		JSONObject allPlayer = new JSONObject();
