@@ -5,7 +5,7 @@ var monopoly = angular.module("monopoly", []);
 
 monopoly.controller('MainCtrl', function($scope, $http) {
 	$scope.players;
-	$scope.lala;
+	$scope.currentplayer;
 	$scope.prisonQuestion;
 	$scope.pic = {
 		0 : "/assets/images/boger.jpg",
@@ -21,21 +21,17 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 			$scope.prisonQuestion = res.data;
 			$('#myModal').modal('show');
 		});
-	}
+	};
+	
+	$scope.updateNameOfPlayer = function() {
+		$http.get('/currentPlayer').then(function(res) {
+			$scope.currentplayer = res.data;
+		});
+	};
 
 	angular.element(document).ready(function() {
 
-		// function for checking the right answer
-		$scope.checkAnswer = function(select) {
 
-			$.ajax({
-				url : ('/answer/' + select),
-				dataType : "html",
-				success : updateMessage
-			}).then(function() {
-				updateButtons();
-			});
-		}
 
 		var options = {
 			'#update' : '/update',
@@ -82,55 +78,19 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 		};
 
 		var pictures = new Array();
-
-		var update = function(data) {
-			$.ajax({
-				url : options[data],
-				dataType : "html",
-				success : updateMessage
-			}).then(function() {
-				updateNameOfPlayer();
-				updateDice();
-				updateButtons();
-			});
-		};
-
-		var updateMessageAjax = function() {
-			update('#rollDice');
-		};
-
-		var updateNameOfPlayer = function() {
-			$.ajax({
-				url : options['#currentPlayer'],
-				dataType : "html",
-				success : updateName
-			})
-		};
-
-		$('#rollDice').on('click', updateMessageAjax);
-
-		var updateButtons = function() {
-			$.ajax({
-				url : options['#possibleOptions'],
-				dataType : "html",
-				success : updateAllButtons
-			})
-		};
-
-		var updateAllButtons = function(data) {
-			var obj = $.parseJSON(data);
-			$.each(actions, function(key, value) {
-				$(value).attr('disabled', true);
-			});
-
-			$.each(obj, function(key, value) {
-				$(actions[value]).attr('disabled', false);
-			});
-		};
-
+		
 		/** **************** TODO in eine Funktion ************************ */
+
+		
+		$('#rollDice').on('click', function() {
+			update('#rollDice');
+		});
+		
 		$('#endTurn').on('click', function() {
-			update('#endTurn');
+			$http.get('/endTurn').then(function() {
+				updateButtons();
+				$scope.updateNameOfPlayer();
+			});
 		});
 
 		$('#buy').on('click', function() {
@@ -152,6 +112,37 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 		$('#prisonBuy').on('click', function() {
 			update('#prisonBuy');
 		});
+		
+		var update = function(data) {
+			$.ajax({
+				url : options[data],
+				dataType : "html",
+				success : updateMessage
+			}).then(function() {
+				updateDice();
+				updateButtons();
+			});
+		};
+
+		var updateButtons = function() {
+			$.ajax({
+				url : options['#possibleOptions'],
+				dataType : "html",
+				success : updateAllButtons
+			})
+		};
+
+		var updateAllButtons = function(data) {
+			var obj = $.parseJSON(data);
+			$.each(actions, function(key, value) {
+				$(value).attr('disabled', true);
+			});
+
+			$.each(obj, function(key, value) {
+				$(actions[value]).attr('disabled', false);
+			});
+		};
+
 
 		/** ************************************************************* */
 
@@ -167,6 +158,7 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 			});
 		};
 
+
 		var updateMessage = function(data) {
 			var obj = $.parseJSON(data);
 			$("#msg").html(obj.msg);
@@ -175,37 +167,37 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 		var updateAllPlayer = function(data) {
 			var obj = $.parseJSON(data);
 			$.each(obj, function(i, item) {
-				updateSinglePlayer(i, item);
 				updatePlayerPosition(i, item.pos);
 			})
 		};
+		
+		// function for checking the right answer
+		$scope.checkAnswer = function(select) {
 
-		var updateName = function(data) {
-			var obj = $.parseJSON(data);
-			$scope.lala = obj;
-			$scope.$apply();
-			// $('.whois').html("Spieler: "+ obj.name + " sie sind dran!");
-		};
+			$.ajax({
+				url : ('/answer/' + select),
+				dataType : "html",
+				success : updateMessage
+			}).then(function() {
+				updateButtons();
+			});
+		}
 
-		var updateSinglePlayer = function(index, player) {
-			$('#namePlayer_' + index).html(player.name);
-			$('#budgetPlayer_' + index).html(player.budget);
-			$('#ownershipPlayer_' + index).html(player.ownership);
-			$('#positionPlayer_' + index).html(player.pos);
-		};
-
-		var updateName = function(data) {
-			var obj = $.parseJSON(data);
-			$scope.lala = obj;
-			$scope.$apply();
-		};
-
-		/**
-		 * ********************** player position
-		 * *******************************
-		 */
-
+		var updatePlayerPosition = function(i, position) {
+			var currentPlayer = $(player[i]);
+			currentPlayer.remove()
+			$('.pos-' + position).append(currentPlayer);
+			/* init dice pictures */
+			var i;
+			for (i = 1; i <= 6; i++) {
+				pictures[i] = new Image();
+				pictures[i].src = dice[i];
+			}
+		}
+		
 		function init() {
+			
+			$scope.updateNameOfPlayer();
 			$.each(player, function(key, value) {
 				$(value).hide()
 			});
@@ -231,18 +223,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 			}
 		}
 
-		var updatePlayerPosition = function(i, position) {
-			var currentPlayer = $(player[i]);
-			currentPlayer.remove()
-			$('.pos-' + position).append(currentPlayer);
-			/* init dice pictures */
-			var i;
-			for (i = 1; i <= 6; i++) {
-				pictures[i] = new Image();
-				pictures[i].src = dice[i];
-			}
-		}
-
 		/** ********************** websockets ******************************* */
 		connect();
 
@@ -261,7 +241,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 				var msgnew = msg.data;
 				$scope.players = JSON.parse(msgnew);
 				$scope.$apply();
-				console.log(msgnew);
 				updateAllPlayer(msgnew);
 			};
 
@@ -275,6 +254,15 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 		}// End connect
 
+		
+		/**
+		 * ********************** player position
+		 * *******************************
+		 */
+
+
+		
+		// initialize
 		init();
 	});
 

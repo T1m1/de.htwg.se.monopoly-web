@@ -14,8 +14,8 @@
  .blur {
  	-webkit-filter:blur(3px);
  	
- 	transition:2.5s ease-in-out all;
- 	transform:  scale(0) 
+ 	transition:1s ease-in-out all;
+
  	
  	}
 

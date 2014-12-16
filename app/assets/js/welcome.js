@@ -93,7 +93,7 @@ startPage.controller('Controller', function($scope, $timeout, $http) {
 			
 			$timeout(function() {
 				location.href = "http://localhost:9000/go";
-			}, 3000);
+			}, 1600);
 
 		});
 

@@ -3,7 +3,6 @@
 # ~~~~
 
 GET     /                           controllers.Application.welcome()
-GET		/start/:no					controllers.Application.startGame(no:Integer)
 POST	/start					    controllers.Application.start()
 GET		/end						controllers.Application.endGame()
 GET     /go                         controllers.Application.index()
