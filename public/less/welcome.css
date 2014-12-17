@@ -31,11 +31,17 @@
 
  .btn-monopoly-start {
  	text-align: left;
- 	margin-top: 3%
+ 	margin-top: 10%
  }
 
  .monopoly_remove {
  	padding: 10px;
+ 	cursor: pointer;
+ }
+ 
+ .monopoly-add {
+ 	padding: 5px;
+ 	cursor: pointer;
  }
 
  .monopoly-alert {
@@ -44,6 +50,24 @@
 
  .monopoly-icon {
  	width: 25px;
+ }
+ 
+ .local-game-content{
+ 
+ }
+ 
+ .game-list {
+ 	background-color:#FFFFFF;
+ 	text-align: left;
+ 	color:#000000;
+ 	border-radius: 10px;
+ 	border: 1px solid;
+ 	margin: 10px;
+ 	padding: 5px;
+ }
+ 
+ .game-instances {
+ 	padding: 5px
  }
 
 
