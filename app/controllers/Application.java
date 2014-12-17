@@ -6,9 +6,6 @@ import play.Logger;
 import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
-import de.htwg.monopoly.game.Monopoly;
-import de.htwg.monopoly.util.IMonopolyUtil;
-import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
@@ -21,6 +18,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 
@@ -36,7 +34,6 @@ public class Application extends Controller {
 	private static boolean prisonRollFlag;
 
 
-
 	public static Result welcome() {
 		logger.debug("Welcome page loading");
 		return ok(views.html.welcome.render(""));
@@ -45,6 +42,16 @@ public class Application extends Controller {
 	public static Result index() {
 		logger.debug("index site loading");
 		return ok(views.html.index.render("Index", controllers.get(session("game"))));
+	}
+
+	/**
+	 * get specific game instance.
+	 * @param game id for instance.
+	 * @return view for specific instance.
+	 */
+	public static Result showInstance(String game) {
+		logger.debug("index site loading");
+		return ok(views.html.index.render("Index", controllers.get(game)));
 	}
 
 	public static Result start() {
@@ -183,7 +190,6 @@ public class Application extends Controller {
 	}
 
 	public static Result endGame() {
-
         controllers.get(session("game")).endTurn();
         controllers.get(session("game")).exitGame();
 
@@ -236,7 +242,6 @@ public class Application extends Controller {
 	}
 
 	public static Result checkAnswer(Boolean answer) {
-
 		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
@@ -250,12 +255,10 @@ public class Application extends Controller {
 	}
 
 	public static Result getQuestion() {
-
 		JSONObject message = new JSONObject();
 		message.put("question", controllers.get(session("game")).getPrisonQuestion());
 
 		return ok(message.toJSONString());
-
 	}
 
 	public static Result update() {
@@ -316,8 +319,11 @@ public class Application extends Controller {
 	
 	public static Result getGameInstances() {
 		JSONObject message = new JSONObject();
-		message.put("id", "gameinstancename");
-
+		JSONArray array = new JSONArray();
+		for (Map.Entry<String,IController> entry : controllers.entrySet()) {
+			array.add(entry.getKey());
+		}
+		message.put("ids", array);
 		return ok(message.toJSONString());
 	}
 	public static Result createGameInstance(){
