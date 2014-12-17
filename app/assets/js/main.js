@@ -31,8 +31,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 	angular.element(document).ready(function() {
 
-
-
 		var options = {
 			'#update' : '/update',
 			'#rollDice' : '/rollDice',
@@ -79,9 +77,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 		var pictures = new Array();
 		
-		/** **************** TODO in eine Funktion ************************ */
-
-		
 		$('#rollDice').on('click', function() {
 			update('#rollDice');
 		});
@@ -104,10 +99,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 		$('#prisonRoll').on('click', function() {
 			update('#prisonRoll');
-		});
-
-		$('#prisonBuy').on('click', function() {
-			update('#prisonBuy');
 		});
 		
 		var update = function(data) {
@@ -140,8 +131,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 			});
 		};
 
-
-		/** ************************************************************* */
 
 		var updateDice = function() {
 			$.ajax({
@@ -221,6 +210,7 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 		}
 
 		/** ********************** websockets ******************************* */
+
 		connect();
 
 		function connect() {
@@ -251,14 +241,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 		}// End connect
 
-		
-		/**
-		 * ********************** player position
-		 * *******************************
-		 */
-
-
-		
 		// initialize
 		init();
 	});
