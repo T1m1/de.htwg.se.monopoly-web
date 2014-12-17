@@ -13,11 +13,8 @@
  
  .blur {
  	-webkit-filter:blur(3px);
- 	
- 	transition:1s ease-in-out all;
-
- 	
- 	}
+ 	transition:1s linear all;
+}
 
  .monopoly-header {
  	margin-top: 15%
