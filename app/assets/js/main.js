@@ -1,9 +1,9 @@
 /**
  * Created by Timi on 29.10.2014.
  */
-var monopoly = angular.module("monopoly", []);
+var monopoly = angular.module("monopoly", ['ngCookies']);
 
-monopoly.controller('MainCtrl', function($scope, $http) {
+monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 	$scope.players;
 	$scope.currentplayer;
 	$scope.prisonQuestion;
@@ -31,8 +31,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 	angular.element(document).ready(function() {
 
-
-
 		var options = {
 			'#update' : '/update',
 			'#rollDice' : '/rollDice',
@@ -45,7 +43,8 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 			'#diceResult' : '/diceResult',
 			'#currentPlayer' : '/currentPlayer',
 			'#end' : '/end',
-			'#possibleOptions' : '/possibleOptions'
+			'#possibleOptions' : '/possibleOptions',
+			'#message': '/message'
 		};
 
 		var player = {
@@ -79,18 +78,12 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 		var pictures = new Array();
 		
-		/** **************** TODO in eine Funktion ************************ */
-
-		
 		$('#rollDice').on('click', function() {
 			update('#rollDice');
 		});
 		
 		$('#endTurn').on('click', function() {
-			$http.get('/endTurn').then(function() {
-				updateButtons();
-				$scope.updateNameOfPlayer();
-			});
+            update('#endTurn');
 		});
 
 		$('#buy').on('click', function() {
@@ -109,18 +102,18 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 			update('#prisonRoll');
 		});
 
-		$('#prisonBuy').on('click', function() {
-			update('#prisonBuy');
-		});
-		
+
+		var updateInformation = function() {
+			updateDice();
+			updateButtons();
+		}
 		var update = function(data) {
 			$.ajax({
 				url : options[data],
 				dataType : "html",
 				success : updateMessage
 			}).then(function() {
-				updateDice();
-				updateButtons();
+				updateInformation();
 			});
 		};
 
@@ -143,8 +136,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 			});
 		};
 
-
-		/** ************************************************************* */
 
 		var updateDice = function() {
 			$.ajax({
@@ -193,7 +184,15 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 				pictures[i] = new Image();
 				pictures[i].src = dice[i];
 			}
-		}
+		};
+
+		var updateCurrentMessage = function () {
+			$.ajax({
+				url : options['#message'],
+				dataType : "html",
+				success : updateMessage
+			});
+		};
 		
 		function init() {
 			
@@ -224,11 +223,17 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 		}
 
 		/** ********************** websockets ******************************* */
+
 		connect();
 
 		function connect() {
 			var host = location.origin.replace(/^http/, 'ws');
-			host = host + "/socket";
+
+			// read Play session cookie
+			var rawCookie = $cookies['PLAY_SESSION'];
+			var rawData = rawCookie.substring(rawCookie.indexOf('=') + 1, rawCookie.length-1);
+			host = host + "/socket/" +rawData;
+
 			var socket = new WebSocket(host);
 
 			message('Socket Status: ' + socket.readyState + ' (ready)');
@@ -242,6 +247,8 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 				$scope.players = JSON.parse(msgnew);
 				$scope.$apply();
 				updateAllPlayer(msgnew);
+				updateInformation();
+				updateCurrentMessage();
 			};
 
 			socket.onclose = function() {
@@ -254,14 +261,6 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 		}// End connect
 
-		
-		/**
-		 * ********************** player position
-		 * *******************************
-		 */
-
-
-		
 		// initialize
 		init();
 	});

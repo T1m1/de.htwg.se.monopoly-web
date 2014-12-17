@@ -18,12 +18,13 @@ GET		/prisonRoll					controllers.Application.prisonRoll()
 GET		/possibleOptions			controllers.Application.getPossibleOptions()
 GET		/answer/:bo					controllers.Application.checkAnswer(bo:Boolean)
 GET		/question					controllers.Application.getQuestion()
+GET		/message					controllers.Application.getLastMessage()
 GET		/games						controllers.Application.getGameInstances()
 POST	/createGame					controllers.Application.createGameInstance()
 POST	/addPlayerToGame/:id		controllers.Application.addPlayertoGameInstance(id:Integer)
 
+GET     /socket/:id                 controllers.Application.connectWebSocket(id:String)
 
-GET     /socket                     controllers.Application.connectWebSocket()
 
 
 # Map static resources from the /public folder to the /assets URL path
