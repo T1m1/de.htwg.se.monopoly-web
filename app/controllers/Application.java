@@ -1,11 +1,12 @@
 package controllers;
 
 import de.htwg.monopoly.controller.IController;
-import de.htwg.monopoly.util.IMonopolyUtil;
 import play.Logger;
 import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
+import de.htwg.monopoly.game.Monopoly;
+import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
@@ -97,7 +98,6 @@ public class Application extends Controller {
 	public static Result rollDice() {
 		
 		logger.debug("User started turn: ");
-        IController controller = controllers.get(session("game"));
 
 		if (prisonRollFlag) {
 			logger.debug("tries to roll dice to redeem");
@@ -312,8 +312,24 @@ public class Application extends Controller {
 		return allPlayer.toString();
 
 	}
+	
+	public static Result getGameInstances() {
+		JSONObject message = new JSONObject();
+		message.put("id", "gameinstancename");
 
-
+		return ok(message.toJSONString());
+	}
+	public static Result createGameInstance(){
+			
+		// add game instance if not already present
+		return ok();
+	}
+	public static Result addPlayertoGameInstance(Integer id) {
+		
+		
+		// add player to game instance, if not already present
+		return ok();
+	}
 
 	/**
 	 * ************************ websockets ********************************
