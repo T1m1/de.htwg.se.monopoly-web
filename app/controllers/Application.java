@@ -1,12 +1,11 @@
 package controllers;
 
 import de.htwg.monopoly.controller.IController;
+import de.htwg.monopoly.util.IMonopolyUtil;
 import play.Logger;
 import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
-import de.htwg.monopoly.game.Monopoly;
-import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
@@ -26,9 +25,12 @@ import java.util.*;
 
 public class Application extends Controller {
 
+    private static Map<String, IController> controllers = new HashMap<>();
+
 	private static final ALogger logger = Logger.of(Application.class);
-	static IController controller;
 	private static boolean prisonRollFlag;
+
+
 
 	public static Result welcome() {
 		logger.debug("Welcome page loading");
@@ -37,7 +39,7 @@ public class Application extends Controller {
 
 	public static Result index() {
 		logger.debug("index site loading");
-		return ok(views.html.index.render("Index", controller));
+		return ok(views.html.index.render("Index", controllers.get(session("game"))));
 	}
 
 	public static Result start() {
@@ -68,20 +70,23 @@ public class Application extends Controller {
 
 		startNewGame(players);
 		
-		return ok(views.html.index.render("Index", controller));
+		return ok(views.html.index.render("Index", controllers.get(session("game"))));
 
 	}
 
 	private static boolean startNewGame(Map<String, PlayerIcon> player) {
-		controller = Monopoly.getInstance().getController();
-		
-		// start tui
-		Monopoly.getInstance().getTextUI().printInitialisation();
-		
+
+        IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
+        game.startNewGame(player);
+        controllers.put("" + game.hashCode(), game);
+        session("game", "" + game.hashCode());
+
+		// TODO start tui for each session
+
 		logger.info("New Game started");
 		// start the game and begin with first player
-		controller.startNewGame(player);
-		
+        controllers.get((session("game"))).startNewGame(player);
+
 		return true;
 
 	}
@@ -90,6 +95,7 @@ public class Application extends Controller {
 	public static Result rollDice() {
 		
 		logger.debug("User started turn: ");
+        IController controller = controllers.get(session("game"));
 
 		if (prisonRollFlag) {
 			logger.debug("tries to roll dice to redeem");
@@ -113,20 +119,20 @@ public class Application extends Controller {
 
 	public static Result getDiceResult() {
 		JSONObject dice = new JSONObject();
-		dice.put("dice1", "" + controller.getDice().getDice1());
-		dice.put("dice2", "" + controller.getDice().getDice2());
+		dice.put("dice1", "" + controllers.get(session("game")).getDice().getDice1());
+		dice.put("dice2", "" + controllers.get(session("game")).getDice().getDice2());
 		return ok(dice.toJSONString());
 	}
 
 	private static Result handlePrisonRoll() {
-		if (!controller.isCorrectOption(UserAction.ROLL_DICE)) {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.ROLL_DICE)) {
 			prisonRollFlag = false;
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
-		controller.rollDiceToRedeem();
+        controllers.get(session("game")).rollDiceToRedeem();
 
-		if (!controller.getCurrentPlayer().isInPrison()) {
+		if (!controllers.get(session("game")).getCurrentPlayer().isInPrison()) {
 			prisonRollFlag = false;
 		}
 
@@ -135,7 +141,7 @@ public class Application extends Controller {
 
 	private static String getMessage() {
 		JSONObject message = new JSONObject();
-		message.put("msg", controller.getMessage());
+		message.put("msg", controllers.get(session("game")).getMessage());
 		return message.toJSONString();
 	}
 
@@ -147,26 +153,26 @@ public class Application extends Controller {
 
 	public static Result getCurrentPlayerAsJSON() {
 		JSONObject message = new JSONObject();
-		message.put("name", controller.getCurrentPlayer().getName());
+		message.put("name", controllers.get(session("game")).getCurrentPlayer().getName());
 		return ok(message.toJSONString());
 	}
 
 	public static Result endTurn() {
-		if (!controller.isCorrectOption(UserAction.END_TURN)) {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.END_TURN)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		controller.endTurn();
+        controllers.get(session("game")).endTurn();
 		return ok(getMessage());
 	}
 
 	public static Result buy() {
-		if (!controller.isCorrectOption(UserAction.BUY_STREET)) {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.BUY_STREET)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
-		if (controller.buyStreet()) {
+		if (controllers.get(session("game")).buyStreet()) {
 			return ok(getMessage());
 		}
 		return ok(getMessage("Kein Geld um die Straße zu kaufen!!!"));
@@ -175,22 +181,22 @@ public class Application extends Controller {
 
 	public static Result endGame() {
 
-		controller.endTurn();
-		controller.exitGame();
+        controllers.get(session("game")).endTurn();
+        controllers.get(session("game")).exitGame();
 
 		return ok("END GAME");
 	}
 
 	public static Result prisonBuy() {
 		logger.debug("tries to redeem with money");
-		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
 		logger.debug("redeem with money action available ");
 		
-		if (controller.redeemWithMoney()) {
+		if (controllers.get(session("game")).redeemWithMoney()) {
 			logger.debug("enough money --> sets free");
 			return ok(getMessage("Freigekauft"));
 		} else {
@@ -200,11 +206,11 @@ public class Application extends Controller {
 	}
 
 	public static Result prisonCard() {
-		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		if (controller.redeemWithCard()) {
+		if (controllers.get(session("game")).redeemWithCard()) {
 			return ok(getMessage("Freikarte eingesetzt"));
 		} else {
 			return ok(getMessage("Keine Freikarte vorhanden.."));
@@ -212,13 +218,13 @@ public class Application extends Controller {
 	}
 
 	public static Result prisonRoll() {
-		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 		prisonRollFlag = true;
 
-		if (controller.redeemWithDice()) {
+		if (controllers.get(session("game")).redeemWithDice()) {
 			return ok(getMessage());
 		} else {
 			return ok(getMessage("Irgendwas ist gehörig schief gelaufen..."));
@@ -228,11 +234,11 @@ public class Application extends Controller {
 
 	public static Result checkAnswer(Boolean answer) {
 
-		if (!controller.isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		if (controller.checkPlayerAnswer(answer)) {
+		if (controllers.get(session("game")).checkPlayerAnswer(answer)) {
 			return ok(getMessage("Korrekte Antwort. Sie sind frei gekommen"));
 		} else {
 			return ok(getMessage("Leider falsche Antwort, der nächste Spieler ist dran."));
@@ -243,7 +249,7 @@ public class Application extends Controller {
 	public static Result getQuestion() {
 
 		JSONObject message = new JSONObject();
-		message.put("question", controller.getPrisonQuestion());
+		message.put("question", controllers.get(session("game")).getPrisonQuestion());
 
 		return ok(message.toJSONString());
 
@@ -256,19 +262,22 @@ public class Application extends Controller {
 	public static Result getPossibleOptions() {
 		JSONObject options = new JSONObject();
 		int i = 0;
-		for (UserAction action : controller.getOptions()) {
+		for (UserAction action : controllers.get(session("game")).getOptions()) {
 			options.put("" + i, "" + action);
 			i++;
 		}
 		return ok(options.toJSONString());
 	}
 
+    public static Result getSession() {
+        return ok(session("game"));
+    }
 	public static String getPlayersAsJSON() {
-		int numberOfPlayer = controller.getNumberOfPlayers();
+		int numberOfPlayer = controllers.get(session("game")).getNumberOfPlayers();
 		JSONObject all[] = new JSONObject[numberOfPlayer];
 
 		for (int i = 0; i < numberOfPlayer; i++) {
-			Player currentPlayer = controller.getPlayer(i);
+			Player currentPlayer = controllers.get(session("game")).getPlayer(i);
 			all[i] = new JSONObject();
 			all[i].put("name", currentPlayer.getName());
 			all[i].put("pos", currentPlayer.getPosition());
@@ -296,6 +305,8 @@ public class Application extends Controller {
 
 	}
 
+
+
 	/**
 	 * ************************ websockets ********************************
 	 */
@@ -305,7 +316,7 @@ public class Application extends Controller {
 
 			public void onReady(WebSocket.In<String> in,
 					WebSocket.Out<String> out) {
-				new MonopolyObserver(controller, out);
+				new MonopolyObserver(controllers.get(session("game")), out);
 			}
 
 		};
