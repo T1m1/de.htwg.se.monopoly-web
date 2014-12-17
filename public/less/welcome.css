@@ -63,13 +63,30 @@
  	border-radius: 10px;
  	border: 1px solid;
  	margin: 10px;
+ 	margin-left: 0px;
  	padding: 5px;
  }
  
+ .network-overview{
+ 	text-align:left;
+ }
  .game-instances {
- 	padding: 5px
+ 	padding: 5px;
+ 	cursor: pointer;
+ }
+ 
+  .game-instances:hover {
+ 	background-color:#36a7ea;
+ 	-webkit-transition:0.3s linear all;
+
  }
 
+.back-button {
+	text-align:left;
+	margin: 20px;
+ 	margin-left: 0px;
+ 	padding: 5px;
+}
 
 /* fade animations */
  .mon-fade.ng-hide-add,
