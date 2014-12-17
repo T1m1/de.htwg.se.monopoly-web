@@ -1,6 +1,7 @@
 package controllers;
 
 import de.htwg.monopoly.controller.IController;
+import de.htwg.monopoly.util.IMonopolyUtil;
 import play.Logger;
 import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
@@ -75,7 +76,6 @@ public class Application extends Controller {
 		startNewGame(players);
 		
 		return ok(views.html.index.render("Index", controllers.get(session("game"))));
-
 	}
 
 	private static boolean startNewGame(Map<String, PlayerIcon> player) {
@@ -105,18 +105,18 @@ public class Application extends Controller {
 			return handlePrisonRoll();
 		}
 
-		if (controller.getCurrentPlayer().isInPrison()) {
+		if (controllers.get((session("game"))).getCurrentPlayer().isInPrison()) {
 			logger.debug("is in prison and needs to select a option");
 			return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
 		}
 
-		if (!controller.isCorrectOption(UserAction.START_TURN)) {
+		if (!controllers.get((session("game"))).isCorrectOption(UserAction.START_TURN)) {
 			logger.debug("user choose wrong action");
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
 		logger.debug("user starts his turn by throwing the dice and moving");
-		controller.startTurn();
+		controllers.get((session("game"))).startTurn();
 		return ok(getMessage());
 	}
 
