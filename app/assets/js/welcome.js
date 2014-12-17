@@ -17,8 +17,8 @@ startPage.controller('Controller', function($scope, $timeout, $http) {
 		figure : ""
 	} ];
 
-	$scope.icons = [ 'Maechtel', 'Neuschwander', 'Schoppa', 'Boger', 'Bittel',
-			'Eck' ];
+	$scope.icons = [ 'maechtel', 'neuschwander', 'schoppa', 'boger', 'bittel',
+			'eck' ];
 
 	$scope.addPlayer = function() {
 
