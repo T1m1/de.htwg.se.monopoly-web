@@ -18,6 +18,7 @@ GET		/prisonRoll					controllers.Application.prisonRoll()
 GET		/possibleOptions			controllers.Application.getPossibleOptions()
 GET		/answer/:bo					controllers.Application.checkAnswer(bo:Boolean)
 GET		/question					controllers.Application.getQuestion()
+GET		/message					controllers.Application.getLastMessage()
 
 GET     /socket/:id                 controllers.Application.connectWebSocket(id:String)
 

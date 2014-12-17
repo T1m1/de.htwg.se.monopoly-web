@@ -43,7 +43,8 @@ monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 			'#diceResult' : '/diceResult',
 			'#currentPlayer' : '/currentPlayer',
 			'#end' : '/end',
-			'#possibleOptions' : '/possibleOptions'
+			'#possibleOptions' : '/possibleOptions',
+			'#message': '/message'
 		};
 
 		var player = {
@@ -100,15 +101,19 @@ monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 		$('#prisonRoll').on('click', function() {
 			update('#prisonRoll');
 		});
-		
+
+
+		var updateInformation = function() {
+			updateDice();
+			updateButtons();
+		}
 		var update = function(data) {
 			$.ajax({
 				url : options[data],
 				dataType : "html",
 				success : updateMessage
 			}).then(function() {
-				updateDice();
-				updateButtons();
+				updateInformation();
 			});
 		};
 
@@ -179,7 +184,15 @@ monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 				pictures[i] = new Image();
 				pictures[i].src = dice[i];
 			}
-		}
+		};
+
+		var updateCurrentMessage = function () {
+			$.ajax({
+				url : options['#message'],
+				dataType : "html",
+				success : updateMessage
+			});
+		};
 		
 		function init() {
 			
@@ -234,6 +247,8 @@ monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 				$scope.players = JSON.parse(msgnew);
 				$scope.$apply();
 				updateAllPlayer(msgnew);
+				updateInformation();
+				updateCurrentMessage();
 			};
 
 			socket.onclose = function() {

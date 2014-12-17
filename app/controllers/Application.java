@@ -27,6 +27,7 @@ public class Application extends Controller {
 
     private static Map<String, IController> controllers = new HashMap<>();
     private static Map<String, MonopolyObserver> observer = new HashMap<>();
+    private static Map<String, String> lastMessage = new HashMap<>();
 
 	private static final ALogger logger = Logger.of(Application.class);
 	private static boolean prisonRollFlag;
@@ -143,13 +144,13 @@ public class Application extends Controller {
 	private static String getMessage() {
 		JSONObject message = new JSONObject();
 		message.put("msg", controllers.get(session("game")).getMessage());
-		return message.toJSONString();
+		return msg(message.toJSONString());
 	}
 
 	private static String getMessage(String msg) {
 		JSONObject message = new JSONObject();
 		message.put("msg", msg);
-		return message.toJSONString();
+		return msg(message.toJSONString());
 	}
 
 	public static Result getCurrentPlayerAsJSON() {
@@ -270,9 +271,15 @@ public class Application extends Controller {
 		return ok(options.toJSONString());
 	}
 
-    public static Result getSession() {
-        return ok(session("game"));
-    }
+	public static String msg(String msg) {
+		lastMessage.put(session("game"), msg);
+		return msg;
+	}
+
+	public static Result getLastMessage() {
+		return ok(lastMessage.get(session("game")));
+	}
+
 	public static String getPlayersAsJSON() {
 		int numberOfPlayer = controllers.get(session("game")).getNumberOfPlayers();
 		JSONObject all[] = new JSONObject[numberOfPlayer];
