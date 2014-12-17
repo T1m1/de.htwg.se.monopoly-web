@@ -1,9 +1,9 @@
 /**
  * Created by Timi on 29.10.2014.
  */
-var monopoly = angular.module("monopoly", []);
+var monopoly = angular.module("monopoly", ['ngCookies']);
 
-monopoly.controller('MainCtrl', function($scope, $http) {
+monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 	$scope.players;
 	$scope.currentplayer;
 	$scope.prisonQuestion;
@@ -215,7 +215,12 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 
 		function connect() {
 			var host = location.origin.replace(/^http/, 'ws');
-			host = host + "/socket";
+
+			// read Play session cookie
+			var rawCookie = $cookies['PLAY_SESSION'];
+			var rawData = rawCookie.substring(rawCookie.indexOf('=') + 1, rawCookie.length-1);
+			host = host + "/socket/" +rawData;
+
 			var socket = new WebSocket(host);
 
 			message('Socket Status: ' + socket.readyState + ' (ready)');

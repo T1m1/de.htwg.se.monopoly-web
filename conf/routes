@@ -19,8 +19,8 @@ GET		/possibleOptions			controllers.Application.getPossibleOptions()
 GET		/answer/:bo					controllers.Application.checkAnswer(bo:Boolean)
 GET		/question					controllers.Application.getQuestion()
 
+GET     /socket/:id                 controllers.Application.connectWebSocket(id:String)
 
-GET     /socket                     controllers.Application.connectWebSocket()
 
 
 # Map static resources from the /public folder to the /assets URL path

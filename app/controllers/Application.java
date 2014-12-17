@@ -26,6 +26,7 @@ import java.util.*;
 public class Application extends Controller {
 
     private static Map<String, IController> controllers = new HashMap<>();
+    private static Map<String, MonopolyObserver> observer = new HashMap<>();
 
 	private static final ALogger logger = Logger.of(Application.class);
 	private static boolean prisonRollFlag;
@@ -311,12 +312,12 @@ public class Application extends Controller {
 	 * ************************ websockets ********************************
 	 */
 
-	public static WebSocket<String> connectWebSocket() {
+	public static WebSocket<String> connectWebSocket(String game) {
 		return new WebSocket<String>() {
 
 			public void onReady(WebSocket.In<String> in,
 					WebSocket.Out<String> out) {
-				new MonopolyObserver(controllers.get(session("game")), out);
+                observer.put(game, new MonopolyObserver(controllers.get(game), out));
 			}
 
 		};
