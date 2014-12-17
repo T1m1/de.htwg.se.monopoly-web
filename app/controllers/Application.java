@@ -6,6 +6,7 @@ import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
+import de.htwg.monopoly.util.IMonopolyUtil;
 import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
@@ -26,9 +27,9 @@ import java.util.*;
 
 public class Application extends Controller {
 
-    private static Map<String, IController> controllers = new HashMap<>();
-    private static Map<String, MonopolyObserver> observer = new HashMap<>();
-    private static Map<String, String> lastMessage = new HashMap<>();
+    private static Map<String, IController> controllers = new HashMap<String, IController>();
+    private static Map<String, MonopolyObserver> observer = new HashMap<String, MonopolyObserver>();
+    private static Map<String, String> lastMessage = new HashMap<String, String>();
 
 	private static final ALogger logger = Logger.of(Application.class);
 	private static boolean prisonRollFlag;
