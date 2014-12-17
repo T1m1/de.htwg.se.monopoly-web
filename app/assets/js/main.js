@@ -87,10 +87,7 @@ monopoly.controller('MainCtrl', function($scope, $http) {
 		});
 		
 		$('#endTurn').on('click', function() {
-			$http.get('/endTurn').then(function() {
-				updateButtons();
-				$scope.updateNameOfPlayer();
-			});
+            update('#endTurn');
 		});
 
 		$('#buy').on('click', function() {
