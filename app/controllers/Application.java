@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 
@@ -50,7 +49,7 @@ public class Application extends Controller {
 	 * @return view for specific instance.
 	 */
 	public static Result showInstance(String game) {
-		logger.debug("index site loading");
+		logger.debug("new site loading");
 		return ok(views.html.index.render("Index", controllers.get(game)));
 	}
 
