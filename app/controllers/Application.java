@@ -6,9 +6,11 @@ import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
 import de.htwg.monopoly.game.Monopoly;
+import de.htwg.monopoly.util.IMonopolyUtil;
 import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
+import de.htwg.monopoly.view.TextUI;
 import models.MonopolyObserver;
 
 import org.json.simple.JSONArray;
@@ -73,10 +75,10 @@ public class Application extends Controller {
 	}
 
 	private static boolean startNewGame(Map<String, PlayerIcon> player) {
-		controller = Monopoly.getInstance().getController();
+		controller = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
 		
 		// start tui
-		Monopoly.getInstance().getTextUI().printInitialisation();
+		new TextUI(controller).printInitialisation();
 		
 		logger.info("New Game started");
 		// start the game and begin with first player
@@ -294,6 +296,24 @@ public class Application extends Controller {
 		}
 		return allPlayer.toString();
 
+	}
+	
+	public static Result getGameInstances() {
+		JSONObject message = new JSONObject();
+		message.put("id", "gameinstancename");
+
+		return ok(message.toJSONString());
+	}
+	public static Result createGameInstance(){
+			
+		// add game instance if not already present
+		return ok();
+	}
+	public static Result addPlayertoGameInstance(Integer id) {
+		
+		
+		// add player to game instance, if not already present
+		return ok();
 	}
 
 	/**
