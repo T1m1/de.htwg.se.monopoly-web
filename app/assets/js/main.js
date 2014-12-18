@@ -17,13 +17,14 @@ monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 		5 : "/assets/images/bittel.jpg"
 	};
 
-	$scope.game  = function() {
+	$scope.getGameInfo  = function() {
 		var rawCookie = $cookies['PLAY_SESSION'];
 		var rawData = rawCookie.substring(rawCookie.indexOf('=') + 1, rawCookie.length-1);
 		var myObject = new Object();
 		myObject.info = rawData;
 		$scope.game = myObject;
 		$scope.$apply();
+		$('#gameinfo').modal('show');
 	};
 
 	$scope.updateQuestion = function() {
@@ -110,10 +111,6 @@ monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 
 		$('#prisonRoll').on('click', function() {
 			update('#prisonRoll');
-		});
-
-		$('#instance').on('click', function() {
-			$('#gameinfo').modal('show');
 		});
 
 		var updateInformation = function() {

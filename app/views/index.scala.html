@@ -40,7 +40,7 @@
                             <li><a id="prisonRoll" class="prisonRoll">Mit 3 Versuchen
                                 ein Pasch würfeln um aus dem Gefängnis frei zu kommen.</a></li>
                             <li ng-click="updateQuestion()"><a class="prisonQuestion">Testatfrage
-                                beantorten um frei zu kommen.</a></li>
+                            beantorten um frei zu kommen.</a></li>
                         </ul>
                     </div>
 
@@ -54,7 +54,7 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#">Aufgeben</a></li>
                             <li><a href="#boger">Boger gewinnt</a></li>
-                            <li><a id="instance">Spiel info</a></li>
+                            <li ng-click="getGameInfo()"><a class="game">Spiel info</a></li>
                             <li class="divider"></li>
                             <li><a href="#end">Spiel beenden</a></li>
                         </ul>

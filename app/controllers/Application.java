@@ -84,13 +84,10 @@ public class Application extends Controller {
 	}
 
 	private static boolean startNewGame(Map<String, PlayerIcon> player) {
-
         IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
         game.startNewGame(player);
         controllers.put("" + game.hashCode(), game);
         session("game", "" + game.hashCode());
-
-		// TODO start tui for each session
 
 		logger.info("New Game started");
 		// start the game and begin with first player
