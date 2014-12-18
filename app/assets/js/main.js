@@ -167,7 +167,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
         };
 
         var updateAllPlayer = function (data) {
-            debugger;
             var obj = $.parseJSON(data);
             $.each(obj, function (i, item) {
                 updatePlayerPosition(item.pic, item.pos);
