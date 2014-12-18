@@ -3,7 +3,7 @@
  */
 var monopoly = angular.module("monopoly", ['ngCookies']);
 
-monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
+monopoly.controller('MainCtrl', function($scope, $http, $cookies, $location) {
 	$scope.players;
 	$scope.currentplayer;
 	$scope.prisonQuestion;
@@ -21,9 +21,9 @@ monopoly.controller('MainCtrl', function($scope, $http, $cookies) {
 		var rawCookie = $cookies['PLAY_SESSION'];
 		var rawData = rawCookie.substring(rawCookie.indexOf('=') + 1, rawCookie.length-1);
 		var myObject = new Object();
-		myObject.info = rawData;
+		var url = $location.absUrl()
+		myObject.info = url + "/"+ rawData;
 		$scope.game = myObject;
-		$scope.$apply();
 		$('#gameinfo').modal('show');
 	};
 
