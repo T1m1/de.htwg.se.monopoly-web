@@ -28,10 +28,9 @@ public class Application extends Controller {
     private static Map<String, IController> controllers = new HashMap<String, IController>();
     private static Map<String, MonopolyObserver> observer = new HashMap<String, MonopolyObserver>();
     private static Map<String, String> lastMessage = new HashMap<String, String>();
+    private static Map<String, Boolean> prisonRollFlags = new HashMap<String, Boolean>();
 
 	private static final ALogger logger = Logger.of(Application.class);
-	private static boolean prisonRollFlag;
-
 
 	public static Result welcome() {
 		logger.debug("Welcome page loading");
@@ -103,26 +102,27 @@ public class Application extends Controller {
 
 
 	public static Result rollDice() {
-		
+		String currentSession = session("game");
+
 		logger.debug("User started turn: ");
 
-		if (prisonRollFlag) {
+		if (prisonRollFlags.get(currentSession)) {
 			logger.debug("tries to roll dice to redeem");
 			return handlePrisonRoll();
 		}
 
-		if (controllers.get((session("game"))).getCurrentPlayer().isInPrison()) {
+		if (controllers.get(currentSession).getCurrentPlayer().isInPrison()) {
 			logger.debug("is in prison and needs to select a option");
 			return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
 		}
 
-		if (!controllers.get((session("game"))).isCorrectOption(UserAction.START_TURN)) {
+		if (!controllers.get(currentSession).isCorrectOption(UserAction.START_TURN)) {
 			logger.debug("user choose wrong action");
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
 		logger.debug("user starts his turn by throwing the dice and moving");
-		controllers.get((session("game"))).startTurn();
+		controllers.get(currentSession).startTurn();
 		return ok(getMessage());
 	}
 
@@ -134,15 +134,17 @@ public class Application extends Controller {
 	}
 
 	private static Result handlePrisonRoll() {
-		if (!controllers.get(session("game")).isCorrectOption(UserAction.ROLL_DICE)) {
-			prisonRollFlag = false;
+		String currentSession = session("game");
+
+		if (!controllers.get(currentSession).isCorrectOption(UserAction.ROLL_DICE)) {
+			prisonRollFlags.put(currentSession, false);
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
         controllers.get(session("game")).rollDiceToRedeem();
 
 		if (!controllers.get(session("game")).getCurrentPlayer().isInPrison()) {
-			prisonRollFlag = false;
+			prisonRollFlags.put(currentSession, false);
 		}
 
 		return ok(getMessage());
@@ -226,13 +228,15 @@ public class Application extends Controller {
 	}
 
 	public static Result prisonRoll() {
-		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
+		String currentSession = session("game");
+
+		if (!controllers.get(currentSession).isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		prisonRollFlag = true;
+		prisonRollFlags.put(currentSession, true);
 
-		if (controllers.get(session("game")).redeemWithDice()) {
+		if (controllers.get(currentSession).redeemWithDice()) {
 			return ok(getMessage());
 		} else {
 			return ok(getMessage("Irgendwas ist gehörig schief gelaufen..."));
