@@ -325,9 +325,14 @@ public class Application extends Controller {
 		message.put("ids", array);
 		return ok(message.toJSONString());
 	}
+
 	public static Result createGameInstance(){
-			
 		// add game instance if not already present
+		if(!controllers.containsKey(session("game"))) {
+			IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
+			controllers.put("" + game.hashCode(), game);
+			session("game", "" + game.hashCode());
+		}
 		return ok();
 	}
 	public static Result addPlayertoGameInstance(Integer id) {
