@@ -298,7 +298,7 @@ public class Application extends Controller {
 			all[i].put("name", currentPlayer.getName());
 			all[i].put("pos", currentPlayer.getPosition());
 			all[i].put("budget", currentPlayer.getBudget());
-			all[i].put("pic", currentPlayer.getFigure());
+			all[i].put("pic", currentPlayer.getFigure().toLowerCase());
 			JSONArray ownershipt = new JSONArray();
 			for (IFieldObject field : currentPlayer.getOwnership()) {
 				ownershipt.add(field.toString());
