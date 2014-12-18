@@ -49,6 +49,9 @@ public class Application extends Controller {
 	 */
 	public static Result showInstance(String game) {
 		logger.debug("new site loading");
+		if(!controllers.containsKey(game)) {
+			return notFound();
+		}
 		return ok(views.html.index.render("Index", controllers.get(game)));
 	}
 
