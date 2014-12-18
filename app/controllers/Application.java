@@ -87,6 +87,7 @@ public class Application extends Controller {
         IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
         game.startNewGame(player);
         controllers.put("" + game.hashCode(), game);
+		prisonRollFlags.put("" + game.hashCode(), false);
         session("game", "" + game.hashCode());
 
 		logger.info("New Game started");
