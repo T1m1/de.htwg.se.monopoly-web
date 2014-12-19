@@ -113,7 +113,8 @@ startPage
 						$http.post('/start', $scope.players).then(function() {
 
 							$timeout(function() {
-								location.href = "http://localhost:9000/go";
+								var loc = location.origin + "/go"
+								location.href = loc;
 							}, 1600);
 
 						});

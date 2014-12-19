@@ -1,13 +1,11 @@
 package controllers;
 
 import de.htwg.monopoly.controller.IController;
+import de.htwg.monopoly.util.IMonopolyUtil;
 import play.Logger;
 import play.Logger.ALogger;
 import de.htwg.monopoly.entities.IFieldObject;
 import de.htwg.monopoly.entities.impl.Player;
-import de.htwg.monopoly.game.Monopoly;
-import de.htwg.monopoly.util.IMonopolyUtil;
-import de.htwg.monopoly.util.MonopolyUtils;
 import de.htwg.monopoly.util.PlayerIcon;
 import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
@@ -30,11 +28,11 @@ public class Application extends Controller {
     private static Map<String, IController> controllers = new HashMap<String, IController>();
     private static Map<String, MonopolyObserver> observer = new HashMap<String, MonopolyObserver>();
     private static Map<String, String> lastMessage = new HashMap<String, String>();
-    private static Map<String, Boolean> prisonRollFlag = new HashMap<String, Boolean>();
+
+    private static Map<String, Boolean> prisonRollFlags = new HashMap<String, Boolean>();
+
 
 	private static final ALogger logger = Logger.of(Application.class);
-	//private static boolean prisonRollFlag;
-
 
 
 	public static Result welcome() {
@@ -45,6 +43,19 @@ public class Application extends Controller {
 	public static Result index() {
 		logger.debug("index site loading");
 		return ok(views.html.index.render("Index", controllers.get(session("game"))));
+	}
+
+	/**
+	 * get specific game instance.
+	 * @param game id for instance.
+	 * @return view for specific instance.
+	 */
+	public static Result showInstance(String game) {
+		logger.debug("new site loading");
+		if(!controllers.containsKey(game)) {
+			return notFound();
+		}
+		return ok(views.html.index.render("Index", controllers.get(game)));
 	}
 
 	public static Result start() {
@@ -76,17 +87,14 @@ public class Application extends Controller {
 		startNewGame(players);
 		
 		return ok(views.html.index.render("Index", controllers.get(session("game"))));
-
 	}
 
 	private static boolean startNewGame(Map<String, PlayerIcon> player) {
-
         IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
         game.startNewGame(player);
         controllers.put("" + game.hashCode(), game);
+		prisonRollFlags.put("" + game.hashCode(), false);
         session("game", "" + game.hashCode());
-
-		// TODO start tui for each session
 
 		logger.info("New Game started");
 		// start the game and begin with first player
@@ -98,26 +106,30 @@ public class Application extends Controller {
 
 
 	public static Result rollDice() {
-		
+		String currentSession = session("game");
+
 		logger.debug("User started turn: ");
 
-		if (prisonRollFlag.get(session("game"))) {
+
+		if (prisonRollFlags.get(currentSession)) {
 			logger.debug("tries to roll dice to redeem");
 			return handlePrisonRoll();
 		}
 
-		if (controllers.get(session("game")).getCurrentPlayer().isInPrison()) {
+
+		if (controllers.get(currentSession).getCurrentPlayer().isInPrison()) {
 			logger.debug("is in prison and needs to select a option");
 			return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
 		}
 
-		if (!controllers.get(session("game")).isCorrectOption(UserAction.START_TURN)) {
+
+		if (!controllers.get(currentSession).isCorrectOption(UserAction.START_TURN)) {
 			logger.debug("user choose wrong action");
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
 		logger.debug("user starts his turn by throwing the dice and moving");
-		controllers.get(session("game")).startTurn();
+		controllers.get(currentSession).startTurn();
 		return ok(getMessage());
 	}
 
@@ -129,15 +141,18 @@ public class Application extends Controller {
 	}
 
 	private static Result handlePrisonRoll() {
-		if (!controllers.get(session("game")).isCorrectOption(UserAction.ROLL_DICE)) {
-			prisonRollFlag.put(session("game"), false);
+
+		String currentSession = session("game");
+
+		if (!controllers.get(currentSession).isCorrectOption(UserAction.ROLL_DICE)) {
+			prisonRollFlags.put(currentSession, false);
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
         controllers.get(session("game")).rollDiceToRedeem();
 
 		if (!controllers.get(session("game")).getCurrentPlayer().isInPrison()) {
-			prisonRollFlag.put(session("game"), false);
+			prisonRollFlags.put(currentSession, false);
 		}
 
 		return ok(getMessage());
@@ -184,7 +199,6 @@ public class Application extends Controller {
 	}
 
 	public static Result endGame() {
-
         controllers.get(session("game")).endTurn();
         controllers.get(session("game")).exitGame();
 
@@ -222,13 +236,15 @@ public class Application extends Controller {
 	}
 
 	public static Result prisonRoll() {
-		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
+		String currentSession = session("game");
+
+		if (!controllers.get(currentSession).isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		prisonRollFlag.put(session("game"), true);
+		prisonRollFlags.put(currentSession, true);
 
-		if (controllers.get(session("game")).redeemWithDice()) {
+		if (controllers.get(currentSession).redeemWithDice()) {
 			return ok(getMessage());
 		} else {
 			return ok(getMessage("Irgendwas ist gehörig schief gelaufen..."));
@@ -237,7 +253,6 @@ public class Application extends Controller {
 	}
 
 	public static Result checkAnswer(Boolean answer) {
-
 		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
@@ -251,12 +266,10 @@ public class Application extends Controller {
 	}
 
 	public static Result getQuestion() {
-
 		JSONObject message = new JSONObject();
 		message.put("question", controllers.get(session("game")).getPrisonQuestion());
 
 		return ok(message.toJSONString());
-
 	}
 
 	public static Result update() {
@@ -292,7 +305,7 @@ public class Application extends Controller {
 			all[i].put("name", currentPlayer.getName());
 			all[i].put("pos", currentPlayer.getPosition());
 			all[i].put("budget", currentPlayer.getBudget());
-			all[i].put("pic", currentPlayer.getFigure());
+			all[i].put("pic", currentPlayer.getFigure().toLowerCase());
 			JSONArray ownershipt = new JSONArray();
 			for (IFieldObject field : currentPlayer.getOwnership()) {
 				ownershipt.add(field.toString());
@@ -317,13 +330,21 @@ public class Application extends Controller {
 	
 	public static Result getGameInstances() {
 		JSONObject message = new JSONObject();
-		message.put("id", "gameinstancename");
-
+		JSONArray array = new JSONArray();
+		for (Map.Entry<String,IController> entry : controllers.entrySet()) {
+			array.add(entry.getKey());
+		}
+		message.put("ids", array);
 		return ok(message.toJSONString());
 	}
+
 	public static Result createGameInstance(){
-			
 		// add game instance if not already present
+		if(!controllers.containsKey(session("game"))) {
+			IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
+			controllers.put("" + game.hashCode(), game);
+			session("game", "" + game.hashCode());
+		}
 		return ok();
 	}
 	public static Result addPlayertoGameInstance(Integer id) {
