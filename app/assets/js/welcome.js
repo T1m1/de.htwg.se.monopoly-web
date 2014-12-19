@@ -1,13 +1,13 @@
 var startPage = angular.module('monopolyStartPage', [ 'ngAnimate' ]);
 
 startPage
-		.controller(
-				'Controller',
-				function($scope, $timeout, $http) {
+.controller(
+	'Controller',
+	function($scope, $timeout, $http) {
 
-					$scope.showNetwork = false;
-					$scope.showLocal = false;
-					$scope.chooseType = true;
+		$scope.showNetwork = false;
+		$scope.showLocal = false;
+		$scope.chooseType = true;
 
 					// basic button functions
 					$scope.localGame = function() {
@@ -42,7 +42,7 @@ startPage
 					} ];
 
 					$scope.icons = [ 'maechtel', 'neuschwander', 'schoppa',
-							'boger', 'bittel', 'eck' ];
+					'boger', 'bittel', 'eck' ];
 
 					$scope.addPlayer = function() {
 
@@ -83,9 +83,6 @@ startPage
 
 					$scope.updatePlayerIcon = function(index, select) {
 						$scope.players[index].figure = select;
-
-						console.log($scope.players);
-
 						// delete from available icons
 						$scope.icons.splice($scope.icons.indexOf(select), 1);
 					}
@@ -96,22 +93,22 @@ startPage
 
 							if ($scope.players[index].name === "") {
 								$scope.displayError("Bitte Namen für Spieler "
-										+ (index + 1) + " eintragen.")
+									+ (index + 1) + " eintragen.")
 								return;
 							} else if ($scope.players[index].figure === "") {
 								$scope.displayError("Bitte Figur für "
-										+ $scope.players[index].name
-										+ " auswaehlen.")
+									+ $scope.players[index].name
+									+ " auswaehlen.")
 								return;
 							}
 
 						}
 
-						$('.local-game-content').addClass('blur');
+						$('.bodyblue').addClass('blur');
 
 						$('body')
-								.prepend(
-										'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+						.prepend(
+							'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
 
 						$http.post('/start', $scope.players).then(function() {
 
@@ -132,35 +129,110 @@ startPage
 						}, 3000);
 					}
 
+					$scope.displayModalError = function(error) {
+						$scope.alertMessage = error
+						$scope.showModalAlert = true;
+
+						$timeout(function() {
+							$scope.showModalAlert = false;
+						}, 3000);
+					}
+
 					/** functionallity for network game * */
 
+					// game which is going to be created
+					$scope.myGame = {name: "", playerName: "", playerIcon: "", numberOfPlayer: "2"}
+					// info for joining a game
+					$scope.joiner = {playerName: "", playerIcon: ""};
+					// help flags for checking a created or joined game, TODO: maybe backend
+					$scope.alreadyCreated = false;
+					$scope.alreadyJoined = false;
+
+					$scope.joiningGame;
+
+					// dummy gameinstances, will be removed eventually
 					$scope.gameInstances = [ {
-						id : "1",
-						player : "dummy1"
+						name : "1",
+						players : [ {name : "player1",figure : "" }, {name : "player2",figure : ""} ],
+						numberOfPlayer : "2"
 					}, {
-						id : "2",
-						player : "dummy2"
-					}, {
-						id : "2",
-						player : "dummy2"
-					}, {
-						id : "2",
-						player : "dummy2"
-					} ];
+						name : "2",
+						players : [ {name : "",figure : "" }, {name : "",figure : ""} ],
+						numberOfPlayer : "2"
+					}	];
 
 					$scope.createGame = function() {
+						if ($scope.alreadyCreated) {
+							$scope.displayError("Du hast bereits ein Spiel gestartet.");
+						} else {
+							$('#createGameModal').modal('show');
+						}
+					}
+
+					$scope.joinGame = function(game) {
+						if ($scope.alreadyJoined) {
+							$scope.displayError("Du bist bereits einem Spiel beigetreten.");
+						} else {
+							$scope.joiningGame = game;
+							$('#joinGameModal').modal('show');
+
+						}
 
 					}
 
-					$scope.joinGame = function() {
+					$scope.create = function() {
 
+						// TODO check if game name already exist
+
+						if ($scope.myGame.name === "") {
+							$scope.displayModalError("Bitte Namen für Spiel eintragen")
+							return;
+						} else if ($scope.myGame.playerIcon == "") {
+							$scope.displayModalError("Bitte Figur auswählen.")
+							return;
+						} else if ($scope.myGame.playerName == "") {
+							$scope.displayModalError("Bitte Namen eintragen.")
+							return;
+						}
+
+						$scope.alreadyCreated = true;
+						$('#createGameModal').modal('hide');
+					}
+
+					$scope.join = function() {
+
+						
+
+
+						// check if name or icon already exist
+						if ($scope.joiner.playerName === "") {
+							$scope.displayError("Bitte Namen eintragen!")
+							return;
+						} else if ($scope.joiner.playerIcon == "") {
+							$scope.displayModalError("Bitte Figur auswählen.")
+							return;
+						}
+
+						for (var index = 0; index < $scope.joiningGame.players.length; ++index) {
+
+							if ($scope.joiningGame.players[index].name === $scope.joiner.playerName) {
+								$scope.displayModalError("Name existiert schon, bitte anderen Namen eintragen.")
+								return;
+							} 
+							// TODO check icon by not showing it in the dropdown
+						}
+
+						$scope.alreadyJoined = true;
+						$('#joinGameModal').modal('hide');
+
+						
+						
 					}
 
 					$scope.getGames = function() {
 						$http.get('/games').then(function(res) {
 							console.log(res)
 							$scope.gameInstances = res.data;
-							$scope.apply;
 						})
 					}
 

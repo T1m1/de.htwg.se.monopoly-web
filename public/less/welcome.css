@@ -48,23 +48,34 @@
  	margin-top: 10%
  }
 
+ .modal-alert {
+  margin-bottom:0px;
+  text-align: left;
+  padding:5px;
+ }
  .monopoly-icon {
  	width: 25px;
  }
  
- .local-game-content{
+ .game-name-form{
+   width:50%;
  
  }
- 
+ .create-game-modal {
+  text-align: left;
+  color:#000000;
+ } 
  .game-list {
  	background-color:#FFFFFF;
  	text-align: left;
  	color:#000000;
- 	border-radius: 10px;
- 	border: 1px solid;
+ 	border: 1px solid #83c9f2;
  	margin: 10px;
  	margin-left: 0px;
  	padding: 5px;
+  -webkit-box-shadow: 4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+  -moz-box-shadow:    4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+  box-shadow:         4px 4px 24px 0px rgba(50, 50, 50, 0.52);
  }
  
  .network-overview{
@@ -73,11 +84,12 @@
  .game-instances {
  	padding: 5px;
  	cursor: pointer;
+    -webkit-transition:0.15s linear all;
  }
  
   .game-instances:hover {
- 	background-color:#36a7ea;
- 	-webkit-transition:0.3s linear all;
+ 	background-color:#b1ddf7;
+ 	
 
  }
 
