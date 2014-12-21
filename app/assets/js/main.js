@@ -140,10 +140,12 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
             var obj = $.parseJSON(data);
             $.each(actions, function (key, value) {
                 $(value).attr('disabled', true);
+                $(value).removeClass('btn-success');
             });
 
             $.each(obj, function (key, value) {
                 $(actions[value]).attr('disabled', false);
+                $(actions[value]).addClass('btn-success');
             });
         };
 

@@ -28,7 +28,6 @@ public class Application extends Controller {
     private static Map<String, IController> controllers = new HashMap<String, IController>();
     private static Map<String, MonopolyObserver> observer = new HashMap<String, MonopolyObserver>();
     private static Map<String, String> lastMessage = new HashMap<String, String>();
-
     private static Map<String, Boolean> prisonRollFlags = new HashMap<String, Boolean>();
 
 
@@ -101,7 +100,6 @@ public class Application extends Controller {
         controllers.get((session("game"))).startNewGame(player);
 
 		return true;
-
 	}
 
 
@@ -109,7 +107,6 @@ public class Application extends Controller {
 		String currentSession = session("game");
 
 		logger.debug("User started turn: ");
-
 
 		if (prisonRollFlags.get(currentSession)) {
 			logger.debug("tries to roll dice to redeem");
@@ -141,7 +138,6 @@ public class Application extends Controller {
 	}
 
 	private static Result handlePrisonRoll() {
-
 		String currentSession = session("game");
 
 		if (!controllers.get(currentSession).isCorrectOption(UserAction.ROLL_DICE)) {
@@ -317,7 +313,6 @@ public class Application extends Controller {
 			} else {
 				all[i].put("prisoncard", "nein");
 			}
-			
 		}
 
 		JSONObject allPlayer = new JSONObject();
