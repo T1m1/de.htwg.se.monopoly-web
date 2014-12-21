@@ -95,6 +95,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
         $('#endTurn').on('click', function () {
             update('#endTurn');
+            $scope.updateNameOfPlayer();
         });
 
         $('#buy').on('click', function () {
