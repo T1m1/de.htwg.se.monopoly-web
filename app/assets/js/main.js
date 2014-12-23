@@ -98,9 +98,9 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
         var pictures = new Array();
 
-        $scope.drawCard = function() {
+        $('#drawCard').on('click', function () {
             update('#drawCard');
-        }
+        });
     
 
         $('#rollDice').on('click', function () {
