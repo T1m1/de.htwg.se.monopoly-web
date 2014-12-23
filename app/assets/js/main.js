@@ -40,6 +40,13 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
         });
     };
 
+    $scope.drawCard = function() {
+        $http.get('/drawCard').then(function (res) {
+            $scope.prisonQuestion = res.data;
+            $('#myModal').modal('show');
+        });
+    }
+
     angular.element(document).ready(function () {
 
         var options = {
@@ -55,7 +62,8 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
             '#currentPlayer': '/currentPlayer',
             '#end': '/end',
             '#possibleOptions': '/possibleOptions',
-            '#message': '/message'
+            '#message': '/message',
+            '#drawCard': '/drawCard'
         };
 
         var player = {
@@ -84,10 +92,16 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
             'SURRENDER': '#end',
             'REDEEM_WITH_MONEY': '#prison',
             'REDEEM_WITH_CARD': '#prison',
-            'REDEEM_WITH_DICE': '#prison'
+            'REDEEM_WITH_DICE': '#prison',
+            'DRAW_CARD': '#drawCard'
         };
 
         var pictures = new Array();
+
+        $scope.drawCard = function() {
+            update('#drawCard');
+        }
+    
 
         $('#rollDice').on('click', function () {
             update('#rollDice');

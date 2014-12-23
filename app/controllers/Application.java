@@ -247,6 +247,17 @@ public class Application extends Controller {
 		}
 
 	}
+	
+	public static Result drawCard() {
+		if (!controllers.get(session("game")).isCorrectOption(UserAction.DRAW_CARD)) {
+			// wrong input, option not available
+			return ok(getMessage("Aktion nicht verfügbar"));
+		}
+		controllers.get(session("game")).drawCard();
+			
+		return ok(getMessage());
+
+	}
 
 	public static Result checkAnswer(Boolean answer) {
 		if (!controllers.get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
