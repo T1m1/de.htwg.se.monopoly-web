@@ -248,6 +248,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
                 pictures[i] = new Image();
                 pictures[i].src = dice[i];
             }
+            updateButtons();
         }
 
         /** ********************** websockets ******************************* */
