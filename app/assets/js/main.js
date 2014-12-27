@@ -45,7 +45,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
             $scope.prisonQuestion = res.data;
             $('#myModal').modal('show');
         });
-    }
+    };
 
     angular.element(document).ready(function () {
 
@@ -110,6 +110,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
         $('#endTurn').on('click', function () {
             update('#endTurn');
             $scope.updateNameOfPlayer();
+            $('#msg').html($scope.currentplayer.name + ": Du bist dran!")
         });
 
         $('#buy').on('click', function () {
@@ -180,7 +181,9 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
         var updateMessage = function (data) {
             var obj = $.parseJSON(data);
-            $("#msg").html(obj.msg);
+            if(!(obj.msg === "")) {
+                $("#msg").html(obj.msg);
+            }
         };
 
         var updateAllPlayer = function (data) {
@@ -200,11 +203,11 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
             }).then(function () {
                 updateButtons();
             });
-        }
+        };
 
         var updatePlayerPosition = function (pic, position) {
             var currentPlayer = $(player[pic]);
-            currentPlayer.remove()
+            currentPlayer.remove();
             $('.pos-' + position).append(currentPlayer);
             /* init dice pictures */
             var i;
@@ -249,7 +252,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
                 pictures[i].src = dice[i];
             }
             updateButtons();
-        }
+        };
 
         /** ********************** websockets ******************************* */
 
@@ -286,7 +289,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
             function message(msg) {
                 $('#wsLog').append('<p>' + msg + '</p>');
-            }
+            };
 
         }// End connect
 
