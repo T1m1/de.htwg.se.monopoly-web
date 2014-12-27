@@ -129,6 +129,18 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
             update('#prisonRoll');
         });
 
+        $('#end').on('click', function () {
+            $.ajax({
+                url: options['/end'],
+                dataType: "html",
+                success: end
+            })
+        });
+
+        var end = function() {
+            location.href = location.origin;
+        };
+
         var updateInformation = function () {
             updateDice();
             updateButtons();

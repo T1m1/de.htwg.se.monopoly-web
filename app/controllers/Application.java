@@ -197,8 +197,7 @@ public class Application extends Controller {
 	public static Result endGame() {
         controllers.get(session("game")).endTurn();
         controllers.get(session("game")).exitGame();
-
-		return ok("END GAME");
+		return redirect("END GAME");
 	}
 
 	public static Result prisonBuy() {
