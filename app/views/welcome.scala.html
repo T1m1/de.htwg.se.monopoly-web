@@ -88,7 +88,8 @@
 					<div class="row">
 						<div class="col-xs-1"></div>
 						<div class="col-xs-8">
-							<button type="button" class="btn btn-default btn-monopoly-start"
+							<button type="button" class="btn btn-default btn-monopoly-start" ng-click="back()">Zur&uuml;ck</button>
+							<button type="button" class="btn btn-default btn-monopoly-back"
 							ng-click="startGame()">Start Game</button>
 						</div>
 						<div class="col-xs-3"></div>
@@ -124,7 +125,8 @@
 					</div>
 
 					<div class="game-options"></div>
-					<button type="button" class="btn btn-default"
+					<button type="button" class="btn btn-default btn-monopoly-back" ng-click="back()">Zur&uuml;ck</button>
+					<button type="button" class="btn btn-default btn-monopoly-start"
 					ng-click="createGame()">Neues Spiel erstellen</button>
 				</div>
 				<div class="col-xs-3"></div>
@@ -140,10 +142,6 @@
 			</div>
 		</div>
 
-
-		<div class="back-button" ng-show="!chooseType">
-			<button type="button" class="btn btn-default" ng-click="back()">Zur&uuml;ck</button>
-		</div>
 
 		<!-- Create a new Game Modal -->
 		<div class="modal fade create-game-modal" id="createGameModal" tabindex="-1" role="dialog"

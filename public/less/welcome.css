@@ -31,8 +31,13 @@
 
  .btn-monopoly-start {
  	text-align: left;
- 	margin-top: 10%
+ 	margin-top: 10%;
  }
+
+.btn-monopoly-back {
+    text-align: left;
+    margin-top: 10%;
+}
 
  .monopoly_remove {
  	padding: 10px;
