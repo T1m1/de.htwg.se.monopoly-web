@@ -37,6 +37,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
     $scope.updateNameOfPlayer = function () {
         $http.get('/currentPlayer').then(function (res) {
             $scope.currentplayer = res.data;
+            $('#msg').html($scope.currentplayer.name + ": Du bist dran!")
         });
     };
 
@@ -110,7 +111,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
         $('#endTurn').on('click', function () {
             update('#endTurn');
             $scope.updateNameOfPlayer();
-            $('#msg').html($scope.currentplayer.name + ": Du bist dran!")
         });
 
         $('#buy').on('click', function () {
