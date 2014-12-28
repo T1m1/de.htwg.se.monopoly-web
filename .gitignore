@@ -38,3 +38,7 @@ dist
 activator-sbt-echo-play-shim.sbt
 htwgMonopoly.log
 /init.bat
+*.iml
+*.properties
+*.xml
+
