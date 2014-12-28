@@ -1,0 +1,58 @@
+<link rel="import" href="../js/polymer/polymer.html">
+
+<polymer-element name="my-summary-element" attributes="players name">
+    <template>
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+        <style>
+            .pic {
+                width: 30px;
+                height: 30px;
+            }
+        </style>
+        <div class="infoboard">
+            <h2>{{name}}: Du sind dran!</h2>
+            <table class="table table-striped">
+                <tr>
+                    <th>Figur</th>
+                    <th>Spielername</th>
+                    <th>Budget</th>
+                    <th>Besitz</th>
+                    <th>Position</th>
+                    <th>Gefaengniskarte</th>
+                </tr>
+
+                <template repeat="{{player in allPlayers}}">
+                    <tr>
+                        <td><img class="pic" ng-src="assets/images/{{player.pic}}.jpg"
+                                 src="assets/images/{{player.pic}}.jpg"/></td>
+                        <td>{{player.name}}</td>
+                        <td>{{player.budget}}</td>
+                        <td>{{player.ownership}}</td>
+                        <td>{{player.pos}}</td>
+                        <td>{{player.prisoncard}}</td>
+                    </tr>
+                </template>
+            </table>
+        </div>
+        {{players | ready}}
+    </template>
+    <script>
+        Polymer({
+            allPlayers: 0,
+            ready: function (data) {
+                /* convert string to array with json objects */
+                var tmpConvert = eval('[' + data + ']');
+                var localArray = [];
+                for (var key in tmpConvert) {
+                    var obj = tmpConvert[key];
+                    for (var prop in obj) {
+                        var element = obj[prop];
+                        localArray.push(element);
+                    }
+                }
+                this.allPlayers = localArray;
+            }
+        });
+    </script>
+</polymer-element>

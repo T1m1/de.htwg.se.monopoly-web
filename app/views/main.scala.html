@@ -2,42 +2,34 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-    <title>@title</title>
+    <head>
+        <title>@title</title>
 
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
-    <!----- ANGULARRRRR -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-animate.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-cookies.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-animate.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-cookies.js"></script>
 
+            <!-- 1. Load platform support before any code that touches the DOM. -->
+        <script src='@routes.Assets.at("js/webcomponentsjs/webcomponents.min.js")'></script>
+            <!-- 2. Load the component using an HTML Import -->
+        <link rel="import" href=@routes.Assets.at("elements/my-element.html")>
 
-    <link rel='shortcut icon' type='image/png'
-          href='@routes.Assets.at("images/favicon.png")'>
-    <!-- Latest compiled and minified CSS -->
+        <link rel='shortcut icon' type='image/png' href='@routes.Assets.at("images/favicon.ico")'>
 
+            <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+            <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-
-
-
-</head>
-<body>
-<div class="container">@content</div>
-<script type='text/javascript' src='@routes.Assets.at("js/main.js")'></script>
-<script type='text/javascript' src='@routes.Assets.at("js/welcome.js")'></script>
-<script type='text/javascript' src='@routes.Assets.at("js/fb.js")'></script>
-<script type='text/javascript' src='@routes.Assets.at("js/googleAnalytics.js")'></script>
-</body>
+    </head>
+    <body>
+        <div class="container">@content</div>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <script type='text/javascript' src='@routes.Assets.at("js/main.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.at("js/welcome.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.at("js/googleAnalytics.js")'></script>
+    </body>
 </html>
