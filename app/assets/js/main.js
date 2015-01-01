@@ -101,7 +101,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
         $('#drawCard').on('click', function () {
             update('#drawCard');
         });
-    
+
 
         $('#rollDice').on('click', function () {
             update('#rollDice');
@@ -307,6 +307,98 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
         // initialize
         init();
+
+
+
+    });
+
+    /* leap test */
+    var options = {enableGestures: true};
+    var reset = 0;
+    var gesturereset = 0;
+    var status = 1;
+    var gesturestatus = 1;
+
+    // Main Leap Loop
+    Leap.loop(options, function (frame) {
+        // swipe gestures check
+        if (frame.gestures.length > 0) {
+            for (var i = 0; i < frame.gestures.length; i++) {
+                var gesture = frame.gestures[i];
+                if(gesture.type == "swipe") {
+                    //Classify swipe as either horizontal or vertical
+                    var isHorizontal = Math.abs(gesture.direction[0]) > Math.abs(gesture.direction[1]);
+                    //Classify as right-left or up-down
+                    if(isHorizontal){
+                        if(gesture.direction[0] > 0){
+                            if(gesturestatus == 1) {
+                                gesturestatus = 0;
+                                gesturereset = 0;
+                                $('#endTurn').trigger("click");
+                                console.log("endTurn");
+                            }
+                        } else {
+                            if(gesturestatus == 1) {
+                                gesturestatus = 0;
+                                gesturereset = 0;
+                                $('#rollDice').trigger("click");
+                                console.log("rollDice");
+                            }
+
+                        }
+                    } else { //vertical
+                        if(gesture.direction[1] > 0){
+                            if(gesturestatus == 1) {
+                                gesturestatus = 0;
+                                gesturereset = 0;
+                                $('#drawCard').trigger("click");
+                                console.log("drawCard");
+                            }
+
+                        } else {
+                            if(gesturestatus == 1) {
+                                gesturestatus = 0;
+                                gesturereset = 0;
+                                $('#prisonRoll').trigger("click");
+                                console.log("prisonRoll");
+                            }
+
+                        }
+                    }
+                }
+            }
+        } else {
+            if(gesturestatus === 0) {
+                gesturereset++;
+            }
+            if(gesturereset > 50) {
+                gesturestatus = 1;
+            }
+        }
+        // pinch gesture check
+        for (var i = 0, len = frame.hands.length; i < len; i++) {
+            hand = frame.hands[i];
+            /* TODO evtl. mind 2 mal pinchStrength == 1 ?*/
+            if (hand.pinchStrength == 1) {
+                if (status == 1) {
+                    console.log("buy");
+                    $('#buy').trigger("click");
+                    status = 0;
+                    reset= 0;
+                }
+            } else {
+                /* TODO das es endlich hochzählt*/
+                if(status === 0) {
+                    reset++;
+                }
+                if(reset > 50) {
+                    status = 1;
+                }
+            }
+            ;
+
+        }
+        ;
     });
 
 });
