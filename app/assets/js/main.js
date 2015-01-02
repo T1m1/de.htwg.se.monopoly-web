@@ -102,7 +102,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
         $('#drawCard').on('click', function () {
             update('#drawCard');
         });
-    
+
 
         $('#rollDice').on('click', function () {
             update('#rollDice');
@@ -127,6 +127,11 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
         $('#prisonRoll').on('click', function () {
             update('#prisonRoll');
+        });
+
+        $('#leapmotion').on('click', function () {
+            var scriptPath = location.origin + '/assets/js/leap.js'
+            loadScript(scriptPath);
         });
 
         $('#end').on('click', function () {
@@ -204,6 +209,13 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
                 updatePlayerPosition(item.pic, item.pos);
             })
         };
+
+        var loadScript = function (scriptname) {
+            var snode = document.createElement('script');
+            snode.setAttribute('type','text/javascript');
+            snode.setAttribute('src',scriptname);
+            document.getElementsByTagName('head')[0].appendChild(snode);
+        }
 
         // function for checking the right answer
         $scope.checkAnswer = function (select) {
@@ -307,6 +319,11 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
         // initialize
         init();
+
+
+
     });
+
+
 
 });
