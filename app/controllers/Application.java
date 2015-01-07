@@ -1,35 +1,37 @@
 package controllers;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import de.htwg.monopoly.controller.IController;
-import de.htwg.monopoly.util.IMonopolyUtil;
-import play.Logger;
-import play.Logger.ALogger;
-import de.htwg.monopoly.entities.IFieldObject;
-import de.htwg.monopoly.entities.impl.Player;
-import de.htwg.monopoly.util.PlayerIcon;
-import de.htwg.monopoly.util.UserAction;
 import models.MonopolyObserver;
 import models.PendingGame;
+
+import org.pac4j.play.java.JavaController;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import play.mvc.Controller;
+import play.Logger;
+import play.Logger.ALogger;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
-public class Application extends Controller {
+import de.htwg.monopoly.controller.IController;
+import de.htwg.monopoly.entities.IFieldObject;
+import de.htwg.monopoly.entities.impl.Player;
+import de.htwg.monopoly.util.IMonopolyUtil;
+import de.htwg.monopoly.util.PlayerIcon;
+import de.htwg.monopoly.util.UserAction;
+
+public class Application extends JavaController {
 
 	private static Cache<String, IController> controllers = CacheBuilder
 			.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
@@ -370,29 +372,32 @@ public class Application extends Controller {
 		Integer numberOfGames = (int) pendingGames.size();
 		JSONObject games[] = new JSONObject[numberOfGames];
 		int i = 0;
-		for (Integer current: pendingGames.asMap().keySet()) {
-		
+		for (Integer current : pendingGames.asMap().keySet()) {
+
 			games[i] = new JSONObject();
 			games[i].put("name", pendingGames.asMap().get(current).getName());
-			games[i].put("numberOfPlayer", pendingGames.asMap().get(current).getPlayerCount());
-			
+			games[i].put("numberOfPlayer", pendingGames.asMap().get(current)
+					.getPlayerCount());
+
 			JSONArray tempPlayers = new JSONArray();
-			for (String currentPlayer: pendingGames.asMap().get(current).getPlayers().keySet()) {
-				
+			for (String currentPlayer : pendingGames.asMap().get(current)
+					.getPlayers().keySet()) {
+
 				// temp player object
 				JSONObject tmpPlayer = new JSONObject();
 				tmpPlayer.put("name", currentPlayer);
-				tmpPlayer.put("figure", pendingGames.asMap().get(current).getPlayers().get(currentPlayer).toString());
-				
+				tmpPlayer.put("figure", pendingGames.asMap().get(current)
+						.getPlayers().get(currentPlayer).toString());
+
 				// add player object to arry
-				tempPlayers.add(tmpPlayer);				
+				tempPlayers.add(tmpPlayer);
 			}
-			
+
 			// add array to game json object
 			games[i].put("players", tempPlayers);
 			i++;
 		}
-		
+
 		// add all game json objects to an array
 		JSONArray allGames = new JSONArray();
 		for (int j = 0; j < games.length; j++) {

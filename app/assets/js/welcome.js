@@ -1,13 +1,13 @@
 var startPage = angular.module('monopolyStartPage', [ 'ngAnimate' ]);
 
 startPage
-		.controller(
-				'Controller',
-				function($scope, $timeout, $http) {
+.controller(
+	'Controller',
+	function($scope, $timeout, $http) {
 
-					$scope.showNetwork = false;
-					$scope.showLocal = false;
-					$scope.chooseType = true;
+		$scope.showNetwork = false;
+		$scope.showLocal = false;
+		$scope.chooseType = true;
 
 					// basic button functions
 					$scope.localGame = function() {
@@ -16,9 +16,12 @@ startPage
 					}
 
 					$scope.networkGame = function() {
-						$scope.getGames();
-						$scope.showNetwork = true;
-						$scope.chooseType = false;
+						$scope.getGames().then(function() {
+							//$scope.showNetwork = true;
+							//$scope.chooseType = false;
+						});
+
+						$('#authModal').modal('show');
 					}
 
 					$scope.back = function() {
@@ -42,7 +45,7 @@ startPage
 					} ];
 
 					$scope.icons = [ 'maechtel', 'neuschwander', 'schoppa',
-							'boger', 'bittel', 'eck' ];
+					'boger', 'bittel', 'eck' ];
 
 					$scope.addPlayer = function() {
 
@@ -93,12 +96,12 @@ startPage
 
 							if ($scope.players[index].name === "") {
 								$scope.displayError("Bitte Namen für Spieler "
-										+ (index + 1) + " eintragen.")
+									+ (index + 1) + " eintragen.")
 								return;
 							} else if ($scope.players[index].figure === "") {
 								$scope.displayError("Bitte Figur für "
-										+ $scope.players[index].name
-										+ " auswaehlen.")
+									+ $scope.players[index].name
+									+ " auswaehlen.")
 								return;
 							}
 
@@ -107,8 +110,8 @@ startPage
 						$('.bodyblue').addClass('blur');
 
 						$('body')
-								.prepend(
-										'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+						.prepend(
+							'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
 
 						$http.post('/start', $scope.players).then(function() {
 
@@ -166,7 +169,7 @@ startPage
 					$scope.createGame = function() {
 						if ($scope.alreadyCreated) {
 							$scope
-									.displayError("Du hast bereits ein Spiel gestartet.");
+							.displayError("Du hast bereits ein Spiel gestartet.");
 						} else {
 							$('#createGameModal').modal('show');
 						}
@@ -175,7 +178,7 @@ startPage
 					$scope.joinGame = function(game) {
 						if ($scope.alreadyJoined) {
 							$scope
-									.displayError("Du bist bereits einem Spiel beigetreten.");
+							.displayError("Du bist bereits einem Spiel beigetreten.");
 						} else {
 							$scope.joiningGame = game;
 							$('#joinGameModal').modal('show');
@@ -254,7 +257,7 @@ startPage
 
 							if ($scope.joiningGame.players[index].name === $scope.joiner.playerName) {
 								$scope
-										.displayModalError("Name existiert schon, bitte anderen Namen eintragen.")
+								.displayModalError("Name existiert schon, bitte anderen Namen eintragen.")
 								return;
 							}
 							// TODO check icon by not showing it in the dropdown
@@ -266,8 +269,7 @@ startPage
 					}
 
 					$scope.getGames = function() {
-						$http.get('/games').then(function(res) {
-							console.log(res)
+						return $http.get('/games').then(function(res) {
 							$scope.gameInstances = res.data;
 						})
 					}
