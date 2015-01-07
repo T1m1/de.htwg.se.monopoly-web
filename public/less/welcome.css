@@ -74,6 +74,7 @@
   text-align: left;
   color:#000000;
  } 
+ 
  .game-list {
  	background-color:#FFFFFF;
  	text-align: left;
@@ -82,9 +83,17 @@
  	margin: 10px;
  	margin-left: 0px;
  	padding: 5px;
-  -webkit-box-shadow: 4px 4px 24px 0px rgba(50, 50, 50, 0.52);
-  -moz-box-shadow:    4px 4px 24px 0px rgba(50, 50, 50, 0.52);
-  box-shadow:         4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+  	-webkit-box-shadow: 4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+  	-moz-box-shadow:    4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+  	box-shadow:         4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+ }
+ 
+ .noGames {
+ 	text-align: center;
+ 	margin: 10px;
+ 	padding: 5px;
+ 	color:#424242;
+ 	font-style: italic;
  }
  
  .network-overview{

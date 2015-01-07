@@ -1,303 +1,320 @@
 @(message: String) @main("Welcome to Monopoly") {
-    <link rel="stylesheet" href='@routes.Assets.at("less/welcome.css")' />
-    <div ng-app="monopolyStartPage" class="bodyblue bodywhite">
-        <div ng-controller="Controller">
-            <h1 class="monopoly-header">HTWG Monopoly</h1>
+<link rel="stylesheet" href='@routes.Assets.at("less/welcome.css")' />
+<div ng-app="monopolyStartPage" class="bodyblue bodywhite">
+	<div ng-controller="Controller">
+		<h1 class="monopoly-header">HTWG Monopoly</h1>
 
-            <div class="back-button" ng-show="chooseType">
-
-
-            <h4 class="monopoly-sub-header">
-                Herzlich willkommen. Dieses Spiel wurde für den Kurs "Web-Technologien"
-                an der HTWG Konstanz als webbasiertes Spiel umgesetzt.
-            </h4>
-            <p>
-                Dieser Kurs baut auf den Kurs "Software-Engineering" auf, in dem die Spiellogik unter den Aspekten der modernen Software-Entwicklung umgesetzt wird.
-                Ziel dieses Kurses ist es, Grundlegende Kenntnisse im Bereich Web-Technologien zu erlangen. Weitere Informationen findet ihr auf unserer <a class="red" href="http://t1m1.github.io/de.htwg.se.monopoly-web">
-                GitHub Seite</a>.</p>
+		<div class="back-button" ng-show="chooseType">
 
 
-            <p>
-                Wir wünschen euch viel Spaß beim Spielen.
-            </p>
-            </div>
-
-            <div class="choose-game-type" ng-show="chooseType">
-                <button type="button" class="btn btn-default btn-monopoly-start" ng-click="localGame()">Lokales
-                    Spiel</button>
-                <button type="button" class="btn btn-default btn-monopoly-start"
-                ng-click="networkGame()">Spiel &uuml;ber Netzwerk</button>
-            </div>
-                <!-- Site for local game -->
-            <div class="local-game-content" ng-show="showLocal">
-                <div class="row">
-                        <!-- empty col on the far left-->
-                    <div class="col-xs-3"></div>
-
-                        <!-- Middle col with forms -->
-                    <div class="col-xs-6">
-                        <div class="monopoly-submit-box row-elements">
-
-                                <!--  First row with text -->
-                            <div class="row">
-                                <div class="col-xs-1">
-                                    <p>&nbsp;</p>
-                                </div>
-                                <div class="col-xs-8">
-                                    <p>Bitte Spielernamen eingeben</p>
-                                </div>
-                                <div class="col-xs-3">
-                                    <p>Figur</p>
-                                </div>
-                            </div>
-
-                                <!-- repeat forms -->
-                            <div class="row mon-fade-repeat" ng-repeat="player in players"
-                            ng-mouseenter="showMinusButton = true"
-                            ng-mouseleave="showMinusButton = false">
-
-                                    <!-- col for the minus button -->
-                                <div class="col-xs-1 ">
-                                    <span
-                                    class="glyphicon glyphicon-remove monopoly_remove mon-fade"
-                                    aria-hidden="true" ng-click="rmPlayer($index)"
-                                    ng-show="showMinusButton"></span>
-                                </div>
-
-                                    <!-- col for forms -->
-                                <div class="col-xs-8 player-form">
-                                    <form novalidate role="form">
-                                        <div class="form-group">
-                                            <input class="form-control"
-                                            placeholder="Enter Player {{$index + 1}}"
-                                            ng-model="player.name">
-                                        </div>
-                                    </form>
-                                </div>
-
-                                    <!-- Dropdown col -->
-                                <div class="col-xs-3">
-                                    <div ng-hide="player.figure">
-                                        <select class="form-control" ng-model="select"
-                                        ng-options="icon for icon in icons"
-                                        ng-change="updatePlayerIcon($index,select)"
-                                        ng-disabled="player.figure">
-                                        </select>
-                                    </div>
-                                    <img ng-src="assets/images/{{player.figure}}.jpg"
-                                    class="monopoly-icon" ng-show="player.figure" />
-                                </div>
-
-                            </div>
-
-                                <!--  second last row with plus button -->
-                            <div class="row">
-                                <div class="col-xs-1"></div>
-                                    <!-- col for forms -->
-                                <div class="col-xs-8">
-                                    <span class="glyphicon glyphicon-plus monopoly-add"
-                                    aria-hidden="true" ng-click="addPlayer()"
-                                    ng-show="showAddButton"></span>
-                                </div>
-                                <div class="col-xs-3"></div>
-                            </div>
-
-                                <!--  last row with submit button -->
-                            <div class="row">
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-8">
-                                    <button type="button" class="btn btn-default btn-monopoly-start" ng-click="back()">
-                                        Zur&uuml;ck</button>
-                                    <button type="button" class="btn btn-default btn-monopoly-back"
-                                    ng-click="startGame()">Start Game</button>
-                                </div>
-                                <div class="col-xs-3"></div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-8">
-                                    <div ng-show="showAlert"
-                                    class="alert alert-warning monopoly-alert mon-fade"
-                                    role="alert">{{alertMessage}}</div>
-                                </div>
-                                <div class="col-xs-3"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                        <!-- empty col on the far right-->
-                    <div class="col-xs-3"></div>
-
-                </div>
-            </div>
-                <!-- Site for network game -->
-            <div class="network-game-content" ng-show="showNetwork">
-                <div class="row">
-                    <div class="col-xs-3"></div>
-
-                    <div class="col-xs-6 network-overview">
-                        <p>Bitte Spiel ausw&auml;hlen oder neues Spiel starten</p>
-                        <div class="game-list">
-                            <div class="game-instances" ng-click="joinGame(game)" ng-repeat="game in gameInstances">
-                                {{game.name}} : {{game.players}}</div>
-                        </div>
-
-                        <div class="game-options"></div>
-                        <button type="button" class="btn btn-default btn-monopoly-back" ng-click="back()">Zur&uuml;ck</button>
-                        <button type="button" class="btn btn-default btn-monopoly-start"
-                        ng-click="createGame()">Neues Spiel erstellen</button>
-                    </div>
-                    <div class="col-xs-3"></div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3"></div>
-                    <div class="col-xs-6">
-                        <div ng-show="showAlert"
-                        class="alert alert-warning monopoly-alert mon-fade"
-                        role="alert">{{alertMessage}}</div>
-                    </div>
-                    <div class="col-xs-3"></div>
-                </div>
-            </div>
+			<h4 class="monopoly-sub-header">Herzlich willkommen. Dieses
+				Spiel wurde für den Kurs "Web-Technologien" an der HTWG Konstanz
+				als webbasiertes Spiel umgesetzt.</h4>
+			<p>
+				Dieser Kurs baut auf den Kurs "Software-Engineering" auf, in dem die
+				Spiellogik unter den Aspekten der modernen Software-Entwicklung
+				umgesetzt wird. Ziel dieses Kurses ist es, Grundlegende Kenntnisse
+				im Bereich Web-Technologien zu erlangen. Weitere Informationen
+				findet ihr auf unserer <a class="red"
+					href="http://t1m1.github.io/de.htwg.se.monopoly-web"> GitHub
+					Seite</a>.
+			</p>
 
 
-                <!-- Create a new Game Modal -->
-            <div class="modal fade create-game-modal" id="createGameModal" tabindex="-1" role="dialog"
-            aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title" id="myModalLabel">Spiel erstellen</h3>
-                        </div>
-                        <div class="modal-body">
-                            <p>Name des Spiels</p>
-                            <form novalidate role="form">
-                                <div class="form-group game-name-form">
-                                    <input class="form-control" placeholder="Spielname" ng-model="myGame.name" required>
-                                </div>
-                            </form>
-                            <p>Anzahl der Mitspieler</p>
-                            <div class="radio">
-                                <label class="radio-inline" ng-repeat="number in [2,3,4,5,6]">
-                                    <input type="radio" name="optradio" value="{{$index + 2}}" ng-model="myGame.numberOfPlayer">
-                                    {{number}}
-                                </label>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <p>Dein Name</p>
-                                </div>
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-1">
-                                    <p>&nbsp;</p>
-                                </div>
-                                <div class="col-xs-4">
-                                    <p>Spielfigur</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <form novalidate role="form">
-                                        <div class="form-group">
-                                            <input class="form-control" placeholder="Spielername"
-                                            ng-model="myGame.playerName" required>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-1">
-                                    <img ng-src="assets/images/{{myGame.playerIcon}}.jpg"
-                                    class="monopoly-icon" ng-show="myGame.playerIcon" />
-                                </div>
-                                <div class="col-xs-4">
-                                    <select class="form-control" ng-model="myGame.playerIcon"
-                                    ng-options="icon for icon in icons"
-                                    ng-disabled="myGame.playerFigure">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row">
-                                <div class="col-xs-8">
-                                    <div ng-show="showModalAlert"
-                                    class="alert alert-warning mon-fade modal-alert"
-                                    role="alert">{{alertMessage}}</div>
-                                </div>
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-2">
-                                    <button ng-click="create()" type="button"
-                                    class="btn btn-default">Beitreten</button>
-                                </div>
-                                <div class="col-xs-1"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+			<p>Wir wünschen euch viel Spaß beim Spielen.</p>
+		</div>
 
-                <!-- Modal for joining game -->
-            <div class="modal fade create-game-modal" id="joinGameModal" tabindex="-1" role="dialog"
-            aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title" id="myModalLabel">Spiel beitreten</h3>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <p>Dein Name</p>
-                                </div>
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-1">
-                                    <p>&nbsp;</p>
-                                </div>
-                                <div class="col-xs-4">
-                                    <p>Spielfigur</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <form novalidate role="form">
-                                        <div class="form-group">
-                                            <input class="form-control" placeholder="Spielername" ng-model="joiner.playerName">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-1">
-                                    <img ng-src="assets/images/{{joiner.playerIcon}}.jpg"
-                                    class="monopoly-icon" ng-show="joiner.playerIcon" />
-                                </div>
-                                <div class="col-xs-4">
-                                    <select class="form-control" ng-model="joiner.playerIcon"
-                                    ng-options="icon for icon in icons"
-                                    ng-disabled="joiner.playerFigure">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row">
-                                <div class="col-xs-8">
-                                    <div ng-show="showModalAlert"
-                                    class="alert alert-warning mon-fade modal-alert"
-                                    role="alert">{{alertMessage}}</div>
-                                </div>
-                                <div class="col-xs-1"></div>
-                                <div class="col-xs-2">
-                                    <button ng-click="join()" type="button"
-                                    class="btn btn-default">Beitreten</button>
-                                </div>
+		<div class="choose-game-type" ng-show="chooseType">
+			<button type="button" class="btn btn-default btn-monopoly-start"
+				ng-click="localGame()">Lokales Spiel</button>
+			<button type="button" class="btn btn-default btn-monopoly-start"
+				ng-click="networkGame()">Spiel &uuml;ber Netzwerk</button>
+		</div>
+		<!-- Site for local game -->
+		<div class="local-game-content" ng-show="showLocal">
+			<div class="row">
+				<!-- empty col on the far left-->
+				<div class="col-xs-3"></div>
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+				<!-- Middle col with forms -->
+				<div class="col-xs-6">
+					<div class="monopoly-submit-box row-elements">
+
+						<!--  First row with text -->
+						<div class="row">
+							<div class="col-xs-1">
+								<p>&nbsp;</p>
+							</div>
+							<div class="col-xs-8">
+								<p>Bitte Spielernamen eingeben</p>
+							</div>
+							<div class="col-xs-3">
+								<p>Figur</p>
+							</div>
+						</div>
+
+						<!-- repeat forms -->
+						<div class="row mon-fade-repeat" ng-repeat="player in players"
+							ng-mouseenter="showMinusButton = true"
+							ng-mouseleave="showMinusButton = false">
+
+							<!-- col for the minus button -->
+							<div class="col-xs-1 ">
+								<span
+									class="glyphicon glyphicon-remove monopoly_remove mon-fade"
+									aria-hidden="true" ng-click="rmPlayer($index)"
+									ng-show="showMinusButton"></span>
+							</div>
+
+							<!-- col for forms -->
+							<div class="col-xs-8 player-form">
+								<form novalidate role="form">
+									<div class="form-group">
+										<input class="form-control"
+											placeholder="Enter Player {{$index + 1}}"
+											ng-model="player.name">
+									</div>
+								</form>
+							</div>
+
+							<!-- Dropdown col -->
+							<div class="col-xs-3">
+								<div ng-hide="player.figure">
+									<select class="form-control" ng-model="select"
+										ng-options="icon for icon in icons"
+										ng-change="updatePlayerIcon($index,select)"
+										ng-disabled="player.figure">
+									</select>
+								</div>
+								<img ng-src="assets/images/{{player.figure}}.jpg"
+									class="monopoly-icon" ng-show="player.figure" />
+							</div>
+
+						</div>
+
+						<!--  second last row with plus button -->
+						<div class="row">
+							<div class="col-xs-1"></div>
+							<!-- col for forms -->
+							<div class="col-xs-8">
+								<span class="glyphicon glyphicon-plus monopoly-add"
+									aria-hidden="true" ng-click="addPlayer()"
+									ng-show="showAddButton"></span>
+							</div>
+							<div class="col-xs-3"></div>
+						</div>
+
+						<!--  last row with submit button -->
+						<div class="row">
+							<div class="col-xs-1"></div>
+							<div class="col-xs-8">
+								<button type="button" class="btn btn-default btn-monopoly-start"
+									ng-click="back()">Zur&uuml;ck</button>
+								<button type="button" class="btn btn-default btn-monopoly-back"
+									ng-click="startGame()">Start Game</button>
+							</div>
+							<div class="col-xs-3"></div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-1"></div>
+							<div class="col-xs-8">
+								<div ng-show="showAlert"
+									class="alert alert-warning monopoly-alert mon-fade"
+									role="alert">{{alertMessage}}</div>
+							</div>
+							<div class="col-xs-3"></div>
+						</div>
+					</div>
+				</div>
+
+				<!-- empty col on the far right-->
+				<div class="col-xs-3"></div>
+
+			</div>
+		</div>
+		<!-- Site for network game -->
+		<div class="network-game-content" ng-show="showNetwork">
+			<div class="row">
+				<div class="col-xs-3"></div>
+
+				<div class="col-xs-6 network-overview">
+					<p>Bitte Spiel ausw&auml;hlen oder neues Spiel starten</p>
+					<div class="game-list" >
+						<table class="table" ng-show="gameInstances.length">
+							<thead>
+								<tr>
+									<th>Spiel</th>
+									<th ng-repeat="index in [1,2,3,4,5,6]">Spieler {{index}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="game-instances" ng-click="joinGame(game)"
+									ng-repeat="game in gameInstances">
+									<th scope="row">{{game.name}}</th>
+									<td ng-repeat="player in game.players">{{player.name}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="noGames" ng-show="!gameInstances.length">Kein aktives Spiel vorhanden. Bitte neues Spiel erstellen</div>
+					</div>
+
+					<div class="game-options"></div>
+					<button type="button" class="btn btn-default btn-monopoly-back"
+						ng-click="back()">Zur&uuml;ck</button>
+					<button type="button" class="btn btn-default btn-monopoly-start"
+						ng-click="createGame()">Neues Spiel erstellen</button>
+				</div>
+				<div class="col-xs-3"></div>
+			</div>
+			<div class="row">
+				<div class="col-xs-3"></div>
+				<div class="col-xs-6">
+					<div ng-show="showAlert"
+						class="alert alert-warning monopoly-alert mon-fade" role="alert">{{alertMessage}}</div>
+				</div>
+				<div class="col-xs-3"></div>
+			</div>
+		</div>
 
 
-}
+		<!-- Create a new Game Modal -->
+		<div class="modal fade create-game-modal" id="createGameModal"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title" id="myModalLabel">Spiel erstellen</h3>
+					</div>
+					<div class="modal-body">
+						<p>Name des Spiels</p>
+						<form novalidate role="form">
+							<div class="form-group game-name-form">
+								<input class="form-control" placeholder="Spielname"
+									ng-model="myGame.name" required>
+							</div>
+						</form>
+						<p>Anzahl der Mitspieler</p>
+						<div class="radio">
+							<label class="radio-inline" ng-repeat="number in [2,3,4,5,6]">
+								<input type="radio" name="optradio" value="{{$index + 2}}"
+								ng-model="myGame.numberOfPlayer"> {{number}}
+							</label>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<p>Dein Name</p>
+							</div>
+							<div class="col-xs-1"></div>
+							<div class="col-xs-1">
+								<p>&nbsp;</p>
+							</div>
+							<div class="col-xs-4">
+								<p>Spielfigur</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<form novalidate role="form">
+									<div class="form-group">
+										<input class="form-control" placeholder="Spielername"
+											ng-model="myGame.playerName" required>
+									</div>
+								</form>
+							</div>
+							<div class="col-xs-1"></div>
+							<div class="col-xs-1">
+								<img ng-src="assets/images/{{myGame.playerIcon}}.jpg"
+									class="monopoly-icon" ng-show="myGame.playerIcon" />
+							</div>
+							<div class="col-xs-4">
+								<select class="form-control" ng-model="myGame.playerIcon"
+									ng-options="icon for icon in icons"
+									ng-disabled="myGame.playerFigure">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<div class="row">
+							<div class="col-xs-8">
+								<div ng-show="showModalAlert"
+									class="alert alert-warning mon-fade modal-alert" role="alert">{{alertMessage}}</div>
+							</div>
+							<div class="col-xs-1"></div>
+							<div class="col-xs-2">
+								<button ng-click="create()" type="button"
+									class="btn btn-default">Erstellen</button>
+							</div>
+							<div class="col-xs-1"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal for joining game -->
+		<div class="modal fade create-game-modal" id="joinGameModal"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title" id="myModalLabel">Spiel beitreten</h3>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-6">
+								<p>Dein Name</p>
+							</div>
+							<div class="col-xs-1"></div>
+							<div class="col-xs-1">
+								<p>&nbsp;</p>
+							</div>
+							<div class="col-xs-4">
+								<p>Spielfigur</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<form novalidate role="form">
+									<div class="form-group">
+										<input class="form-control" placeholder="Spielername"
+											ng-model="joiner.playerName">
+									</div>
+								</form>
+							</div>
+							<div class="col-xs-1"></div>
+							<div class="col-xs-1">
+								<img ng-src="assets/images/{{joiner.playerIcon}}.jpg"
+									class="monopoly-icon" ng-show="joiner.playerIcon" />
+							</div>
+							<div class="col-xs-4">
+								<select class="form-control" ng-model="joiner.playerIcon"
+									ng-options="icon for icon in icons"
+									ng-disabled="joiner.playerFigure">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<div class="row">
+							<div class="col-xs-8">
+								<div ng-show="showModalAlert"
+									class="alert alert-warning mon-fade modal-alert" role="alert">{{alertMessage}}</div>
+							</div>
+							<div class="col-xs-1"></div>
+							<div class="col-xs-2">
+								<button ng-click="join()" type="button" class="btn btn-default">Beitreten</button>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	}
