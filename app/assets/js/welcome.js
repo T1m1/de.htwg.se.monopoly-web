@@ -231,7 +231,7 @@ startPage
 							$scope.gameInstances.push(myNewGame);
 						}
 						
-						$http.post('/createGame', $scope.gameInstances)
+						$http.post('/createGame', myNewGame)
 						
 						// add game to game instances
 						$scope.alreadyCreated = true;
