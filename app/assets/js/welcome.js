@@ -16,7 +16,7 @@ startPage
 					}
 
 					$scope.networkGame = function() {
-						// $scope.getGames();
+						$scope.getGames();
 						$scope.showNetwork = true;
 						$scope.chooseType = false;
 					}

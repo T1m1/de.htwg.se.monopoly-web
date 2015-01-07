@@ -26,6 +26,7 @@ import play.mvc.Result;
 import play.mvc.WebSocket;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 public class Application extends Controller {
@@ -366,14 +367,39 @@ public class Application extends Controller {
 	}
 
 	public static Result getGameInstances() {
-		JSONObject message = new JSONObject();
-		JSONArray array = new JSONArray();
-		for (Map.Entry<String, IController> entry : controllers.asMap()
-				.entrySet()) {
-			array.add(entry.getKey());
+		Integer numberOfGames = (int) pendingGames.size();
+		JSONObject games[] = new JSONObject[numberOfGames];
+		int i = 0;
+		for (Integer current: pendingGames.asMap().keySet()) {
+		
+			games[i] = new JSONObject();
+			games[i].put("name", pendingGames.asMap().get(current).getName());
+			games[i].put("numberOfPlayer", pendingGames.asMap().get(current).getPlayerCount());
+			
+			JSONArray tempPlayers = new JSONArray();
+			for (String currentPlayer: pendingGames.asMap().get(current).getPlayers().keySet()) {
+				
+				// temp player object
+				JSONObject tmpPlayer = new JSONObject();
+				tmpPlayer.put("name", currentPlayer);
+				tmpPlayer.put("figure", pendingGames.asMap().get(current).getPlayers().get(currentPlayer).toString());
+				
+				// add player object to arry
+				tempPlayers.add(tmpPlayer);				
+			}
+			
+			// add array to game json object
+			games[i].put("players", tempPlayers);
+			i++;
 		}
-		message.put("ids", array);
-		return ok(message.toJSONString());
+		
+		// add all game json objects to an array
+		JSONArray allGames = new JSONArray();
+		for (int j = 0; j < games.length; j++) {
+			allGames.add(games[j]);
+		}
+
+		return ok(allGames.toJSONString());
 	}
 
 	public static Result createGameInstance() {
@@ -392,14 +418,13 @@ public class Application extends Controller {
 		Iterator<JsonNode> elements = playerNode.elements();
 
 		Map<String, PlayerIcon> players = new HashMap<String, PlayerIcon>();
-		
+
 		while (elements.hasNext()) {
 			JsonNode playerElement = elements.next();
 
 			String name = playerElement.get("name").asText();
 			String icon = playerElement.get("figure").asText();
-			players.put(name,
-					PlayerIcon.valueOf(icon.toUpperCase()));
+			players.put(name, PlayerIcon.valueOf(icon.toUpperCase()));
 
 			// only add the first player
 			break;
@@ -408,7 +433,7 @@ public class Application extends Controller {
 		// add game instance to pending games
 		PendingGame aPendingGame = new PendingGame(gameName, numberOfPlayer,
 				players);
-		
+
 		pendingGames.put(aPendingGame.hashCode(), aPendingGame);
 		return ok();
 	}
