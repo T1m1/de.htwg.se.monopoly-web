@@ -8,10 +8,7 @@ startPage
             $scope.isSignedIn = false;
 
             $scope.processAuth = function(authResult) {
-                if ($scope.isSignedIn) {
-                    return 0;
-                }
-                if (authResult['access_token']) {
+                if ($scope.isSignedIn || authResult['access_token']) {
                     $scope.isSignedIn = true;
 
                     $scope.showNetwork = true;
@@ -31,8 +28,6 @@ startPage
                     $scope.processAuth(authResult);
                 });
             }
-
-
 
             $scope.renderSignIn = function() {
                 gapi.signin.render('HTWGsignin', {
@@ -55,10 +50,14 @@ startPage
             }
 
             $scope.networkGame = function() {
-                $scope.renderSignIn();
-
-                $('#authModal').modal('show');
                 $scope.getGames()
+                if (!$scope.isSignedIn) {
+                    $('#authModal').modal('show');
+                    $scope.renderSignIn();
+                } else {
+                    $scope.showNetwork = true;
+                    $scope.chooseType = false;
+                }
             }
 
             $scope.back = function() {
@@ -281,9 +280,9 @@ startPage
 
                 // check if name or icon already exist
                 if ($scope.joiner.playerName === "") {
-                    $scope.displayError("Bitte Namen eintragen!")
+                    $scope.displayModalError("Bitte Namen eintragen!")
                     return;
-                } else if ($scope.joiner.playerIcon == "") {
+                } else if ($scope.joiner.playerIcon === "") {
                     $scope.displayModalError("Bitte Figur auswählen.")
                     return;
                 }
