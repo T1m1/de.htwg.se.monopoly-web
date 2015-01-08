@@ -373,28 +373,49 @@ public class Application extends JavaController {
 		JSONObject games[] = new JSONObject[numberOfGames];
 		int i = 0;
 		for (Integer current : pendingGames.asMap().keySet()) {
-
-			games[i] = new JSONObject();
-			games[i].put("name", pendingGames.asMap().get(current).getName());
-			games[i].put("numberOfPlayer", pendingGames.asMap().get(current)
-					.getPlayerCount());
+			
+			String nameOfGame = pendingGames.asMap().get(current).getName();		
+			int numberOfPlayer = pendingGames.asMap().get(current)
+					.getPlayerCount();
+		
 
 			JSONArray tempPlayers = new JSONArray();
+			// add joined player to json array
 			for (String currentPlayer : pendingGames.asMap().get(current)
 					.getPlayers().keySet()) {
 
 				// temp player object
 				JSONObject tmpPlayer = new JSONObject();
 				tmpPlayer.put("name", currentPlayer);
+				//TODO: maybe bug: the Icon is now saved only in uppercase letters...
 				tmpPlayer.put("figure", pendingGames.asMap().get(current)
 						.getPlayers().get(currentPlayer).toString());
 
+				// add player object to array
+				tempPlayers.add(tmpPlayer);
+			}
+
+			// fill array with placeholders
+			int joinedPlayer = pendingGames.asMap().get(current).getPlayers()
+					.size();
+			for (int k = joinedPlayer; k <= IMonopolyUtil.MAX_NUMBER_OF_PLAYER; k++) {
+				JSONObject tmpPlayer = new JSONObject();
+				if (k <= numberOfPlayer) {
+					tmpPlayer.put("name", "offen");
+					tmpPlayer.put("figure", "");
+				} else {
+					tmpPlayer.put("name", "X");
+					tmpPlayer.put("figure", "");
+				}
 				// add player object to arry
 				tempPlayers.add(tmpPlayer);
 			}
 
 			// add array to game json object
+			games[i] = new JSONObject();
 			games[i].put("players", tempPlayers);
+			games[i].put("numberOfPlayer", numberOfPlayer);
+			games[i].put("name", nameOfGame);
 			i++;
 		}
 
