@@ -102,6 +102,27 @@ public class Application extends JavaController {
 		controllers.put("" + game.hashCode(), game);
 		prisonRollFlags.put("" + game.hashCode(), false);
 		session("game", "" + game.hashCode());
+		
+
+		logger.info("New Game started");
+		// start the game and begin with first player
+		controllers.asMap().get((session("game"))).startNewGame(player);
+
+		return true;
+	}
+	
+	private static boolean startNewGameNetwork(Map<String, PlayerIcon> player, String gameName) {
+		IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
+		
+		// starts the game
+		game.startNewGame(player);
+		
+		controllers.put("" + game.hashCode(), game);
+		prisonRollFlags.put("" + game.hashCode(), false);
+		session("game", "" + game.hashCode());
+		
+		pendingGames.asMap().get(gameName).addID(game.hashCode());
+		
 
 		logger.info("New Game started");
 		// start the game and begin with first player
@@ -523,9 +544,25 @@ public class Application extends JavaController {
 			return badRequest();
 		}
 		
-		startNewGame(pendingGame.getPlayers());
+		startNewGameNetwork(pendingGame.getPlayers(), gameName);
 
 		return ok(views.html.index.render("Index", controllers.asMap().get(session("game"))));
+	}
+	
+	public static Result getJoinGameID(String gameName) {
+		PendingGame pendingGame = pendingGames.asMap().get(gameName);
+		if (pendingGame == null) {
+			return badRequest();
+		}
+		
+		if (pendingGame.getID() == 0) {
+			return badRequest();
+		}
+		String ID = ((Integer) pendingGame.getID()).toString();
+		
+		JSONObject message = new JSONObject();
+		message.put("ID", ID);
+		return ok(message.toJSONString());
 	}
 
 	/**

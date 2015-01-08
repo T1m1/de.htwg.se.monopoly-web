@@ -335,7 +335,7 @@ startPage
 						$scope.pendingMessage = "Auf Mitspieler warten";
 						$scope.showPendingStatus = true;
 						
-						$scope.pollWaitForOponents(playerToJoin.gameName);
+						$scope.pollWaitToJoin(playerToJoin.gameName);
 						
 					}
 
@@ -365,6 +365,29 @@ startPage
 									$http.get('/startGame/' + gameName).then(function() {
 										$timeout(function() {
 											var loc = location.origin + "/go"
+											location.href = loc;
+										}, 1600);
+									});
+								});
+						}
+						, 1600);
+					}
+					
+					$scope.pollWaitToJoin = function(gameName) {
+						$interval(function() {
+							$http.get('/isFull/'+ gameName)
+								.error(function() {
+									
+								})
+								.success(function() {
+									
+									$('.bodyblue').addClass('blur');
+									$('body').prepend(
+											'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+	
+									$http.get('/getJoinGameID/' + gameName).then(function(res) {
+										$timeout(function() {
+											var loc = location.origin + "/go/" + res.data.ID
 											location.href = loc;
 										}, 1600);
 									});
