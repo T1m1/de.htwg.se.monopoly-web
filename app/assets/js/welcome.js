@@ -3,45 +3,9 @@ var startPage = angular.module('monopolyStartPage', [ 'ngAnimate' ]);
 startPage
 		.controller(
 				'Controller',
-				function($scope, $timeout, $http) {
+				function($scope, $timeout, $http, $interval) {
 
 					$scope.isSignedIn = false;
-
-					$scope.processAuth = function(authResult) {
-						if ($scope.isSignedIn || authResult['access_token']) {
-							$scope.isSignedIn = true;
-
-							$scope.showNetwork = true;
-							$scope.chooseType = false;
-							$('#authModal').modal('hide');
-
-						} else if (authResult['error']) {
-							$scope.isSignedIn = false;
-							console.log('Error:' + authResult['error']);
-						}
-					}
-
-					// sign in functionallity
-					// this will be called when authenication is done!
-					$scope.signIn = function(authResult) {
-						$scope.$apply(function() {
-							$scope.processAuth(authResult);
-						});
-					}
-
-					$scope.renderSignIn = function() {
-						gapi.signin
-								.render(
-										'HTWGsignin',
-										{
-											'callback' : $scope.signIn,
-											'clientid' : "1094692145630-vh5jho9nkha2hfmt5kmc455k2v06fakk.apps.googleusercontent.com",
-											'requestvisibleactions' : "http://schemas.google.com/AddActivity",
-											'scope' : 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
-											'cookiepolicy' : "single_host_origin"
-										});
-					}
-
 					$scope.showNetwork = false;
 					$scope.showLocal = false;
 					$scope.chooseType = true;
@@ -61,6 +25,22 @@ startPage
 							$scope.showNetwork = true;
 							$scope.chooseType = false;
 						}
+						// check if already created and joined
+						$http.get('/created')
+							.error(function() {
+								$scope.alreadyCreated = false;
+							})
+							.success(function() {
+								$scope.alreadyCreated = true;
+							});
+						
+						$http.get('/joined')
+							.error(function() {
+								$scope.alreadyJoined = false;
+							})
+							.success(function() {
+								$scope.alreadyJoined = true;
+							});
 					}
 
 					$scope.back = function() {
@@ -205,13 +185,12 @@ startPage
 
 					$scope.joiningGame;
 
-					// dummy gameinstances, will be removed eventually
+					// pending game instances
 					$scope.gameInstances = [];
 
 					$scope.createGame = function() {
 						if ($scope.alreadyCreated) {
-							$scope
-									.displayError("Du hast bereits ein Spiel gestartet.");
+							$scope.displayError("Du hast bereits ein Spiel gestartet.");
 						} else {
 							$('#createGameModal').modal('show');
 						}
@@ -243,6 +222,7 @@ startPage
 						$scope.joinIcons = tempArray;
 					}
 
+					// create a new game in modal
 					$scope.create = function() {
 						var exit = false;
 						angular.forEach($scope.gameInstances, function(value, key) {
@@ -305,8 +285,14 @@ startPage
 						$scope.alreadyCreated = true;
 
 						$('#createGameModal').modal('hide');
+						
+						$scope.pendingMessage = "Auf Mitspieler warten";
+						$scope.showPendingStatus = true;
+						
+						$scope.pollWaitForOponents(myNewGame.name);
 					}
 
+					// join a game in modal
 					$scope.join = function() {
 						
 						if ($scope.joiner.playerName === "") {
@@ -341,13 +327,81 @@ startPage
 
 						$scope.alreadyJoined = true;
 						
-
+						$scope.pendingMessage = "Auf Mitspieler warten";
+						$scope.showPendingStatus = true;
+						
+						$scope.pollWaitForOponents(playerToJoin.gameName);
+						
 					}
 
+					// request for pending games
 					$scope.getGames = function() {
 						return $http.get('/games').then(function(res) {
 							$scope.gameInstances = res.data;
 						})
+					}
+					
+					// poll function for waiting on oponent
+					$scope.pollWaitForOponents = function(gameName) {
+						
+						$interval(function() {
+							$scope.getGames().then(function() {
+								$http.get('/isFull/'+gameName)
+									.error(function() {
+										
+									})
+									.success(function() {
+										
+										$('.bodyblue').addClass('blur');
+										$('body').prepend(
+												'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+
+										$http.get('/startGame/' + gameName).then(function() {
+											$timeout(function() {
+												var loc = location.origin + "/go"
+												location.href = loc;
+											}, 1600);
+										});
+									});
+							});
+						}, 1600);
+					}
+					
+					
+
+					// sign in functionallity
+					$scope.processAuth = function(authResult) {
+						if ($scope.isSignedIn || authResult['access_token']) {
+							$scope.isSignedIn = true;
+
+							$scope.showNetwork = true;
+							$scope.chooseType = false;
+							$('#authModal').modal('hide');
+
+						} else if (authResult['error']) {
+							$scope.isSignedIn = false;
+							console.log('Error:' + authResult['error']);
+						}
+					}
+
+					
+					// this will be called when authenication is done!
+					$scope.signIn = function(authResult) {
+						$scope.$apply(function() {
+							$scope.processAuth(authResult);
+						});
+					}
+
+					$scope.renderSignIn = function() {
+						gapi.signin.render(
+						'HTWGsignin',
+						{
+							'callback' : $scope.signIn,
+							'clientid' : "1094692145630-vh5jho9nkha2hfmt5kmc455k2v06fakk.apps.googleusercontent.com",
+							'requestvisibleactions' : "http://schemas.google.com/AddActivity",
+							'scope' : 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
+							'cookiepolicy' : "single_host_origin"
+						});
 					}
 
 				});

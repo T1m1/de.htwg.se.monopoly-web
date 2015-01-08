@@ -24,6 +24,10 @@ GET			/drawCard					controllers.Application.drawCard()
 GET         /games                      controllers.Application.getGameInstances()
 POST        /createGame                 controllers.Application.createGameInstance()
 POST        /addPlayerToGame		    controllers.Application.addPlayertoGameInstance()
+GET			/joined						controllers.Application.joinedGame()
+GET         /created                    controllers.Application.createdGame()
+GET         /isFull/:gameName           controllers.Application.isFull(gameName:String)
+GET         /startGame/:gameName        controllers.Application.startGame(gameName:String)
 
 GET         /socket/:id                 controllers.Application.connectWebSocket(id:String)
 
