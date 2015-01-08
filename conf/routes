@@ -23,7 +23,7 @@ GET         /message                    controllers.Application.getLastMessage()
 GET			/drawCard					controllers.Application.drawCard()
 GET         /games                      controllers.Application.getGameInstances()
 POST        /createGame                 controllers.Application.createGameInstance()
-POST        /addPlayerToGame/:id        controllers.Application.addPlayertoGameInstance(id:Integer)
+POST        /addPlayerToGame		    controllers.Application.addPlayertoGameInstance()
 
 GET         /socket/:id                 controllers.Application.connectWebSocket(id:String)
 

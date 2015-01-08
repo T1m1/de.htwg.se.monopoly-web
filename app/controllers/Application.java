@@ -9,7 +9,6 @@ import models.MonopolyObserver;
 import models.PendingGame;
 
 import org.pac4j.play.java.JavaController;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -42,7 +41,7 @@ public class Application extends JavaController {
 	private static Cache<String, Boolean> prisonRollFlags = CacheBuilder
 			.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
 
-	private static Cache<Integer, PendingGame> pendingGames = CacheBuilder
+	private static Cache<String, PendingGame> pendingGames = CacheBuilder
 			.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
 
 	private static final ALogger logger = Logger.of(Application.class);
@@ -372,7 +371,7 @@ public class Application extends JavaController {
 		Integer numberOfGames = (int) pendingGames.size();
 		JSONObject games[] = new JSONObject[numberOfGames];
 		int i = 0;
-		for (Integer current : pendingGames.asMap().keySet()) {
+		for (String current : pendingGames.asMap().keySet()) {
 			
 			String nameOfGame = pendingGames.asMap().get(current).getName();		
 			int numberOfPlayer = pendingGames.asMap().get(current)
@@ -387,9 +386,9 @@ public class Application extends JavaController {
 				// temp player object
 				JSONObject tmpPlayer = new JSONObject();
 				tmpPlayer.put("name", currentPlayer);
-				//TODO: maybe bug: the Icon is now saved only in uppercase letters...
+				//TODO: maybe bug: the Icon is now saved only in lowercase letters...
 				tmpPlayer.put("figure", pendingGames.asMap().get(current)
-						.getPlayers().get(currentPlayer).toString());
+						.getPlayers().get(currentPlayer).toString().toLowerCase());
 
 				// add player object to array
 				tempPlayers.add(tmpPlayer);
@@ -398,9 +397,9 @@ public class Application extends JavaController {
 			// fill array with placeholders
 			int joinedPlayer = pendingGames.asMap().get(current).getPlayers()
 					.size();
-			for (int k = joinedPlayer; k <= IMonopolyUtil.MAX_NUMBER_OF_PLAYER; k++) {
+			for (int k = joinedPlayer; k < IMonopolyUtil.MAX_NUMBER_OF_PLAYER; k++) {
 				JSONObject tmpPlayer = new JSONObject();
-				if (k <= numberOfPlayer) {
+				if (k < numberOfPlayer) {
 					tmpPlayer.put("name", "offen");
 					tmpPlayer.put("figure", "");
 				} else {
@@ -438,6 +437,13 @@ public class Application extends JavaController {
 		}
 
 		String gameName = json.get("name").asText();
+		
+		// error handling
+		if (pendingGames.asMap().get(gameName) != null) {
+			logger.error("Game not created: Already exists");
+			return badRequest("game already exist");
+		}
+		
 		Integer numberOfPlayer = json.get("numberOfPlayer").asInt();
 
 		JsonNode playerNode = json.get("players");
@@ -460,13 +466,47 @@ public class Application extends JavaController {
 		PendingGame aPendingGame = new PendingGame(gameName, numberOfPlayer,
 				players);
 
-		pendingGames.put(aPendingGame.hashCode(), aPendingGame);
+		pendingGames.put(aPendingGame.getName(), aPendingGame);
 		return ok();
 	}
 
-	public static Result addPlayertoGameInstance(Integer id) {
-
-		// add player to game instance, if not already present
+	public static Result addPlayertoGameInstance() {
+		
+		JsonNode json = request().body().asJson();
+		
+		if (json == null) {
+			logger.error("No Json data in createGameInstances");
+			return badRequest("Expecting Json data");
+		}
+		
+		String gameName = json.get("gameName").asText();
+		
+		PendingGame pendingGame = pendingGames.asMap().get(gameName);
+		// error handling
+		if (pendingGame == null) {
+			logger.error("Can not join game: Game does not exist");
+			return badRequest("game does not exist");
+		}
+		
+		JsonNode playerNode = json.get("player");
+		
+		String playerName = playerNode.get("name").asText();
+		String playerIcon = playerNode.get("figure").asText();
+		
+		HashMap<String, PlayerIcon> player = new HashMap<String, PlayerIcon>();
+		player.put(playerName, PlayerIcon.valueOf(playerIcon.toUpperCase()));
+		
+		// add player to pending games
+		if (pendingGame.hasSpace()) {
+			pendingGame.addPlayer(player);
+		} else {
+			logger.error("game is full");
+			return badRequest("game is full");
+		}
+		
+		
+		//TODO error handling
+		
 		return ok();
 	}
 
