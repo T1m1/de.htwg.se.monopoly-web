@@ -41,6 +41,11 @@ startPage
 							.success(function() {
 								$scope.alreadyJoined = true;
 							});
+						
+						$interval(function() {
+								$scope.getGames()
+							}
+						, 1600);
 					}
 
 					$scope.back = function() {
@@ -337,7 +342,9 @@ startPage
 					// request for pending games
 					$scope.getGames = function() {
 						return $http.get('/games').then(function(res) {
-							$scope.gameInstances = res.data;
+							if(!angular.equals($scope.gameInstances, res.data)) {
+								$scope.gameInstances = res.data;
+							}
 						})
 					}
 					
@@ -345,26 +352,25 @@ startPage
 					$scope.pollWaitForOponents = function(gameName) {
 						
 						$interval(function() {
-							$scope.getGames().then(function() {
-								$http.get('/isFull/'+gameName)
-									.error(function() {
-										
-									})
-									.success(function() {
-										
-										$('.bodyblue').addClass('blur');
-										$('body').prepend(
-												'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
-
-										$http.get('/startGame/' + gameName).then(function() {
-											$timeout(function() {
-												var loc = location.origin + "/go"
-												location.href = loc;
-											}, 1600);
-										});
+							$http.get('/isFull/'+ gameName)
+								.error(function() {
+									
+								})
+								.success(function() {
+									
+									$('.bodyblue').addClass('blur');
+									$('body').prepend(
+											'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+	
+									$http.get('/startGame/' + gameName).then(function() {
+										$timeout(function() {
+											var loc = location.origin + "/go"
+											location.href = loc;
+										}, 1600);
 									});
-							});
-						}, 1600);
+								});
+						}
+						, 1600);
 					}
 					
 					
