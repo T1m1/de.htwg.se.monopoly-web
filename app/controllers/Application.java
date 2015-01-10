@@ -146,7 +146,7 @@ public class Application extends JavaController {
 
 		if (controllers.asMap().get(currentSession).getCurrentPlayer().isInPrison()) {
 			logger.debug("is in prison and needs to select a option");
-			return ok(getMessage("Sie sitzen im Gefängnis.. bitte wählen Sie eine entsprechende Gefängnis Option aus..."));
+			return ok(getMessage("Du sitzt im Gefängnis.. bitte wählen eine entsprechende Gefängnis Option aus..."));
 		}
 
 		if (!controllers.asMap().get(currentSession).isCorrectOption(UserAction.START_TURN)) {
@@ -288,7 +288,7 @@ public class Application extends JavaController {
 			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 		if (controllers.asMap().get(getSession()).checkPlayerAnswer(answer)) {
-			return ok(getMessage("Korrekte Antwort. Sie sind frei gekommen"));
+			return ok(getMessage("Korrekte Antwort. Du sind frei gekommen"));
 		} else {
 			return ok(getMessage("Leider falsche Antwort, der nächste Spieler ist dran."));
 		}
