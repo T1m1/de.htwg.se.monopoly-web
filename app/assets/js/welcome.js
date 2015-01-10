@@ -138,11 +138,12 @@ startPage
                 '<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
 
             $http.post('/start', $scope.players).then(function () {
-
                 $timeout(function () {
+                    $http.get('/currentGameID').success(function (data) {
                         var loc = location.origin + "/go/" + data.id;
                         location.href = loc;
                     }, 1600);
+                });
 
             });
 
