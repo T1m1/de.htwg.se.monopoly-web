@@ -1,8 +1,6 @@
 package controllers;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import models.MonopolyObserver;
@@ -63,6 +61,23 @@ public class Application extends JavaController {
 		if (!controllers.asMap().containsKey(game)) {
 			return notFound();
 		}
+		
+		/* BUG - immer nur eine Spielinstanz lokal spielbar 
+		* Mögliche Anpassung:
+		* * final Set<Map.Entry<String,String[]>> entries = request().queryString().entrySet();
+			for (Map.Entry<String,String[]> entry : entries) {
+				final String key = entry.getKey();
+				final String value = Arrays.toString(entry.getValue());
+				Logger.debug(key + " " + value);
+			}
+			Logger.debug(request().getQueryString("a"));
+			Logger.debug(request().getQueryString("b"));
+			Logger.debug(request().getQueryString("c"));
+		
+		For example the http://localhost:9000/?a=1&b=2&c=3&c=4 
+		* * * */
+		
+		session("game", game);
 		return ok(views.html.index.render("Index", controllers.asMap().get(game)));
 	}
 
@@ -93,7 +108,7 @@ public class Application extends JavaController {
 
 		startNewGame(players);
 
-		return ok(views.html.index.render("Index", controllers.asMap().get(session("game"))));
+		return ok();
 	}
 
 	private static boolean startNewGame(Map<String, PlayerIcon> player) {
@@ -110,6 +125,11 @@ public class Application extends JavaController {
 		return true;
 	}
 
+
+	public static Result getCurrentGameId() {
+		return ok(toJson("id", session("game")));
+	}
+	
 	public static Result rollDice() {
 		String currentSession = session("game");
 
@@ -165,11 +185,6 @@ public class Application extends JavaController {
 		return msg(message.toJSONString());
 	}
 
-	private static String getMessage(String msg) {
-		JSONObject message = new JSONObject();
-		message.put("msg", msg);
-		return msg(message.toJSONString());
-	}
 
 	public static Result getCurrentPlayerAsJSON() {
 		JSONObject message = new JSONObject();
@@ -541,5 +556,23 @@ public class Application extends JavaController {
 
 		};
 	}
+	
+	
+	/* 
+    ************************** help functions ***********************
+    * */
+	private static String toJson(String key, String value) {
+		JSONObject message = new JSONObject();
+		message.put(key, value);
+		return message.toJSONString();
+	}
 
+
+	private static String getMessage(String msg) {
+		JSONObject message = new JSONObject();
+		message.put("msg", msg);
+		return msg(message.toJSONString());
+	}
 }
+
+
