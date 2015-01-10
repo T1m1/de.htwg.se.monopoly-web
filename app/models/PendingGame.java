@@ -22,6 +22,7 @@ public class PendingGame {
 	private String name;
 	private int playerCount;
 	private Map<String, PlayerIcon> playerNames;
+	private int ID;
 
 	private static final ALogger logger = Logger.of(PendingGame.class);
 
@@ -63,6 +64,14 @@ public class PendingGame {
 	 */
 	public boolean hasSpace() {
 		return (playerNames.size() < playerCount);
+	}
+
+	public void addID(int hashCode) {
+		this.ID = hashCode;
+	}
+	
+	public int getID() {
+		return this.ID;
 	}
 
 }

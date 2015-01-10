@@ -287,9 +287,75 @@ startPage
 
             $http.post('/createGame', myNewGame)
 
+						$scope.alreadyJoined = true;
+						
+						$scope.pendingMessage = "Auf Mitspieler warten";
+						$scope.showPendingStatus = true;
+						
+						$scope.pollWaitToJoin(playerToJoin.gameName);
+						
+					}
             // add game to game instances
             $scope.alreadyCreated = true;
 
+					// request for pending games
+					$scope.getGames = function() {
+						return $http.get('/games').then(function(res) {
+							if(!angular.equals($scope.gameInstances, res.data)) {
+								$scope.gameInstances = res.data;
+							}
+						})
+					}
+					
+					// poll function for waiting on oponent
+					$scope.pollWaitForOponents = function(gameName) {
+						
+						$interval(function() {
+							$http.get('/isFull/'+ gameName)
+								.error(function() {
+									
+								})
+								.success(function() {
+									
+									$('.bodyblue').addClass('blur');
+									$('body').prepend(
+											'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+	
+									$http.get('/startGame/' + gameName).then(function() {
+										$timeout(function() {
+											var loc = location.origin + "/go"
+											location.href = loc;
+										}, 1600);
+									});
+								});
+						}
+						, 1600);
+					}
+					
+					$scope.pollWaitToJoin = function(gameName) {
+						$interval(function() {
+							$http.get('/isFull/'+ gameName)
+								.error(function() {
+									
+								})
+								.success(function() {
+									
+									$('.bodyblue').addClass('blur');
+									$('body').prepend(
+											'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+	
+									$http.get('/getJoinGameID/' + gameName).then(function(res) {
+										$timeout(function() {
+											var loc = location.origin + "/go/" + res.data.ID
+											location.href = loc;
+										}, 1600);
+									});
+								});
+						}
+						, 1600);
+					}
+					
+					
             $('#createGameModal').modal('hide');
 
             $scope.pendingMessage = "Auf Mitspieler warten";

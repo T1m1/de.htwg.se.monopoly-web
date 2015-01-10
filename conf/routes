@@ -29,6 +29,7 @@ GET         /created                    controllers.Application.createdGame()
 GET         /isFull/:gameName           controllers.Application.isFull(gameName:String)
 GET         /startGame/:gameName        controllers.Application.startGame(gameName:String)
 GET         /currentGameID              controllers.Application.getCurrentGameId()
+GET			/getJoinGameID/:gameName  	controllers.Application.getJoinGameID(gameName:String)
 
 GET         /socket/:id                 controllers.Application.connectWebSocket(id:String)
 
