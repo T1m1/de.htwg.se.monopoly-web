@@ -151,7 +151,7 @@ public class Application extends JavaController {
 
 		if (!controllers.asMap().get(currentSession).isCorrectOption(UserAction.START_TURN)) {
 			logger.debug("user choose wrong action");
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(currentSession)));
 		}
 
 		logger.debug("user starts his turn by throwing the dice and moving");
@@ -171,7 +171,7 @@ public class Application extends JavaController {
 
 		if (!controllers.asMap().get(currentSession).isCorrectOption(UserAction.ROLL_DICE)) {
 			prisonRollFlags.put(currentSession, false);
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(currentSession)));
 		}
 
 		controllers.asMap().get(getSession()).rollDiceToRedeem();
@@ -199,7 +199,7 @@ public class Application extends JavaController {
 	public static Result endTurn() {
 		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.END_TURN)) {
 			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 		controllers.asMap().get(getSession()).endTurn();
 		return ok(getMessage());
@@ -208,7 +208,7 @@ public class Application extends JavaController {
 	public static Result buy() {
 		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.BUY_STREET)) {
 			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 
 		if (controllers.asMap().get(getSession()).buyStreet()) {
@@ -228,7 +228,7 @@ public class Application extends JavaController {
 		logger.debug("tries to redeem with money");
 		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
 			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 
 		logger.debug("redeem with money action available ");
@@ -245,7 +245,7 @@ public class Application extends JavaController {
 	public static Result prisonCard() {
 		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
 			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 		if (controllers.asMap().get(getSession()).redeemWithCard()) {
 			return ok(getMessage("Freikarte eingesetzt"));
@@ -259,7 +259,7 @@ public class Application extends JavaController {
 
 		if (!controllers.asMap().get(currentSession).isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
 			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 		prisonRollFlags.put(currentSession, true);
 
@@ -274,7 +274,7 @@ public class Application extends JavaController {
 	public static Result drawCard() {
 		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.DRAW_CARD)) {
 			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 		controllers.asMap().get(getSession()).drawCard();
 
@@ -285,7 +285,7 @@ public class Application extends JavaController {
 	public static Result checkAnswer(Boolean answer) {
 		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
 			// wrong input, option not available
-			return ok(getMessage("Aktion nicht verfügbar"));
+			return ok(getMessage(lastMessage.asMap().get(getSession())));
 		}
 		if (controllers.asMap().get(getSession()).checkPlayerAnswer(answer)) {
 			return ok(getMessage("Korrekte Antwort. Sie sind frei gekommen"));
