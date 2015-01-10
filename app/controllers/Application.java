@@ -46,7 +46,7 @@ public class Application extends JavaController {
 
 	public static Result index() {
 		logger.debug("index site loading");
-		return ok(views.html.index.render("Index", controllers.asMap().get(session("game"))));
+		return ok(views.html.index.render("Index", controllers.asMap().get(getSession())));
 	}
 
 	/**
@@ -61,23 +61,6 @@ public class Application extends JavaController {
 		if (!controllers.asMap().containsKey(game)) {
 			return notFound();
 		}
-		
-		/* BUG - immer nur eine Spielinstanz lokal spielbar 
-		* Mögliche Anpassung:
-		* * final Set<Map.Entry<String,String[]>> entries = request().queryString().entrySet();
-			for (Map.Entry<String,String[]> entry : entries) {
-				final String key = entry.getKey();
-				final String value = Arrays.toString(entry.getValue());
-				Logger.debug(key + " " + value);
-			}
-			Logger.debug(request().getQueryString("a"));
-			Logger.debug(request().getQueryString("b"));
-			Logger.debug(request().getQueryString("c"));
-		
-		For example the http://localhost:9000/?a=1&b=2&c=3&c=4 
-		* * * */
-		
-		session("game", game);
 		return ok(views.html.index.render("Index", controllers.asMap().get(game)));
 	}
 
@@ -120,18 +103,18 @@ public class Application extends JavaController {
 
 		logger.info("New Game started");
 		// start the game and begin with first player
-		controllers.asMap().get((session("game"))).startNewGame(player);
+		controllers.asMap().get(Integer.toString(game.hashCode())).startNewGame(player);
 
 		return true;
 	}
 
 
 	public static Result getCurrentGameId() {
-		return ok(toJson("id", session("game")));
+		return ok(toJson("id",session("game")));
 	}
 	
 	public static Result rollDice() {
-		String currentSession = session("game");
+		String currentSession = getSession();
 
 		logger.debug("User started turn: ");
 
@@ -157,22 +140,22 @@ public class Application extends JavaController {
 
 	public static Result getDiceResult() {
 		JSONObject dice = new JSONObject();
-		dice.put("dice1", "" + controllers.asMap().get(session("game")).getDice().getDice1());
-		dice.put("dice2", "" + controllers.asMap().get(session("game")).getDice().getDice2());
+		dice.put("dice1", "" + controllers.asMap().get(getSession()).getDice().getDice1());
+		dice.put("dice2", "" + controllers.asMap().get(getSession()).getDice().getDice2());
 		return ok(dice.toJSONString());
 	}
 
 	private static Result handlePrisonRoll() {
-		String currentSession = session("game");
+		String currentSession = getSession();
 
 		if (!controllers.asMap().get(currentSession).isCorrectOption(UserAction.ROLL_DICE)) {
 			prisonRollFlags.put(currentSession, false);
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
-		controllers.asMap().get(session("game")).rollDiceToRedeem();
+		controllers.asMap().get(getSession()).rollDiceToRedeem();
 
-		if (!controllers.asMap().get(session("game")).getCurrentPlayer().isInPrison()) {
+		if (!controllers.asMap().get(getSession()).getCurrentPlayer().isInPrison()) {
 			prisonRollFlags.put(currentSession, false);
 		}
 
@@ -181,33 +164,33 @@ public class Application extends JavaController {
 
 	private static String getMessage() {
 		JSONObject message = new JSONObject();
-		message.put("msg", controllers.asMap().get(session("game")).getMessage());
+		message.put("msg", controllers.asMap().get(getSession()).getMessage());
 		return msg(message.toJSONString());
 	}
 
 
 	public static Result getCurrentPlayerAsJSON() {
 		JSONObject message = new JSONObject();
-		message.put("name", controllers.asMap().get(session("game")).getCurrentPlayer().getName());
+		message.put("name", controllers.asMap().get(getSession()).getCurrentPlayer().getName());
 		return ok(message.toJSONString());
 	}
 
 	public static Result endTurn() {
-		if (!controllers.asMap().get(session("game")).isCorrectOption(UserAction.END_TURN)) {
+		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.END_TURN)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		controllers.asMap().get(session("game")).endTurn();
+		controllers.asMap().get(getSession()).endTurn();
 		return ok(getMessage());
 	}
 
 	public static Result buy() {
-		if (!controllers.asMap().get(session("game")).isCorrectOption(UserAction.BUY_STREET)) {
+		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.BUY_STREET)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
-		if (controllers.asMap().get(session("game")).buyStreet()) {
+		if (controllers.asMap().get(getSession()).buyStreet()) {
 			return ok(getMessage());
 		}
 		return ok(getMessage("Kein Geld um die Straße zu kaufen!!!"));
@@ -215,21 +198,21 @@ public class Application extends JavaController {
 	}
 
 	public static Result endGame() {
-		controllers.asMap().get(session("game")).endTurn();
-		controllers.asMap().get(session("game")).exitGame();
+		controllers.asMap().get(getSession()).endTurn();
+		controllers.asMap().get(getSession()).exitGame();
 		return redirect("END GAME");
 	}
 
 	public static Result prisonBuy() {
 		logger.debug("tries to redeem with money");
-		if (!controllers.asMap().get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
+		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.REDEEM_WITH_MONEY)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
 
 		logger.debug("redeem with money action available ");
 
-		if (controllers.asMap().get(session("game")).redeemWithMoney()) {
+		if (controllers.asMap().get(getSession()).redeemWithMoney()) {
 			logger.debug("enough money --> sets free");
 			return ok(getMessage("Freigekauft"));
 		} else {
@@ -239,11 +222,11 @@ public class Application extends JavaController {
 	}
 
 	public static Result prisonCard() {
-		if (!controllers.asMap().get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
+		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.REDEEM_WITH_CARD)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		if (controllers.asMap().get(session("game")).redeemWithCard()) {
+		if (controllers.asMap().get(getSession()).redeemWithCard()) {
 			return ok(getMessage("Freikarte eingesetzt"));
 		} else {
 			return ok(getMessage("Keine Freikarte vorhanden.."));
@@ -251,7 +234,7 @@ public class Application extends JavaController {
 	}
 
 	public static Result prisonRoll() {
-		String currentSession = session("game");
+		String currentSession = getSession();
 
 		if (!controllers.asMap().get(currentSession).isCorrectOption(UserAction.REDEEM_WITH_DICE)) {
 			// wrong input, option not available
@@ -268,22 +251,22 @@ public class Application extends JavaController {
 	}
 
 	public static Result drawCard() {
-		if (!controllers.asMap().get(session("game")).isCorrectOption(UserAction.DRAW_CARD)) {
+		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.DRAW_CARD)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		controllers.asMap().get(session("game")).drawCard();
+		controllers.asMap().get(getSession()).drawCard();
 
 		return ok(getMessage());
 
 	}
 
 	public static Result checkAnswer(Boolean answer) {
-		if (!controllers.asMap().get(session("game")).isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
+		if (!controllers.asMap().get(getSession()).isCorrectOption(UserAction.REDEEM_WITH_QUESTION)) {
 			// wrong input, option not available
 			return ok(getMessage("Aktion nicht verfügbar"));
 		}
-		if (controllers.asMap().get(session("game")).checkPlayerAnswer(answer)) {
+		if (controllers.asMap().get(getSession()).checkPlayerAnswer(answer)) {
 			return ok(getMessage("Korrekte Antwort. Sie sind frei gekommen"));
 		} else {
 			return ok(getMessage("Leider falsche Antwort, der nächste Spieler ist dran."));
@@ -293,7 +276,7 @@ public class Application extends JavaController {
 
 	public static Result getQuestion() {
 		JSONObject message = new JSONObject();
-		message.put("question", controllers.asMap().get(session("game")).getPrisonQuestion());
+		message.put("question", controllers.asMap().get(getSession()).getPrisonQuestion());
 
 		return ok(message.toJSONString());
 	}
@@ -305,7 +288,7 @@ public class Application extends JavaController {
 	public static Result getPossibleOptions() {
 		JSONObject options = new JSONObject();
 		int i = 0;
-		for (UserAction action : controllers.asMap().get(session("game")).getOptions()) {
+		for (UserAction action : controllers.asMap().get(getSession()).getOptions()) {
 			options.put("" + i, "" + action);
 			i++;
 		}
@@ -313,20 +296,20 @@ public class Application extends JavaController {
 	}
 
 	public static String msg(String msg) {
-		lastMessage.put(session("game"), msg);
+		lastMessage.put(getSession(), msg);
 		return msg;
 	}
 
 	public static Result getLastMessage() {
-		return ok(lastMessage.asMap().get(session("game")));
+		return ok(lastMessage.asMap().get(getSession()));
 	}
 
 	public static String getPlayersAsJSON() {
-		int numberOfPlayer = controllers.asMap().get(session("game")).getNumberOfPlayers();
+		int numberOfPlayer = controllers.asMap().get(getSession()).getNumberOfPlayers();
 		JSONObject all[] = new JSONObject[numberOfPlayer];
 
 		for (int i = 0; i < numberOfPlayer; i++) {
-			Player currentPlayer = controllers.asMap().get(session("game")).getPlayer(i);
+			Player currentPlayer = controllers.asMap().get(getSession()).getPlayer(i);
 			all[i] = new JSONObject();
 			all[i].put("name", currentPlayer.getName());
 			all[i].put("pos", currentPlayer.getPosition());
@@ -540,7 +523,7 @@ public class Application extends JavaController {
 		
 		startNewGame(pendingGame.getPlayers());
 
-		return ok(views.html.index.render("Index", controllers.asMap().get(session("game"))));
+		return ok(views.html.index.render("Index", controllers.asMap().get(getSession())));
 	}
 
 	/**
@@ -573,6 +556,19 @@ public class Application extends JavaController {
 		message.put("msg", msg);
 		return msg(message.toJSONString());
 	}
+	
+	private static String getSession() {
+		final Set<Map.Entry<String,String[]>> entries = request().queryString().entrySet();
+		for (Map.Entry<String,String[]> entry : entries) {
+			final String key = entry.getKey();
+			final String value = Arrays.toString(entry.getValue());
+			Logger.debug(key + " " + value);
+		}
+		Logger.debug(request().getQueryString("session"));
+		return request().getQueryString("session");
+	}
+
+	
 }
 
 

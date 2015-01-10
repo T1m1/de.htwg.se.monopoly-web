@@ -1,13 +1,14 @@
 /**
  * Created by Timi on 29.10.2014.
  */
-var monopoly = angular.module("monopoly");
+var monopoly = angular.module("monopoly", []);
 
 monopoly.controller('MainCtrl', function ($scope, $http, $location) {
     $scope.players;
     $scope.currentplayer;
     $scope.prisonQuestion;
     $scope.game;
+    $scope.session;
     $scope.pic = {
         0: "/assets/images/boger.jpg",
         1: "/assets/images/maechtel.jpg",
@@ -19,7 +20,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
 
     $scope.getGameInfo = function () {
         var id = location.href;
-        id = id.substr(id.lastIndexOf('/')+1, id.length)
+        id = id.substr(id.lastIndexOf('/') + 1, id.length)
         var myObject = new Object();
         var url = $location.absUrl()
         myObject.info = url + "/" + id;
@@ -29,21 +30,21 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
 
 
     $scope.updateQuestion = function () {
-        $http.get('/question').then(function (res) {
+        $http.get('/question', {params: {session: $scope.session}}).then(function (res) {
             $scope.prisonQuestion = res.data;
             $('#myModal').modal('show');
         });
     };
 
     $scope.updateNameOfPlayer = function () {
-        $http.get('/currentPlayer').then(function (res) {
+        $http.get('/currentPlayer', {params: {session: $scope.session}}).then(function (res) {
             $scope.currentplayer = res.data;
             $('#msg').html($scope.currentplayer.name + ": Du bist dran!")
         });
     };
 
-    $scope.drawCard = function() {
-        $http.get('/drawCard').then(function (res) {
+    $scope.drawCard = function () {
+        $http.get('/drawCard', {params: {session: $scope.session}}).then(function (res) {
             $scope.prisonQuestion = res.data;
             $('#myModal').modal('show');
         });
@@ -138,12 +139,13 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         $('#end').on('click', function () {
             $.ajax({
                 url: options['/end'],
+                data: {'session': $scope.session},
                 dataType: "html",
                 success: end
             })
         });
 
-        var end = function() {
+        var end = function () {
             location.href = location.origin;
         };
 
@@ -155,6 +157,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         var update = function (data) {
             $.ajax({
                 url: options[data],
+                data: {'session': $scope.session},
                 dataType: "html",
                 success: updateMessage
             }).then(function () {
@@ -165,6 +168,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         var updateButtons = function () {
             $.ajax({
                 url: options['#possibleOptions'],
+                data: {'session': $scope.session},
                 dataType: "html",
                 success: updateAllButtons
             })
@@ -187,6 +191,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         var updateDice = function () {
             $.ajax({
                 url: options['#diceResult'],
+                data: {'session': $scope.session},
                 dataType: "html",
                 success: function (data) {
                     var obj = $.parseJSON(data);
@@ -199,7 +204,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
 
         var updateMessage = function (data) {
             var obj = $.parseJSON(data);
-            if(!(obj.msg === "")) {
+            if (!(obj.msg === "")) {
                 $("#msg").html(obj.msg);
             }
         };
@@ -213,8 +218,8 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
 
         var loadScript = function (scriptname) {
             var snode = document.createElement('script');
-            snode.setAttribute('type','text/javascript');
-            snode.setAttribute('src',scriptname);
+            snode.setAttribute('type', 'text/javascript');
+            snode.setAttribute('src', scriptname);
             document.getElementsByTagName('head')[0].appendChild(snode);
         }
 
@@ -223,6 +228,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
 
             $.ajax({
                 url: ('/answer/' + select),
+                data: {'session': $scope.session},
                 dataType: "html",
                 success: updateMessage
             }).then(function () {
@@ -245,6 +251,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         var updateCurrentMessage = function () {
             $.ajax({
                 url: options['#message'],
+                data: {'session': $scope.session},
                 dataType: "html",
                 success: updateMessage
             });
@@ -258,6 +265,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
             });
             $.ajax({
                 url: options['#update'],
+                data: {'session': $scope.session},
                 dataType: "html",
                 success: function (data) {
                     var playeinfor = JSON.parse(data);
@@ -286,8 +294,9 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         function connect() {
             var host = location.origin.replace(/^http/, 'ws');
             var id = location.href;
-            
-            id = id.substr(id.lastIndexOf('/')+1, id.length)
+
+            id = id.substr(id.lastIndexOf('/') + 1, id.length);
+            $scope.session = id;
             host = host + "/socket/" + id;
 
             var socket = new WebSocket(host);
@@ -296,10 +305,12 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
                 updateDice();
                 $.ajax({
                     url: options['#update'],
+                    data: {'session': $scope.session},
                     dataType: "html",
                     success: function (data) {
                         updateAllPlayer(data);
-                    }});
+                    }
+                });
             };
 
             socket.onmessage = function (msg) {
@@ -324,9 +335,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         init();
 
 
-
     });
-
 
 
 });
