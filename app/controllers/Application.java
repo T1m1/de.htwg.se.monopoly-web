@@ -104,7 +104,7 @@ public class Application extends JavaController {
 
 		logger.info("New Game started");
 		// start the game and begin with first player
-		controllers.asMap().get((session("game"))).startNewGame(player);
+		controllers.asMap().get(Integer.toString(game.hashCode())).startNewGame(player);
 
 		return true;
 	}
@@ -131,7 +131,7 @@ public class Application extends JavaController {
 
 
 	public static Result getCurrentGameId() {
-		return ok(toJson("id",session("game")));
+		return ok(toJson("id", session("game")));
 	}
 	
 	public static Result rollDice() {
@@ -544,7 +544,7 @@ public class Application extends JavaController {
 		
 		startNewGameNetwork(pendingGame.getPlayers(), gameName);
 
-		return ok(views.html.index.render("Index", controllers.asMap().get(getSession())));
+		return ok();
 	}
 	
 	public static Result getJoinGameID(String gameName) {

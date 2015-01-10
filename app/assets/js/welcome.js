@@ -1,9 +1,9 @@
-var startPage = angular.module('monopolyStartPage', ['ngAnimate']);
+var startPage = angular.module('monopolyStartPage', [ 'ngAnimate' ]);
 
 startPage
     .controller(
     'Controller',
-    function ($scope, $timeout, $http, $interval) {
+    function($scope, $timeout, $http, $interval) {
 
         $scope.isSignedIn = false;
         $scope.showNetwork = false;
@@ -11,12 +11,12 @@ startPage
         $scope.chooseType = true;
 
         // basic button functions
-        $scope.localGame = function () {
+        $scope.localGame = function() {
             $scope.showLocal = true;
             $scope.chooseType = false;
         }
 
-        $scope.networkGame = function () {
+        $scope.networkGame = function() {
             $scope.getGames()
             if (!$scope.isSignedIn) {
                 $('#authModal').modal('show');
@@ -27,28 +27,28 @@ startPage
             }
             // check if already created and joined
             $http.get('/created')
-                .error(function () {
+                .error(function() {
                     $scope.alreadyCreated = false;
                 })
-                .success(function () {
+                .success(function() {
                     $scope.alreadyCreated = true;
                 });
 
             $http.get('/joined')
-                .error(function () {
+                .error(function() {
                     $scope.alreadyJoined = false;
                 })
-                .success(function () {
+                .success(function() {
                     $scope.alreadyJoined = true;
                 });
 
-            $interval(function () {
+            $interval(function() {
                     $scope.getGames()
                 }
                 , 1600);
         }
 
-        $scope.back = function () {
+        $scope.back = function() {
             $scope.showLocal = false;
             $scope.showNetwork = false;
             $scope.chooseType = true;
@@ -60,22 +60,22 @@ startPage
         $scope.showAlert = false;
         $scope.alertMessage;
 
-        $scope.players = [{
-            name: "",
-            figure: ""
+        $scope.players = [ {
+            name : "",
+            figure : ""
         }, {
-            name: "",
-            figure: ""
-        }];
+            name : "",
+            figure : ""
+        } ];
 
-        $scope.icons = ['maechtel', 'neuschwander', 'schoppa',
-            'boger', 'bittel', 'eck'];
+        $scope.icons = [ 'maechtel', 'neuschwander', 'schoppa',
+            'boger', 'bittel', 'eck' ];
 
-        $scope.addPlayer = function () {
+        $scope.addPlayer = function() {
 
             $scope.players.push({
-                name: "",
-                figure: ""
+                name : "",
+                figure : ""
             });
 
             if ($scope.players.length > 5) {
@@ -84,13 +84,13 @@ startPage
             }
         };
 
-        $scope.rmPlayer = function (index) {
+        $scope.rmPlayer = function(index) {
             if ($scope.players.length < 3) {
 
                 $scope.alertMessage = "Mindestens 2 Spieler";
                 $scope.showAlert = true;
 
-                $timeout(function () {
+                $timeout(function() {
                     $scope.showAlert = false;
                 }, 1500);
 
@@ -108,13 +108,13 @@ startPage
 
         };
 
-        $scope.updatePlayerIcon = function (index, select) {
+        $scope.updatePlayerIcon = function(index, select) {
             $scope.players[index].figure = select;
             // delete from available icons
             $scope.icons.splice($scope.icons.indexOf(select), 1);
         }
 
-        $scope.startGame = function () {
+        $scope.startGame = function() {
 
             for (var index = 0; index < $scope.players.length; ++index) {
 
@@ -149,20 +149,20 @@ startPage
 
         };
 
-        $scope.displayError = function (error) {
+        $scope.displayError = function(error) {
             $scope.alertMessage = error
             $scope.showAlert = true;
 
-            $timeout(function () {
+            $timeout(function() {
                 $scope.showAlert = false;
             }, 3000);
         }
 
-        $scope.displayModalError = function (error) {
+        $scope.displayModalError = function(error) {
             $scope.alertMessage = error
             $scope.showModalAlert = true;
 
-            $timeout(function () {
+            $timeout(function() {
                 $scope.showModalAlert = false;
             }, 3000);
         }
@@ -171,15 +171,15 @@ startPage
 
             // game which is going to be created
         $scope.myGame = {
-            name: "",
-            playerName: "",
-            playerIcon: "",
-            numberOfPlayer: "2"
+            name : "",
+            playerName : "",
+            playerIcon : "",
+            numberOfPlayer : "2"
         }
         // info for joining a game
         $scope.joiner = {
-            playerName: "",
-            playerIcon: ""
+            playerName : "",
+            playerIcon : ""
         };
 
         $scope.joinIcons = [];
@@ -194,7 +194,7 @@ startPage
         // pending game instances
         $scope.gameInstances = [];
 
-        $scope.createGame = function () {
+        $scope.createGame = function() {
             if ($scope.alreadyCreated) {
                 $scope.displayError("Du hast bereits ein Spiel gestartet.");
             } else {
@@ -202,7 +202,7 @@ startPage
             }
         }
 
-        $scope.joinGame = function (game) {
+        $scope.joinGame = function(game) {
             if ($scope.alreadyJoined) {
                 $scope
                     .displayError("Du bist bereits einem Spiel beigetreten.");
@@ -216,9 +216,9 @@ startPage
         }
 
         // edit the array with player icons for joining a game.
-        $scope.updateIcons = function (game) {
+        $scope.updateIcons = function(game) {
             var tempArray = $scope.icons;
-            angular.forEach(game.players, function (value, key) {
+            angular.forEach(game.players, function(value, key) {
                 // delete icon because it is already selected by another user
                 var index = tempArray.indexOf(value.figure);
                 if (index != -1) {
@@ -229,9 +229,9 @@ startPage
         }
 
         // create a new game in modal
-        $scope.create = function () {
+        $scope.create = function() {
             var exit = false;
-            angular.forEach($scope.gameInstances, function (value, key) {
+            angular.forEach($scope.gameInstances, function(value, key) {
                 if (value.name === $scope.myGame.name) {
                     $scope.displayModalError("Spielname existiert schon.");
                     exit = !exit;
@@ -256,24 +256,24 @@ startPage
 
             // local variable
             var myNewGame = {
-                name: $scope.myGame.name,
-                players: [{
-                    name: $scope.myGame.playerName,
-                    figure: $scope.myGame.playerIcon
-                }],
-                numberOfPlayer: $scope.myGame.numberOfPlayer
+                name : $scope.myGame.name,
+                players : [ {
+                    name : $scope.myGame.playerName,
+                    figure : $scope.myGame.playerIcon
+                } ],
+                numberOfPlayer : $scope.myGame.numberOfPlayer
             };
 
             for (var index = 2; index <= 6; ++index) {
                 if (index <= $scope.myGame.numberOfPlayer) {
                     myNewGame.players.push({
-                        name: "offen",
-                        figure: ""
+                        name : "offen",
+                        figure : ""
                     });
                 } else {
                     myNewGame.players.push({
-                        name: "X",
-                        figure: ""
+                        name : "X",
+                        figure : ""
                     });
 
                 }
@@ -287,75 +287,9 @@ startPage
 
             $http.post('/createGame', myNewGame)
 
-						$scope.alreadyJoined = true;
-						
-						$scope.pendingMessage = "Auf Mitspieler warten";
-						$scope.showPendingStatus = true;
-						
-						$scope.pollWaitToJoin(playerToJoin.gameName);
-						
-					}
             // add game to game instances
             $scope.alreadyCreated = true;
 
-					// request for pending games
-					$scope.getGames = function() {
-						return $http.get('/games').then(function(res) {
-							if(!angular.equals($scope.gameInstances, res.data)) {
-								$scope.gameInstances = res.data;
-							}
-						})
-					}
-					
-					// poll function for waiting on oponent
-					$scope.pollWaitForOponents = function(gameName) {
-						
-						$interval(function() {
-							$http.get('/isFull/'+ gameName)
-								.error(function() {
-									
-								})
-								.success(function() {
-									
-									$('.bodyblue').addClass('blur');
-									$('body').prepend(
-											'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
-	
-									$http.get('/startGame/' + gameName).then(function() {
-										$timeout(function() {
-											var loc = location.origin + "/go"
-											location.href = loc;
-										}, 1600);
-									});
-								});
-						}
-						, 1600);
-					}
-					
-					$scope.pollWaitToJoin = function(gameName) {
-						$interval(function() {
-							$http.get('/isFull/'+ gameName)
-								.error(function() {
-									
-								})
-								.success(function() {
-									
-									$('.bodyblue').addClass('blur');
-									$('body').prepend(
-											'<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
-	
-									$http.get('/getJoinGameID/' + gameName).then(function(res) {
-										$timeout(function() {
-											var loc = location.origin + "/go/" + res.data.ID
-											location.href = loc;
-										}, 1600);
-									});
-								});
-						}
-						, 1600);
-					}
-					
-					
             $('#createGameModal').modal('hide');
 
             $scope.pendingMessage = "Auf Mitspieler warten";
@@ -365,7 +299,7 @@ startPage
         }
 
         // join a game in modal
-        $scope.join = function () {
+        $scope.join = function() {
 
             if ($scope.joiner.playerName === "") {
                 $scope.displayModalError("Bitte Namen eintragen!")
@@ -385,9 +319,9 @@ startPage
             }
 
             var playerToJoin = {
-                "gameName": $scope.joiningGame.name,
+                "gameName" : $scope.joiningGame.name,
                 "player": {
-                    "name": $scope.joiner.playerName,
+                    "name" : $scope.joiner.playerName,
                     "figure": $scope.joiner.playerIcon
                 }
             };
@@ -402,36 +336,61 @@ startPage
             $scope.pendingMessage = "Auf Mitspieler warten";
             $scope.showPendingStatus = true;
 
-            $scope.pollWaitForOponents(playerToJoin.gameName);
+            $scope.pollWaitToJoin(playerToJoin.gameName);
 
         }
 
         // request for pending games
-        $scope.getGames = function () {
-            return $http.get('/games').then(function (res) {
-                if (!angular.equals($scope.gameInstances, res.data)) {
+        $scope.getGames = function() {
+            return $http.get('/games').then(function(res) {
+                if(!angular.equals($scope.gameInstances, res.data)) {
                     $scope.gameInstances = res.data;
                 }
             })
         }
 
         // poll function for waiting on oponent
-        $scope.pollWaitForOponents = function (gameName) {
+        $scope.pollWaitForOponents = function(gameName) {
 
-            $interval(function () {
-                    $http.get('/isFull/' + gameName)
-                        .error(function () {
+            $interval(function() {
+                    $http.get('/isFull/'+ gameName)
+                        .error(function() {
 
                         })
-                        .success(function () {
+                        .success(function() {
 
                             $('.bodyblue').addClass('blur');
                             $('body').prepend(
                                 '<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
 
-                            $http.get('/startGame/' + gameName).then(function () {
+                            $http.get('/startGame/' + gameName).then(function() {
                                 $timeout(function () {
-                                    var loc = location.origin + "/go"
+                                    $http.get('/currentGameID').success(function (data) {
+                                        var loc = location.origin + "/go/" + data.id;
+                                        location.href = loc;
+                                    }, 1600);
+                                });
+                            });
+                        });
+                }
+                , 1600);
+        }
+
+        $scope.pollWaitToJoin = function(gameName) {
+            $interval(function() {
+                    $http.get('/isFull/'+ gameName)
+                        .error(function() {
+
+                        })
+                        .success(function() {
+
+                            $('.bodyblue').addClass('blur');
+                            $('body').prepend(
+                                '<div class="absolute"><div class="spinner"> <div  class="double-bounce1"></div><div  class="double-bounce2"></div></div></div>');
+
+                            $http.get('/getJoinGameID/' + gameName).then(function(res) {
+                                $timeout(function() {
+                                    var loc = location.origin + "/go/" + res.data.ID
                                     location.href = loc;
                                 }, 1600);
                             });
@@ -441,8 +400,9 @@ startPage
         }
 
 
+
         // sign in functionallity
-        $scope.processAuth = function (authResult) {
+        $scope.processAuth = function(authResult) {
             if ($scope.isSignedIn || authResult['access_token']) {
                 $scope.isSignedIn = true;
 
@@ -458,21 +418,21 @@ startPage
 
 
         // this will be called when authenication is done!
-        $scope.signIn = function (authResult) {
-            $scope.$apply(function () {
+        $scope.signIn = function(authResult) {
+            $scope.$apply(function() {
                 $scope.processAuth(authResult);
             });
         }
 
-        $scope.renderSignIn = function () {
+        $scope.renderSignIn = function() {
             gapi.signin.render(
                 'HTWGsignin',
                 {
-                    'callback': $scope.signIn,
-                    'clientid': "1094692145630-vh5jho9nkha2hfmt5kmc455k2v06fakk.apps.googleusercontent.com",
-                    'requestvisibleactions': "http://schemas.google.com/AddActivity",
-                    'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
-                    'cookiepolicy': "single_host_origin"
+                    'callback' : $scope.signIn,
+                    'clientid' : "1094692145630-vh5jho9nkha2hfmt5kmc455k2v06fakk.apps.googleusercontent.com",
+                    'requestvisibleactions' : "http://schemas.google.com/AddActivity",
+                    'scope' : 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
+                    'cookiepolicy' : "single_host_origin"
                 });
         }
 
