@@ -1,9 +1,9 @@
 /**
  * Created by Timi on 29.10.2014.
  */
-var monopoly = angular.module("monopoly", ['ngCookies']);
+var monopoly = angular.module("monopoly");
 
-monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
+monopoly.controller('MainCtrl', function ($scope, $http, $location) {
     $scope.players;
     $scope.currentplayer;
     $scope.prisonQuestion;
@@ -18,14 +18,15 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
     };
 
     $scope.getGameInfo = function () {
-        var rawCookie = $cookies['PLAY_SESSION'];
-        var rawData = rawCookie.substring(rawCookie.indexOf('=') + 1, rawCookie.length - 1);
+        var id = location.href;
+        id = id.substr(id.lastIndexOf('/')+1, id.length)
         var myObject = new Object();
         var url = $location.absUrl()
-        myObject.info = url + "/" + rawData;
+        myObject.info = url + "/" + id;
         $scope.game = myObject;
         $('#gameinfo').modal('show');
     };
+
 
     $scope.updateQuestion = function () {
         $http.get('/question').then(function (res) {
@@ -284,25 +285,27 @@ monopoly.controller('MainCtrl', function ($scope, $http, $cookies, $location) {
 
         function connect() {
             var host = location.origin.replace(/^http/, 'ws');
-
-            // read Play session cookie
-            var rawCookie = $cookies['PLAY_SESSION'];
-            var rawData = rawCookie.substring(rawCookie.indexOf('=') + 1, rawCookie.length - 1);
-            host = host + "/socket/" + rawData;
+            var id = location.href;
+            
+            id = id.substr(id.lastIndexOf('/')+1, id.length)
+            host = host + "/socket/" + id;
 
             var socket = new WebSocket(host);
 
-            message('Socket Status: ' + socket.readyState + ' (ready)');
-
             socket.onopen = function () {
-                message('Socket Status: ' + socket.readyState + ' (open)');
+                updateDice();
+                $.ajax({
+                    url: options['#update'],
+                    dataType: "html",
+                    success: function (data) {
+                        updateAllPlayer(data);
+                    }});
             };
 
             socket.onmessage = function (msg) {
-                var msgnew = msg.data;
-                $scope.players = JSON.parse(msgnew);
+                $scope.players = JSON.parse(msg.data);
                 $scope.$apply();
-                updateAllPlayer(msgnew);
+                updateAllPlayer(msg.data);
                 updateInformation();
                 updateCurrentMessage();
             };
