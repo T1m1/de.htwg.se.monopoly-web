@@ -18,28 +18,32 @@ public class MonopolyObserver implements IObserver {
     private IController controller;
     private String lastMessage;
     private String currentPlayer;
+    private String gameName;
     private int indexOfNextPlayer;
-    private boolean newMsg;
     private boolean changePlayer;
+    private boolean isMultiGame;
 
-    public MonopolyObserver(IController controller, WebSocket.Out<String> out) {
+
+    public MonopolyObserver(IController controller, WebSocket.Out<String> out, boolean isMultiGame) {
         controller.addObserver(this);
         this.controller = controller;
         this.out = out;
+        this.isMultiGame = isMultiGame;
+        this.gameName = Application.getGameNameOf("" + controller.hashCode());
         out.write(getGameInfoAsJSON());
     }
 
     public void update(GameStatus gameStatus) {
         lastMessage = controller.getMessage();
-        if(GameStatus.AFTER_TURN.equals(gameStatus)) {
-            lastMessage = controller.getPlayer(indexOfNextPlayer).getName() + " du bist dran!";
+        if (GameStatus.AFTER_TURN.equals(gameStatus)) {
+            lastMessage = controller.getPlayer(indexOfNextPlayer).getName() + " ist dran!";
         }
         out.write(getGameInfoAsJSON());
 
     }
 
     public void update(int i) {
-        
+
     }
 
     private String getGameInfoAsJSON() {
@@ -57,8 +61,11 @@ public class MonopolyObserver implements IObserver {
         player.put("name", controller.getCurrentPlayer().getName());
         game.put("currentPlayer", player);
 
-        game.put("currentPlayerName",  controller.getPlayer(indexOfNextPlayer).getName());
+        game.put("currentPlayerName", controller.getPlayer(indexOfNextPlayer).getName());
         game.put("changePlayer", Boolean.toString(changePlayer));
+        game.put("isMultiGame", isMultiGame);
+        game.put("gameName", gameName);
+
         return game.toJSONString();
     }
 
@@ -103,17 +110,16 @@ public class MonopolyObserver implements IObserver {
         return options.toJSONString();
 
     }
+
     public void setIndexOfNextPlayer(int indexOfNextPlayer) {
-      //  this.indexOfNextPlayer = indexOfNextPlayer;
-      //  this.lastMessage = controller.getPlayer(indexOfNextPlayer).getName() + " du bist dran!";
+        this.indexOfNextPlayer = indexOfNextPlayer;
+        //  this.lastMessage = controller.getPlayer(indexOfNextPlayer).getName() + " du bist dran!";
         this.currentPlayer = controller.getPlayer(indexOfNextPlayer).getName();
         changePlayer = true;
-        newMsg = true;
     }
 
-    public void setChangePlayer(boolean value){
+    public void setChangePlayer(boolean value) {
         this.changePlayer = value;
-        this.newMsg = false;
     }
 
     public void setLastMessage(String currentMessage) {
