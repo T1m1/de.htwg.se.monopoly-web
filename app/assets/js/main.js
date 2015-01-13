@@ -256,6 +256,13 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
             });
         };
 
+        function setInstancePlayer() {
+            var rawCookie = $cookies['PLAY_SESSION'];
+            var tmpStr1 = rawCookie.substr(rawCookie.indexOf(data.gameName + "="), rawCookie.length);
+            var tmpStr2 = tmpStr1.substr(0, tmpStr1.indexOf("&"));
+            $scope.currentInstancePlayer = tmpStr2.substr(tmpStr2.indexOf("=") + 1, tmpStr2.length)
+        }
+
         function connect() {
             var host = location.origin.replace(/^http/, 'ws');
             var id = location.href;
@@ -267,20 +274,17 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
             var socket = new WebSocket(host);
 
             socket.onopen = function () {
-                // cookie auslesen um den namen für den aktuellen Spieler zu erhalten
                 message('Socket Status: ' + socket.readyState + ' (Open)');
             };
 
             socket.onmessage = function (msg) {
                 var data = $.parseJSON(msg.data);
 
+
                 if (!$scope.multiGame) {
                     $scope.multiGame = true;
-                    // TODO refactoring of regex to get player name of cookie without exact game name
-                    var rawCookie = $cookies['PLAY_SESSION'];
-                    var test = rawCookie.substr(rawCookie.indexOf(data.gameName + "="), rawCookie.length);
-                    var uuu = test.substr(0, test.indexOf("&"));
-                    $scope.currentInstancePlayer = uuu.substr(uuu.indexOf("=") + 1, uuu.length)
+                    setInstancePlayer();
+
                 }
 
                 $scope.players = JSON.parse(data.players);
@@ -288,12 +292,14 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
                 $scope.$apply();
                 updateAllPlayer(data.players);
                 updateDice(data.dices);
+                updateAllButtons(data.buttons);
 
-                if(data.currentPlayer.name !== $scope.currentInstancePlayer) {
-                    disableAllButtons();
-                } else {
-                    updateAllButtons(data.buttons);
+                if (data.isMultiGame) {
+                    if (data.currentPlayer.name !== $scope.currentInstancePlayer) {
+                        disableAllButtons();
+                    }
                 }
+                
                 updateMessage(data.msg);
             };
 
