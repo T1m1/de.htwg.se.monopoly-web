@@ -33,8 +33,9 @@ public class Application extends JavaController {
     private static Cache<String, IController> controllers = CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
     private static Cache<String, MonopolyObserver> observer = CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
     private static Cache<String, Boolean> prisonRollFlags = CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
-
+    private static Cache<String, Boolean> isMultiGame = CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
     private static Cache<String, PendingGame> pendingGames = CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
+    private static Cache<String, String> gamesToName = CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.DAYS).build();
 
     private static final ALogger logger = Logger.of(Application.class);
 
@@ -96,6 +97,7 @@ public class Application extends JavaController {
         IController game = new de.htwg.monopoly.controller.impl.Controller(IMonopolyUtil.FIELD_SIZE);
         game.startNewGame(player);
         controllers.put("" + game.hashCode(), game);
+        isMultiGame.put("" + game.hashCode(), false);
         prisonRollFlags.put("" + game.hashCode(), false);
         session("game", "" + game.hashCode());
 
@@ -114,11 +116,12 @@ public class Application extends JavaController {
         game.startNewGame(player);
 
         controllers.put("" + game.hashCode(), game);
+        isMultiGame.put("" + game.hashCode(), true);
         prisonRollFlags.put("" + game.hashCode(), false);
+        gamesToName.put("" + game.hashCode(), gameName);
         session("game", "" + game.hashCode());
 
         pendingGames.asMap().get(gameName).addID(game.hashCode());
-
 
         logger.info("New Game started");
         // start the game and begin with first player
@@ -464,7 +467,7 @@ public class Application extends JavaController {
             String name = playerElement.get("name").asText();
             String icon = playerElement.get("figure").asText();
             players.put(name, PlayerIcon.valueOf(icon.toUpperCase()));
-
+            session(gameName, name);
             // only add the first player
             break;
         }
@@ -502,6 +505,9 @@ public class Application extends JavaController {
         String playerName = playerNode.get("name").asText();
         String playerIcon = playerNode.get("figure").asText();
 
+        /* write name of player to cookie*/
+        session(gameName, playerName);
+        
         HashMap<String, PlayerIcon> player = new HashMap<String, PlayerIcon>();
         player.put(playerName, PlayerIcon.valueOf(playerIcon.toUpperCase()));
 
@@ -591,7 +597,7 @@ public class Application extends JavaController {
         return new WebSocket<String>() {
 
             public void onReady(WebSocket.In<String> in, WebSocket.Out<String> out) {
-                observer.put(game, new MonopolyObserver(controllers.asMap().get(game), out));
+                observer.put(game, new MonopolyObserver(controllers.asMap().get(game), out, isMultiGame.asMap().get(game)));
             }
 
         };
@@ -625,7 +631,9 @@ public class Application extends JavaController {
         return request().getQueryString("session");
     }
 
-
+    public static String getGameNameOf(String gameInstance) {
+        return gamesToName.asMap().get(gameInstance);
+    }
 }
 
 
