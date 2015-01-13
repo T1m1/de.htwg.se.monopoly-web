@@ -1,14 +1,17 @@
 /**
  * Created by Timi on 29.10.2014.
  */
-var monopoly = angular.module("monopoly", []);
+var monopoly = angular.module("monopoly", ['ngCookies']);
 
-monopoly.controller('MainCtrl', function ($scope, $http, $location) {
+monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
     $scope.players;
     $scope.currentplayer;
     $scope.prisonQuestion;
     $scope.game;
     $scope.session;
+    $scope.multiGame = false;
+    $scope.currentInstancePlayer;
+
     $scope.pic = {
         0: "/assets/images/boger.jpg",
         1: "/assets/images/maechtel.jpg",
@@ -36,14 +39,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
             $scope.prisonQuestion = res.data;
             $('#myModal').modal('show');
         });
-    };
-
-    $scope.updateNameOfPlayer = function () {
-        //$http.get('/currentPlayer', {params: {session: $scope.session}}).then(function (res) {
-            //console.log("current player: " + res.data.name);
-            //$scope.currentplayer = res.data;
-            //$('#msg').html($scope.currentplayer.name + ": Du bist dran!");
-        //});
     };
 
     $scope.drawCard = function () {
@@ -114,7 +109,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         });
 
         $('#endTurn').on('click', function () {
-            endTurn = true;
             update('#endTurn');
         });
 
@@ -159,17 +153,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
                 dataType: "html"
             });
         };
-        /*,
-         success: updateMessage*/
-
-        var updateButtons = function () {
-            $.ajax({
-                url: options['#possibleOptions'],
-                data: {'session': $scope.session},
-                dataType: "html",
-                success: updateAllButtons
-            })
-        };
 
         var updateAllButtons = function (data) {
             var obj = $.parseJSON(data);
@@ -213,7 +196,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
 
         // function for checking the right answer
         $scope.checkAnswer = function (select) {
-
             $.ajax({
                 url: ('/answer/' + select),
                 data: {'session': $scope.session},
@@ -236,8 +218,8 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
             }
         };
 
+
         function init() {
-            $scope.updateNameOfPlayer();
             $.each(player, function (key, value) {
                 $(value).hide()
             });
@@ -255,7 +237,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
                 }
             });
 
-            // Test
             var i;
             for (i = 1; i <= 6; i++) {
                 pictures[i] = new Image();
@@ -266,6 +247,14 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
         /** ********************** websockets ******************************* */
 
         connect();
+
+
+        var disableAllButtons = function () {
+            $.each(actions, function (key, value) {
+                $(value).attr('disabled', true);
+                $(value).removeClass('btn-success');
+            });
+        };
 
         function connect() {
             var host = location.origin.replace(/^http/, 'ws');
@@ -278,17 +267,33 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
             var socket = new WebSocket(host);
 
             socket.onopen = function () {
+                // cookie auslesen um den namen für den aktuellen Spieler zu erhalten
                 message('Socket Status: ' + socket.readyState + ' (Open)');
             };
 
             socket.onmessage = function (msg) {
                 var data = $.parseJSON(msg.data);
+
+                if (!$scope.multiGame) {
+                    $scope.multiGame = true;
+                    // TODO refactoring of regex to get player name of cookie without exact game name
+                    var rawCookie = $cookies['PLAY_SESSION'];
+                    var test = rawCookie.substr(rawCookie.indexOf(data.gameName + "="), rawCookie.length);
+                    var uuu = test.substr(0, test.indexOf("&"));
+                    $scope.currentInstancePlayer = uuu.substr(uuu.indexOf("=") + 1, uuu.length)
+                }
+
                 $scope.players = JSON.parse(data.players);
                 $scope.currentplayer = data.currentPlayer;
                 $scope.$apply();
                 updateAllPlayer(data.players);
                 updateDice(data.dices);
-                updateAllButtons(data.buttons);
+
+                if(data.currentPlayer.name !== $scope.currentInstancePlayer) {
+                    disableAllButtons();
+                } else {
+                    updateAllButtons(data.buttons);
+                }
                 updateMessage(data.msg);
             };
 
@@ -304,10 +309,6 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location) {
 
         // initialize
         init();
-
-
     });
-
-
 })
 ;
