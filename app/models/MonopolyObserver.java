@@ -17,7 +17,6 @@ public class MonopolyObserver implements IObserver {
     private Out<String> out;
     private IController controller;
     private String lastMessage;
-    private String currentPlayer;
     private String gameName;
     private int indexOfNextPlayer;
     private boolean changePlayer;
@@ -113,8 +112,6 @@ public class MonopolyObserver implements IObserver {
 
     public void setIndexOfNextPlayer(int indexOfNextPlayer) {
         this.indexOfNextPlayer = indexOfNextPlayer;
-        //  this.lastMessage = controller.getPlayer(indexOfNextPlayer).getName() + " du bist dran!";
-        this.currentPlayer = controller.getPlayer(indexOfNextPlayer).getName();
         changePlayer = true;
     }
 
