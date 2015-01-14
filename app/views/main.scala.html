@@ -12,36 +12,34 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-cookies.js"></script>
         <script src="https://js.leapmotion.com/leap-0.6.4.js"></script>
 
-            <!-- 1. Load platform support before any code that touches the DOM. -->
+            <!-- polymer -->
         <script src='@routes.Assets.at("js/webcomponentsjs/webcomponents.min.js")'></script>
-            <!-- 2. Load the component using an HTML Import -->
         <link rel="import" href=@routes.Assets.at("elements/my-element.html")>
 
         <link rel='shortcut icon' type='image/png' href='@routes.Assets.at("images/favicon.ico")'>
 
-            <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-
-            <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
 
             <!-- authentification with google plus -->
         <script type="text/javascript">
-        (function() {
-        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-        po.src = 'https://apis.google.com/js/client:plusone.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-        })();
+        ( function ( ) {
+        var po = document.createElement ( 'script' ) ; po.type = 'text/javascript' ; po.async = true ;
+        po.src = 'https://apis.google.com/js/client:plusone.js' ;
+        var s = document.getElementsByTagName ( 'script' )[ 0 ] ; s.parentNode.insertBefore ( po, s ) ;
+        } ) ( ) ;
         </script>
         <meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1" />
     </head>
-    
-    
+
+
     <body>
         <div class="container">@content</div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script>
         <script type='text/javascript' src='@routes.Assets.at("js/main.js")'></script>
         <script type='text/javascript' src='@routes.Assets.at("js/welcome.js")'></script>
         <script type='text/javascript' src='@routes.Assets.at("js/googleAnalytics.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.at("js/splash.js")'></script>
     </body>
 </html>
