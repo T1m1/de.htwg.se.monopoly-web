@@ -51,6 +51,10 @@
                         localArray.push(element);
                     }
                 }
+                for (var i = 0; i < localArray.length; ++i) {
+                    var tmpArr = eval('[' + localArray[i].ownership + ']')
+                    localArray[i].ownership = tmpArr.join(',');
+                }
                 this.allPlayers = localArray;
             }
         });
