@@ -204,9 +204,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
                 data: {'session': $scope.session},
                 dataType: "html",
                 success: updateMessage
-            }).then(function () {
-                //updateButtons();
-            });
+            })
         };
 
         var updatePlayerPosition = function (pic, position) {
@@ -270,13 +268,31 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
             if (data.isMultiGame) {
                 if (data.currentPlayer.name !== $scope.currentInstancePlayer) {
                     disableAllButtons();
-                    if(!$scope.popup) {
+                    if (!$scope.popup) {
                         $scope.openSplash(data.currentPlayer.name);
                         $scope.popup = true;
+                    } else {
+                        // change name of new player
+                        $('.splash').find('h1').text(data.currentPlayer.name + " ist dran!");
                     }
                 } else {
                     $('.splash').hide();
                     $scope.popup = false;
+                }
+            }
+        }
+
+
+        
+        
+
+
+        var checkIfMultiGameInstanz = function (data) {
+            if (!$scope.multiGame) {
+                // call only once
+                $scope.multiGame = true;
+                if (data.isMultiGame) {
+                    setInstancePlayer(data);
                 }
             }
         }
@@ -288,7 +304,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
             id = id.substr(id.lastIndexOf('/') + 1, id.length);
             $scope.session = id;
             host = host + "/socket/" + id;
-
+            
             var socket = new WebSocket(host);
 
             socket.onopen = function () {
@@ -302,14 +318,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
                 $scope.currentplayer = data.currentPlayer;
                 $scope.$apply();
 
-                if (!$scope.multiGame) {
-                    // call only once
-                    $scope.multiGame = true;
-                    if (data.isMultiGame) {
-                        setInstancePlayer(data);
-                    }
-                }
-
+                checkIfMultiGameInstanz(data);
                 updateAllPlayer(data.players);
                 updateDice(data.dices);
                 updateAllButtons(data.buttons);
