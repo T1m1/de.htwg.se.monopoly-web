@@ -271,6 +271,21 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
             $scope.currentInstancePlayer = tmpStr2.substr(tmpStr2.indexOf("=") + 1, tmpStr2.length)
         }
 
+        function updateCurrentView(data) {
+            if (data.isMultiGame) {
+                if (data.currentPlayer.name !== $scope.currentInstancePlayer) {
+                    disableAllButtons();
+                    if(!$scope.popup) {
+                        $scope.openSplash();
+                        $scope.popup = true;
+                    }
+                } else {
+                    $('.splash').hide();
+                    $scope.popup = false;
+                }
+            }
+        }
+
         function connect() {
             var host = location.origin.replace(/^http/, 'ws');
             var id = location.href;
@@ -288,34 +303,22 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
             socket.onmessage = function (msg) {
                 var data = $.parseJSON(msg.data);
 
-
+                $scope.players = JSON.parse(data.players);
+                $scope.currentplayer = data.currentPlayer;
+                $scope.$apply();
+                
                 if (!$scope.multiGame) {
+                    // call only once
                     $scope.multiGame = true;
                     if (data.isMultiGame) {
                         setInstancePlayer(data);
                     }
                 }
-
-                $scope.players = JSON.parse(data.players);
-                $scope.currentplayer = data.currentPlayer;
-                $scope.$apply();
+                
                 updateAllPlayer(data.players);
                 updateDice(data.dices);
                 updateAllButtons(data.buttons);
-
-                if (data.isMultiGame) {
-                    if (data.currentPlayer.name !== $scope.currentInstancePlayer) {
-                        disableAllButtons();
-                        if(!$scope.popup) {
-                            $scope.openSplash();
-                            $scope.popup = true;
-                        }
-                    } else {
-                        $('.splash').hide();
-                        $scope.popup = false;
-                    }
-                }
-
+                updateCurrentView(data);
                 updateMessage(data.msg);
             };
 
