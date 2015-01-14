@@ -66,12 +66,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
             '#prisonCard': '/prisonCard',
             '#prisonBuy': '/prisonBuy',
             '#prisonRoll': '/prisonRoll',
-            '#start': '/start/2',
-            '#diceResult': '/diceResult',
-            '#currentPlayer': '/currentPlayer',
             '#end': '/end',
-            '#possibleOptions': '/possibleOptions',
-            '#message': '/message',
             '#drawCard': '/drawCard'
         };
 
@@ -306,7 +301,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
                 $scope.players = JSON.parse(data.players);
                 $scope.currentplayer = data.currentPlayer;
                 $scope.$apply();
-                
+
                 if (!$scope.multiGame) {
                     // call only once
                     $scope.multiGame = true;
@@ -314,7 +309,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
                         setInstancePlayer(data);
                     }
                 }
-                
+
                 updateAllPlayer(data.players);
                 updateDice(data.dices);
                 updateAllButtons(data.buttons);
