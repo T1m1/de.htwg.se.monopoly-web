@@ -35,12 +35,12 @@
 
  .btn-monopoly-start {
  	text-align: left;
- 	margin-top: 10%;
+ 	margin-top: 4%;
  }
 
 .btn-monopoly-back {
     text-align: left;
-    margin-top: 10%;
+    margin-top: 4%;
 }
 
  .monopoly_remove {
@@ -90,10 +90,18 @@
  
  .noGames {
  	text-align: center;
- 	margin: 10px;
+  background-color:#FFFFFF;
+  color:#000000;
  	padding: 5px;
- 	color:#424242;
  	font-style: italic;
+  border: 1px solid #83c9f2;
+  margin: 10px;
+  margin-left: 0px;
+  padding: 5px;
+  padding-top: 15px;
+    -webkit-box-shadow: 4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+    -moz-box-shadow:    4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+    box-shadow:         4px 4px 24px 0px rgba(50, 50, 50, 0.52);
  }
  
  .network-overview{
