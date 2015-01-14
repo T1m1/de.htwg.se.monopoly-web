@@ -34,8 +34,8 @@ public class MonopolyObserver implements IObserver {
 
     public void update(GameStatus gameStatus) {
         lastMessage = controller.getMessage();
-        if (GameStatus.AFTER_TURN.equals(gameStatus)) {
-            lastMessage = controller.getPlayer(indexOfNextPlayer).getName() + " ist dran!";
+        if (GameStatus.BEFORE_TURN.equals(gameStatus)) {
+            lastMessage = controller.getCurrentPlayer().getName() + " ist dran!";
         }
         out.write(getGameInfoAsJSON());
 
