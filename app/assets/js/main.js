@@ -5,9 +5,9 @@ var monopoly = angular.module("monopoly", ['ngCookies', 'ui.splash']);
 
 monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $splash) {
 
-    $scope.openSplash = function () {
+    $scope.openSplash = function (name) {
         $splash.open({
-            title: 'Mitspieler ist dran!'
+            title: name + ' ist dran!'
         });
     };
 
@@ -276,7 +276,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
                 if (data.currentPlayer.name !== $scope.currentInstancePlayer) {
                     disableAllButtons();
                     if(!$scope.popup) {
-                        $scope.openSplash();
+                        $scope.openSplash(data.currentPlayer.name);
                         $scope.popup = true;
                     }
                 } else {
