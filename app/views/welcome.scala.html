@@ -136,54 +136,56 @@
 	<!-- Site for network game -->
 	<div class="network-game-content" ng-show="showNetwork">
 		<div class="row">
-			<div class="col-xs-3"></div>
+			<div class="col-xs-2"></div>
 
-			<div class="col-xs-6 network-overview">
+			<div class="col-xs-8 network-overview">
 				<p>Bitte Spiel ausw&auml;hlen oder neues Spiel starten</p>
-				<div class="game-list" >
-					<table class="table" ng-show="gameInstances.length">
-						<thead>
-							<tr>
-								<th>Spiel</th>
-								<th ng-repeat="index in [1,2,3,4,5,6]">Spieler {{index}}</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr class="game-instances" ng-click="joinGame(game)"
-							ng-repeat="game in gameInstances">
-							<th scope="row">{{game.name}}</th>
-							<td ng-repeat="player in game.players">{{player.name}}</td>
+				<table class="table game-list" ng-show="gameInstances.length">
+					<thead>
+						<tr>
+							<th>Spiel</th>
+							<th ng-repeat="index in [1,2,3,4,5,6]">Spieler {{index}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="game-instances" ng-click="joinGame(game)"
+						ng-repeat="game in gameInstances">
+						<th scope="row">{{game.name | limitTo : limit+2}}{{game.name.length > limit+2 ? '...' : ''}}</th>
+						<td ng-repeat="player in game.players">{{player.name| limitTo : limit}}{{player.name.length > limit ? '...' : ''}}</td>
 						</tr>
 					</tbody>
 				</table>
-				<div class="noGames" ng-show="!gameInstances.length">Kein aktives Spiel vorhanden. Bitte neues Spiel erstellen</div>
+				<div class="noGames" ng-show="!gameInstances.length">
+					<p>Kein aktives Spiel vorhanden. Bitte neues Spiel erstellen</p>
+				</div>
+				
+
+				<div class="game-options"></div>
+				<button type="button" class="btn btn-default btn-monopoly-back"
+						ng-click="back()">Zur&uuml;ck</button>
+				<button type="button" class="btn btn-default btn-monopoly-start"
+						ng-click="createGame()">Neues Spiel erstellen</button>
 			</div>
 
-			<div class="game-options"></div>
-			<button type="button" class="btn btn-default btn-monopoly-back"
-			ng-click="back()">Zur&uuml;ck</button>
-			<button type="button" class="btn btn-default btn-monopoly-start"
-			ng-click="createGame()">Neues Spiel erstellen</button>
+			<div class="col-xs-2"></div>
 		</div>
-		<div class="col-xs-3"></div>
-	</div>
-	<div class="row">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6">
-			<div ng-show="showAlert"
-			class="alert alert-warning monopoly-alert mon-fade" role="alert">{{alertMessage}}</div>
+		<div class="row">
+			<div class="col-xs-3"></div>
+				<div class="col-xs-6">
+					<div ng-show="showAlert" class="alert alert-warning 
+							monopoly-alert mon-fade" role="alert">{{alertMessage}}</div>
+				</div>
+			<div class="col-xs-3"></div>
 		</div>
-		<div class="col-xs-3"></div>
-	</div>
-	<div class="row">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6">
-			<div ng-show="showPendingStatus"
-			class="alert alert-success monopoly-alert mon-fade" role="alert">{{pendingMessage}}</div>
+		<div class="row">
+			<div class="col-xs-3"></div>
+				<div class="col-xs-6">
+					<div ng-show="showPendingStatus"class="alert alert-success 
+					monopoly-alert mon-fade" role="alert">{{pendingMessage}}</div>
+				</div>
+			<div class="col-xs-3"></div>
 		</div>
-		<div class="col-xs-3"></div>
 	</div>
-</div>
 
 
 <!-- Create a new Game Modal -->
