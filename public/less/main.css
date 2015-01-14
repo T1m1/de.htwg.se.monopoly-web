@@ -1,10 +1,11 @@
 
- body {
-            margin-top: 50px;
-  }
-  
+body {
+    margin-top: 50px;
+    overflow: auto !important;
+}
+
 .message-panel {
-	height: 100px;
+    height: 100px;
 }
 
 .redStreet {
@@ -46,6 +47,7 @@
 .drawCard {
     height: 60px;
 }
+
 .field {
     min-height: 75px !important;
     font-size: 10px !important;
@@ -61,7 +63,7 @@
 
 .playerpicture {
     width: 100px;
-    height:80px;
+    height: 80px;
     position: absolute;
     left: 0;
     top: 0;
@@ -69,7 +71,7 @@
 
 .pic {
     width: 30px;
-    height:30px;
+    height: 30px;
 }
 
 .playerpicture img {
@@ -89,5 +91,5 @@ p {
 }
 
 .prisonQuestion {
-	padding: 3px 20px;
+    padding: 3px 20px;
 }
