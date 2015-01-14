@@ -1,15 +1,23 @@
 /**
  * Created by Timi on 29.10.2014.
  */
-var monopoly = angular.module("monopoly", ['ngCookies']);
+var monopoly = angular.module("monopoly", ['ngCookies', 'ui.splash']);
 
-monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
+monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $splash) {
+
+    $scope.openSplash = function () {
+        $splash.open({
+            title: 'Mitspieler ist dran!'
+        });
+    };
+
     $scope.players;
     $scope.currentplayer;
     $scope.prisonQuestion;
     $scope.game;
     $scope.session;
     $scope.multiGame = false;
+    $scope.popup = false;
     $scope.currentInstancePlayer;
 
     $scope.pic = {
@@ -256,7 +264,7 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
             });
         };
 
-        function setInstancePlayer() {
+        function setInstancePlayer(data) {
             var rawCookie = $cookies['PLAY_SESSION'];
             var tmpStr1 = rawCookie.substr(rawCookie.indexOf(data.gameName + "="), rawCookie.length);
             var tmpStr2 = tmpStr1.substr(0, tmpStr1.indexOf("&"));
@@ -283,8 +291,9 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
 
                 if (!$scope.multiGame) {
                     $scope.multiGame = true;
-                    setInstancePlayer();
-
+                    if (data.isMultiGame) {
+                        setInstancePlayer(data);
+                    }
                 }
 
                 $scope.players = JSON.parse(data.players);
@@ -297,9 +306,16 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
                 if (data.isMultiGame) {
                     if (data.currentPlayer.name !== $scope.currentInstancePlayer) {
                         disableAllButtons();
+                        if(!$scope.popup) {
+                            $scope.openSplash();
+                            $scope.popup = true;
+                        }
+                    } else {
+                        $('.splash').hide();
+                        $scope.popup = false;
                     }
                 }
-                
+
                 updateMessage(data.msg);
             };
 
@@ -318,3 +334,41 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies) {
     });
 })
 ;
+
+
+// Re-usable $splash module
+angular.module('ui.splash', ['ui.bootstrap'])
+    .service('$splash', [
+        '$modal',
+        '$rootScope',
+        function ($modal, $rootScope) {
+            return {
+                open: function (attrs, opts) {
+                    var scope = $rootScope.$new();
+                    angular.extend(scope, attrs);
+                    opts = angular.extend(opts || {}, {
+                        backdrop: false,
+                        scope: scope,
+                        templateUrl: 'splash/content.html',
+                        windowTemplateUrl: 'splash/index.html'
+                    });
+                    return $modal.open(opts);
+                }
+            };
+        }
+    ])
+    .run([
+        '$templateCache',
+        function ($templateCache) {
+            $templateCache.put('splash/index.html',
+                '<section class="splash" ng-class="{\'splash-open\': animate}" ng-style="{\'z-index\': 1000, display: \'block\'}" ng-click="close($event)">' +
+                '  <div class="splash-inner" ng-transclude></div>' +
+                '</section>'
+            );
+            $templateCache.put('splash/content.html',
+                '<div class="splash-content text-center">' +
+                '  <h1 ng-bind="title"></h1>' +
+                '</div>'
+            );
+        }
+    ]);
