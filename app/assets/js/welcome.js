@@ -451,11 +451,17 @@ startPage
                 console.log('statusChangeCallback');
                 console.log(response);
                 if (response.status === 'connected') {
-                    console.log('successfully log in');
+                	 $scope.isSignedIn = true;
+
+                     $scope.showNetwork = true;
+                     $scope.chooseType = false;
+                     $('#authModal').modal('hide');
                 } else if (response.status === 'not_authorized') {
-                    console.log('Please log into this app.');
+                	$scope.isSignedIn = false;
+                    console.log('Error:' + authResult['error']);
                 } else {
-                    console.log('Please log into Facebook.');
+                	$scope.isSignedIn = false;
+                    console.log('Error:' + authResult['error']);
                 }
             }
 

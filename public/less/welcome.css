@@ -45,7 +45,9 @@
     margin-right: 10px;
 }
 .myfacebook-btn {
-
+	width: 132px;
+	height: 36px;
+	cursor:pointer;
 }
  .monopoly_remove {
  	padding: 10px;
