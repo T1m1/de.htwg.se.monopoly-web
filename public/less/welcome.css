@@ -35,14 +35,20 @@
 
  .btn-monopoly-start {
  	text-align: left;
- 	margin-top: 4%;
+ 	margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
  }
 
 .btn-monopoly-back {
-    text-align: left;
-    margin-top: 4%;
+    margin-top: 10px;
+    margin-right: 10px;
 }
-
+.myfacebook-btn {
+	width: 132px;
+	height: 36px;
+	cursor:pointer;
+}
  .monopoly_remove {
  	padding: 10px;
  	cursor: pointer;
@@ -74,6 +80,11 @@
   text-align: left;
   color:#000000;
  } 
+
+ .auth-modal {
+  text-align: left;
+  color:#000000;
+ }
  
  .game-list {
  	background-color:#FFFFFF;
@@ -82,7 +93,7 @@
  	border: 1px solid #83c9f2;
  	margin: 10px;
  	margin-left: 0px;
- 	padding: 5px;
+ 	padding: 15px;
   	-webkit-box-shadow: 4px 4px 24px 0px rgba(50, 50, 50, 0.52);
   	-moz-box-shadow:    4px 4px 24px 0px rgba(50, 50, 50, 0.52);
   	box-shadow:         4px 4px 24px 0px rgba(50, 50, 50, 0.52);
@@ -119,11 +130,15 @@
 
  }
 
-.back-button {
+.welcome-message  {
 	text-align:left;
 	margin: 20px;
  	margin-left: 0px;
- 	padding: 5px;
+ 	padding: 15px;
+  border: 1px solid #FFFFFF;
+  -webkit-box-shadow: 4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+    -moz-box-shadow:    4px 4px 24px 0px rgba(50, 50, 50, 0.52);
+    box-shadow:         4px 4px 24px 0px rgba(50, 50, 50, 0.52);
 }
 
 /* fade animations */

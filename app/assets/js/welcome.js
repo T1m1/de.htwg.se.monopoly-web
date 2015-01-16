@@ -21,6 +21,7 @@ startPage
                 $scope.getGames()
                 if (!$scope.isSignedIn) {
                     $('#authModal').modal('show');
+                    $scope.checkFacebook();
                     $scope.renderSignIn();
                 } else {
                     $scope.showNetwork = true;
@@ -434,4 +435,42 @@ startPage
                     });
             }
 
+            $scope.checkFacebook = function() {
+                FB.getLoginStatus(function(response) {
+                    $scope.authFacebook(response);
+                });
+            }
+
+            $scope.loginFacebook = function() {
+                FB.login(function(response) {
+                    $scope.authFacebook(response);
+                });
+            }
+
+            $scope.authFacebook = function(response) {
+                console.log('statusChangeCallback');
+                console.log(response);
+                if (response.status === 'connected') {
+                	 $scope.isSignedIn = true;
+
+                     $scope.showNetwork = true;
+                     $scope.chooseType = false;
+                     $('#authModal').modal('hide');
+                } else if (response.status === 'not_authorized') {
+                	$scope.isSignedIn = false;
+                    console.log('Error:' + authResult['error']);
+                } else {
+                	$scope.isSignedIn = false;
+                    console.log('Error:' + authResult['error']);
+                }
+            }
+
         });
+
+window.fbAsyncInit = function() {
+    FB.init({
+        appId: '1544672509123244',
+        xfbml: true,
+        version: 'v2.2'
+    });
+};

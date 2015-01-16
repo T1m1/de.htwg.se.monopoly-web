@@ -1,15 +1,29 @@
 @(message: String) @main("Welcome to Monopoly") {
+<!-- authentification with facebook -->
+<div id="fb-root"></div>
+<script>  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
 <link rel="stylesheet" href='@routes.Assets.at("less/welcome.css")' />
 <div ng-app="monopolyStartPage" class="bodyblue bodywhite">
 	<div ng-controller="Controller">
 		<h1 class="monopoly-header">HTWG Monopoly</h1>
-
-		<div class="back-button" ng-show="chooseType">
-
-
-			<h4 class="monopoly-sub-header">Herzlich willkommen. Dieses
-				Spiel wurde für den Kurs "Web-Technologien" an der HTWG Konstanz
-				als webbasiertes Spiel umgesetzt.</h4>
+		<div class="row">
+				<!-- empty col on the far left-->
+			<div class="col-xs-3"></div>
+			<div class="welcome-message col-xs-6" ng-show="chooseType">
+				<h4 class="monopoly-sub-header">Herzlich willkommen. Dieses
+					Spiel wurde für den Kurs "Web-Technologien" an der HTWG Konstanz
+					als webbasiertes Spiel umgesetzt.
+				</h4>
+				<p>
+				</p>
 				<p>
 					Dieser Kurs baut auf den Kurs "Software-Engineering" auf, in dem die
 					Spiellogik unter den Aspekten der modernen Software-Entwicklung
@@ -19,78 +33,81 @@
 					href="http://t1m1.github.io/de.htwg.se.monopoly-web"> GitHub
 					Seite</a>.
 				</p>
-
-
 				<p>Wir wünschen euch viel Spaß beim Spielen.</p>
 			</div>
+			<div class="col-xs-3"></div>
+		</div>
 
-			<div class="choose-game-type" ng-show="chooseType">
-				<button type="button" class="btn btn-default btn-monopoly-start"
-				ng-click="localGame()">Lokales Spiel</button>
-				<button type="button" class="btn btn-default btn-monopoly-start"
-				ng-click="networkGame()">Spiel &uuml;ber Netzwerk</button>
-			</div>
-			<!-- Site for local game -->
-			<div class="local-game-content" ng-show="showLocal">
-				<div class="row">
-					<!-- empty col on the far left-->
-					<div class="col-xs-3"></div>
+		<div class="choose-game-type" ng-show="chooseType">
+			<button type="button" class="btn btn-default btn-monopoly-start"
+			ng-click="localGame()">Lokales Spiel</button>
+			<button type="button" class="btn btn-default btn-monopoly-start"
+			ng-click="networkGame()">Spiel &uuml;ber das Internet</button>
+		</div>
+		
 
-					<!-- Middle col with forms -->
-					<div class="col-xs-6">
-						<div class="monopoly-submit-box row-elements">
+		
+		<!-- Site for local game -->
+		<div class="local-game-content" ng-show="showLocal">
+			<div class="row">
+				<!-- empty col on the far left-->
+				<div class="col-xs-3"></div>
 
-							<!--  First row with text -->
-							<div class="row">
-								<div class="col-xs-1">
-									<p>&nbsp;</p>
-								</div>
-								<div class="col-xs-8">
-									<p>Bitte Spielernamen eingeben</p>
-								</div>
-								<div class="col-xs-3">
-									<p>Figur</p>
-								</div>
+				<!-- Middle col with forms -->
+				<div class="col-xs-6">
+					<div class="monopoly-submit-box row-elements">
+
+						<!--  First row with text -->
+						<div class="row">
+							<div class="col-xs-1">
+								<p>&nbsp;</p>
 							</div>
-
-							<!-- repeat forms -->
-							<div class="row mon-fade-repeat" ng-repeat="player in players"
-							ng-mouseenter="showMinusButton = true"
-							ng-mouseleave="showMinusButton = false">
-
-							<!-- col for the minus button -->
-							<div class="col-xs-1 ">
-								<span
-								class="glyphicon glyphicon-remove monopoly_remove mon-fade"
-								aria-hidden="true" ng-click="rmPlayer($index)"
-								ng-show="showMinusButton"></span>
+							<div class="col-xs-8">
+								<p>Bitte Spielernamen eingeben</p>
 							</div>
-
-							<!-- col for forms -->
-							<div class="col-xs-8 player-form">
-								<form novalidate role="form">
-									<div class="form-group">
-										<input class="form-control"
-										placeholder="Enter Player {{$index + 1}}"
-										ng-model="player.name">
-									</div>
-								</form>
-							</div>
-
-							<!-- Dropdown col -->
 							<div class="col-xs-3">
-								<div ng-hide="player.figure">
-									<select class="form-control" ng-model="select"
-									ng-options="icon for icon in icons"
-									ng-change="updatePlayerIcon($index,select)"
-									ng-disabled="player.figure">
-								</select>
+								<p>Figur</p>
 							</div>
-							<img ng-src="assets/images/{{player.figure}}.jpg"
-							class="monopoly-icon" ng-show="player.figure" />
 						</div>
 
+						<!-- repeat forms -->
+						<div class="row mon-fade-repeat" ng-repeat="player in players"
+						ng-mouseenter="showMinusButton = true"
+						ng-mouseleave="showMinusButton = false">
+
+						<!-- col for the minus button -->
+						<div class="col-xs-1 ">
+							<span
+							class="glyphicon glyphicon-remove monopoly_remove mon-fade"
+							aria-hidden="true" ng-click="rmPlayer($index)"
+							ng-show="showMinusButton"></span>
+						</div>
+
+						<!-- col for forms -->
+						<div class="col-xs-8 player-form">
+							<form novalidate role="form">
+								<div class="form-group">
+									<input class="form-control"
+									placeholder="Enter Player {{$index + 1}}"
+									ng-model="player.name">
+								</div>
+							</form>
+						</div>
+
+						<!-- Dropdown col -->
+						<div class="col-xs-3">
+							<div ng-hide="player.figure">
+								<select class="form-control" ng-model="select"
+								ng-options="icon for icon in icons"
+								ng-change="updatePlayerIcon($index,select)"
+								ng-disabled="player.figure">
+							</select>
+						</div>
+						<img ng-src="assets/images/{{player.figure}}.jpg"
+						class="monopoly-icon" ng-show="player.figure" />
 					</div>
+
+				</div>
 
 					<!--  second last row with plus button -->
 					<div class="row">
@@ -326,7 +343,7 @@ aria-hidden="true">
 </div>
 
 <!-- Modal for authentification -->
-<div class="modal fade create-game-modal" id="authModal"
+<div class="modal fade auth-modal" id="authModal"
 tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 aria-hidden="true">
 <div class="modal-dialog">
@@ -338,8 +355,8 @@ aria-hidden="true">
 
 			<span id="signin">
 				<span id="HTWGsignin"></span>
-			</span>
-			
+			</span><br>
+			<img ng-src="assets/images/facebook.png" ng-click="loginFacebook()" class="myfacebook-btn"></div>
 		</div>
 		<div class="modal-footer">
 
