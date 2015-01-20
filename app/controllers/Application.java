@@ -206,7 +206,7 @@ public class Application extends JavaController {
         }
         observer.asMap().get(getSession()).setIndexOfNextPlayer(getIndexOfNextPlayer());
         observer.asMap().get(getSession()).setChangePlayer(true);
-        
+
         controllers.asMap().get(getSession()).endTurn();
         return ok();
     }
@@ -507,7 +507,7 @@ public class Application extends JavaController {
 
         /* write name of player to cookie*/
         session(gameName, playerName);
-        
+
         HashMap<String, PlayerIcon> player = new HashMap<String, PlayerIcon>();
         player.put(playerName, PlayerIcon.valueOf(playerIcon.toUpperCase()));
 
@@ -633,6 +633,10 @@ public class Application extends JavaController {
 
     public static String getGameNameOf(String gameInstance) {
         return gamesToName.asMap().get(gameInstance);
+    }
+
+    public static Result test() {
+        return ok(views.html.test.render(""));
     }
 }
 
