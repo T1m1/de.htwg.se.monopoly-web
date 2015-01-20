@@ -11,8 +11,9 @@
  	text-align: center;
  }
 
-.red {
-    color: red;
+.my-link {
+    color: #000;
+     text-decoration: underline;
 }
  
  .blur {
