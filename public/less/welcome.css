@@ -1,20 +1,6 @@
 /*
  * Base structure
  */
- html, body {
- 	height: 100%;
- 	background-color: #36a7ea;
- }
-
- body {
- 	color: #FFFFFF;
- 	text-align: center;
- }
-
-.red {
-    color: red;
-}
- 
  .blur {
  	-webkit-filter:blur(3px);
  	transition:1s linear all;
