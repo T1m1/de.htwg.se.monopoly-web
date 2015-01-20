@@ -203,7 +203,10 @@ monopoly.controller('MainCtrl', function ($scope, $http, $location, $cookies, $s
                 url: ('/answer/' + select),
                 data: {'session': $scope.session},
                 dataType: "html",
-                success: updateMessage
+                success: function(data) {
+                    var obj =  eval('(' + data + ')');
+                    updateMessage(obj.msg);
+                }
             })
         };
 
