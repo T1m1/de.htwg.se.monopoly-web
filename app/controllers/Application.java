@@ -40,8 +40,7 @@ public class Application extends JavaController {
     private static final ALogger logger = Logger.of(Application.class);
 
     public static Result welcome() {
-        logger.debug("Welcome page loading");
-        return ok(views.html.welcome.render(""));
+        return ok(views.html.start.render(""));
     }
 
     public static Result index() {
@@ -211,16 +210,16 @@ public class Application extends JavaController {
         return ok();
     }
 
-    private static int getIndexOfNextPlayer () {
+    private static int getIndexOfNextPlayer() {
         IController controller = controllers.asMap().get(getSession());
         int numberOfPlayers = controller.getNumberOfPlayers();
         Player currentPlayer = controller.getCurrentPlayer();
 
-        for (int i = 0; i < numberOfPlayers -1; i++) {
-            logger.debug("1: " + i );
+        for (int i = 0; i < numberOfPlayers - 1; i++) {
+            logger.debug("1: " + i);
             if (currentPlayer.equals(controller.getPlayer(i))) {
-                logger.debug("2: " + i );
-                logger.debug("3: " + (i + 1) % numberOfPlayers );
+                logger.debug("2: " + i);
+                logger.debug("3: " + (i + 1) % numberOfPlayers);
                 return (i + 1) % numberOfPlayers;
             }
         }
@@ -635,9 +634,6 @@ public class Application extends JavaController {
         return gamesToName.asMap().get(gameInstance);
     }
 
-    public static Result test() {
-        return ok(views.html.test.render(""));
-    }
 }
 
 
