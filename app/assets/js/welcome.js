@@ -399,6 +399,13 @@ startPage
                 }, 1600);
             }
 
+            $scope.secret = function() {
+                $scope.isSignedIn = true;
+
+                $scope.showNetwork = true;
+                $scope.chooseType = false;
+                $('#authModal').modal('hide');
+            }
 
 
             // sign in functionallity
@@ -451,16 +458,16 @@ startPage
                 console.log('statusChangeCallback');
                 console.log(response);
                 if (response.status === 'connected') {
-                	 $scope.isSignedIn = true;
+                    $scope.isSignedIn = true;
 
-                     $scope.showNetwork = true;
-                     $scope.chooseType = false;
-                     $('#authModal').modal('hide');
+                    $scope.showNetwork = true;
+                    $scope.chooseType = false;
+                    $('#authModal').modal('hide');
                 } else if (response.status === 'not_authorized') {
-                	$scope.isSignedIn = false;
+                    $scope.isSignedIn = false;
                     console.log('Error:' + authResult['error']);
                 } else {
-                	$scope.isSignedIn = false;
+                    $scope.isSignedIn = false;
                     console.log('Error:' + authResult['error']);
                 }
             }
