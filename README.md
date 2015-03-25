@@ -33,7 +33,7 @@ And now...
         - **pinch** -> buy street
     
  
-This project is still under construction and is online and playable with a browser.
+This project is online and playable with a browser. (We recommend Google Chrome)
 
 
 ## Help
